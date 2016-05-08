@@ -16,13 +16,17 @@
     - Logistic Classification
     - Stochastic Optimization
     - Data & Parameter tuning
+    
     > general data practices to train models
 - Lesson 2 [Deep Neural Network](note/lesson-2/README.md)
     - Deep Networks
+    
     > train your first deep network
     - Regularization
+    
     > Train even bigger models
 - Lesson 3 [Convolutional Networks](note/lesson-3/README.md)
+
     > deep dive into images and convolutional models
 - Lessson 4[Deep Models for Text and Sequence]
     # Deep Models for Text and Sequence
