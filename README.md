@@ -33,7 +33,6 @@
     > deep dive into images and convolutional models
     
 - Lessson 4[Deep Models for Text and Sequence]
-    # Deep Models for Text and Sequence
     - Embeddings 
     - Recurrent Models
 
