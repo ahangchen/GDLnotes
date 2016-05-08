@@ -11,6 +11,7 @@
 分类
 
 > 分类的一些讨论可以在[这个项目](https://github.com/ahangchen/GoogleML/blob/master/note/lesson-2-viz/README.md)里看到
+
 - Machine Learning不仅是Classification！但分类是机器学习的核心。
 - 学会分类也就学会了detect和rank
 

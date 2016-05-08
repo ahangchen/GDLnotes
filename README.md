@@ -12,7 +12,9 @@
 
 笔记列表
 - Lesson 1 [Machine Learning to Deep Learning](note/lesson-1/README.md)
+
     > train your first simple model entirely end to end
+    
     - Logistic Classification
     - Stochastic Optimization
     - Data & Parameter tuning
@@ -22,12 +24,14 @@
     - Deep Networks
     
     > train your first deep network
+    
     - Regularization
     
     > Train even bigger models
 - Lesson 3 [Convolutional Networks](note/lesson-3/README.md)
 
     > deep dive into images and convolutional models
+    
 - Lessson 4[Deep Models for Text and Sequence]
     # Deep Models for Text and Sequence
     - Embeddings 
