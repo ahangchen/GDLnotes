@@ -38,8 +38,8 @@
     - Recurrent Models
     
 附录：
-- [NumPy笔记(note/numpy/README.md)
-- [matplotlib笔记(note/matplotlib/README.md)
+- [NumPy笔记](note/numpy/README.md)
+- [matplotlib笔记](note/matplotlib/README.md)
 
 > 如果觉得我的文章对您有帮助，请随意打赏～
 

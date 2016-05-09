@@ -31,7 +31,7 @@
     Detail
     - linear classifier
     
-    ![](../res/logistic.png)
+    ![](../../res/logistic.png)
     
     > 之所以这样建模，是因为线性公式是最简单的数学模型，仅此而已。
     
@@ -49,9 +49,9 @@
       
       > Softmax回归模型：[Wikipedia](http://ufldl.stanford.edu/wiki/index.php/Softmax%E5%9B%9E%E5%BD%92) 
       
-      ![](../res/softmax.png)
+      ![](../../res/softmax.png)
       
-      - 代码[soft_max.py](../src/soft_max.py)：Softmax实现与应用
+      - 代码[soft_max.py](../../src/soft_max.py)：Softmax实现与应用
       
     
 
