@@ -3,6 +3,7 @@
 > Google 深度学习笔记
 
 - 官方教程[地址](https://classroom.udacity.com/courses/ud730/lessons/6370362152/concepts/63798118170923)
+- [视频](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Videos.zip)/[字幕](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Subtitles.zip)下载
 
 有问题可以到[Issue区](https://github.com/ahangchen/GDLnotes/issues)讨论
 
@@ -16,7 +17,7 @@
 
     > train your first simple model entirely end to end
     
-    - Logistic Classification
+    - [Logistic Classification](note/lesson-1/logistic_classify.md)
     - Stochastic Optimization
     - Data & Parameter tuning
     
@@ -38,8 +39,8 @@
     - Recurrent Models
     
 附录：
-- [NumPy笔记](note/numpy/README.md)
-- [matplotlib笔记](note/matplotlib/README.md)
+- [NumPy笔记](note/numpy/README.md)（待完善）
+- [matplotlib笔记](note/matplotlib/README.md)（待完善）
 
 > 如果觉得我的文章对您有帮助，请随意打赏～
 
