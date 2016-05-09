@@ -32,4 +32,50 @@ Detail
   ![](../../res/softmax.png)
 - Softmax  
   - 代码 [soft_max.py](../../src/soft_max.py)：Softmax实现与应用
-  - input的score差异越大（可以全部乘10试试），则输出差异越大，反之差异越小
+  - input的score差异越大（可以全部乘10试试），则输出的各项label概率差异越大，反之差异越小
+  - Softmax只关心几个label之间的概率，不关心具体值
+  - 机器学习是一个让预测成功率升高的事情，因此是一个让score之间差异增大的过程
+  
+- One hot encoding
+![](../../res/one_hot_encoding.png)
+
+> 正确预测结果应当是只有一个label成立，其他label不成立。这种情况下，预测概率最大的则是最可能的结果。
+
+  - one hot encoding在label很多的情况下not work well，因为output vector到处都是0，很稀疏，因此效率低
+    - solved by [embeddings](../lesson-4/README.md)
+  - 好处：可以measure我们与理想情况之间的距离（compare two vectors）
+  
+  > 分类器输出：[0.7 0.2 0.1] \<=\> 与label对应的真实情况：[1 0 0]
+  
+  - compare two vectors: cross-entropy
+  ![](../../res/cross-entropy.png)
+    - D(S, L) != D(L, S)
+    
+    > Remember: Label don't log, for label zero 
+ 
+ - 小结
+ ![](../../res/logistic2.png)
+ 
+ ![](../../res/logistic3.png)
+ 
+ 找到合适的W和b，使得S和L的距离D的平均值，在整个数据集n中最小。
+ 
+ - 最小化cross-entropy
+ ![](../../res/train_loss.png)
+ 
+ 平均：
+ 
+ ![](../../res/avg_train_loss.png)
+ 
+ D的平均值即是Training loss，求和和矩阵相乘是个大数据的活。
+ 
+ ![](../../res/weight_loss.png)
+ 
+ 两个参数的误差导致一个呈圆形的loss，所以我们要做的就是找到尽量靠近圆心的weight
+ > 机器学习问题变成了一个数值优化
+   - 解决方法之一：Gradient descent，求导
+   
+   ![](../../res/min_num.png)
+   
+   > 修改参数，检查误差是否变大，往变小的方向修改，直到抵达bottom。
+   > 但事实上可能有极多的weight
