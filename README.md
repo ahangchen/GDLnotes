@@ -8,6 +8,7 @@
 
 框架： TensorFlow
 > 谷歌出品的基于Python的深度学习工具集
+
 工具：Ipython, Pycharm
 
 笔记列表
@@ -32,9 +33,13 @@
 
     > deep dive into images and convolutional models
     
-- Lessson 4[Deep Models for Text and Sequence](note/lesson-4/README.md)
+- Lessson 4 [Deep Models for Text and Sequence](note/lesson-4/README.md)
     - Embeddings 
     - Recurrent Models
+    
+附录：
+- [NumPy笔记(note/numpy/README.md)
+- [matplotlib笔记(note/matplotlib/README.md)
 
 > 如果觉得我的文章对您有帮助，请随意打赏～
 
