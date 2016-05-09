@@ -61,9 +61,6 @@ Detail
  找到合适的W和b，使得S和L的距离D的平均值，在整个数据集n中最小。
  
  - 最小化cross-entropy
- ![](../../res/train_loss.png)
- 
- 平均：
  
  ![](../../res/avg_train_loss.png)
  
