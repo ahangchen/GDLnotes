@@ -78,4 +78,5 @@ Detail
    ![](../../res/min_num.png)
    
    > 修改参数，检查误差是否变大，往变小的方向修改，直到抵达bottom。
-   > 但事实上可能有极多的weight
+   
+   > 图中weight是二维的，但事实上可能有极多的weight
