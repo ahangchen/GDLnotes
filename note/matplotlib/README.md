@@ -3,14 +3,13 @@
 
 - matplotlib [API文档](http://matplotlib.org/api/index.html)
 
-> 
 
 常用方法：
 
-- pylot模块
-  - hist
-  - plot
-  - show
+> pylot模块
+- hist
+- plot
+- show
   
 
   
