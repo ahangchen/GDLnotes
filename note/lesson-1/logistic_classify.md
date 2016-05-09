@@ -49,9 +49,10 @@ Detail
   
   - compare two vectors: cross-entropy
   ![](../../res/cross-entropy.png)
-    - D(S, L) != D(L, S)
+  
+  - D(S, L) != D(L, S)
     
-    > Remember: Label don't log, for label zero 
+  > Remember: Label don't log, for label zero 
  
  - 小结
  ![](../../res/logistic2.png)
