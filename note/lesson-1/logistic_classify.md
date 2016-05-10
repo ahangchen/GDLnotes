@@ -1,5 +1,12 @@
 # Logistic Classification
 > simple but important classifier
+
+>
+- Github工程地址：https://github.com/ahangchen/GDLnotes
+- 欢迎star，有问题可以到[Issue区](https://github.com/ahangchen/GDLnotes/issues)讨论
+- 官方教程[地址](https://classroom.udacity.com/courses/ud730/lessons/6370362152/concepts/63798118170923)
+- [视频](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Videos.zip)/[字幕](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Subtitles.zip)下载
+
      
 ## About
 
@@ -82,3 +89,7 @@
    > 图中weight是二维的，但事实上可能有极多的weight
    
 [下一节](practical.md)实践
+
+> 如果觉得我的文章对您有帮助，请随意打赏～
+
+<img src="../../res/wxmoney.jpg" width = "400" height = "400" alt="图片名称" align=center />
