@@ -1,5 +1,4 @@
 # Logistic Classification
-> simple but important classifier
 
 >
 - Github工程地址：https://github.com/ahangchen/GDLnotes
@@ -9,6 +8,8 @@
 
      
 ## About
+
+> simple but important classifier
 
 - Train your first simple model entirely end to end
 - 下载、预处理一些图片以分类
