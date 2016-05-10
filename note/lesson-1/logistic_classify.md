@@ -19,8 +19,8 @@ Github工程地址：https://github.com/ahangchen/GDLnotes
 - Run an actual logistic classifier on images data
 - Connect bit of math and code
 
-## detail
-### linear classifier
+## Detail
+### Linear Classifier
 
 ![](../../res/logistic.png)
 
@@ -60,7 +60,7 @@ Github工程地址：https://github.com/ahangchen/GDLnotes
   
   > 分类器输出：[0.7 0.2 0.1] \<=\> 与label对应的真实情况：[1 0 0]
   
-  - compare two vectors: cross-entropy
+  - Compare two vectors: cross-entropy
   ![](../../res/cross-entropy.png)
   
   - D(S, L) != D(L, S)
