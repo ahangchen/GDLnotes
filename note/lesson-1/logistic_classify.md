@@ -3,10 +3,10 @@
      
 About
 
-- train your first simple model entirely end to end
-- download and pre-process some images for classification
-- run an actual logistic classifier on images data
-- connect bit of math and code
+- Train your first simple model entirely end to end
+- 下载、预处理一些图片以分类
+- Run an actual logistic classifier on images data
+- Connect bit of math and code
 
 Detail
 - linear classifier
@@ -16,12 +16,12 @@ Detail
 > 之所以这样建模，是因为线性公式是最简单的数学模型，仅此而已。
 
 - Input: X (e.g. the pixels in an image)
-- apply a linear function to X
+- Apply a linear function to X
   - Giant matrix multiply 
-  - take inputs as a big vector 
-  - multiply input vector with a matrix, W means weights
+  - Take inputs as a big vector 
+  - Multiply input vector with a matrix, W means weights
   - b means biased term
-  - machine learning 调整 weights and bias以达到最好的预测效果
+  - Machine learning adjust weights and bias for the best prediction
 - Output: Y, predictions for per output class
   - Y is a vector, represents the probability of each label
   - 好的预测中，正确的label的概率应当更接近1
@@ -40,6 +40,8 @@ Detail
 ![](../../res/one_hot_encoding.png)
 
 > 正确预测结果应当是只有一个label成立，其他label不成立。这种情况下，预测概率最大的则是最可能的结果。
+
+> Example: take this [test](https://classroom.udacity.com/courses/ud730/lessons/6370362152/concepts/63713510510923) 
 
   - one hot encoding在label很多的情况下not work well，因为output vector到处都是0，很稀疏，因此效率低
     - solved by [embeddings](../lesson-4/README.md)
@@ -78,3 +80,5 @@ Detail
    > 修改参数，检查误差是否变大，往变小的方向修改，直到抵达bottom。
    
    > 图中weight是二维的，但事实上可能有极多的weight
+   
+[下一节](practical.md)实践
