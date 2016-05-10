@@ -1,15 +1,15 @@
 # Logistic Classification
 > simple but important classifier
      
-About
+## About
 
 - Train your first simple model entirely end to end
 - 下载、预处理一些图片以分类
 - Run an actual logistic classifier on images data
 - Connect bit of math and code
 
-Detail
-- linear classifier
+## detail
+### linear classifier
 
 ![](../../res/logistic.png)
 
@@ -30,13 +30,13 @@ Detail
   > Softmax回归模型：[Wikipedia](http://ufldl.stanford.edu/wiki/index.php/Softmax%E5%9B%9E%E5%BD%92) 
   
   ![](../../res/softmax.png)
-- Softmax  
+### Softmax  
   - 代码 [soft_max.py](../../src/soft_max.py)：Softmax实现与应用
   - input的score差异越大（可以全部乘10试试），则输出的各项label概率差异越大，反之差异越小
   - Softmax只关心几个label之间的概率，不关心具体值
   - 机器学习是一个让预测成功率升高的事情，因此是一个让score之间差异增大的过程
   
-- One hot encoding
+### One hot encoding
 ![](../../res/one_hot_encoding.png)
 
 > 正确预测结果应当是只有一个label成立，其他label不成立。这种情况下，预测概率最大的则是最可能的结果。
@@ -56,14 +56,14 @@ Detail
     
   > Remember: Label don't log, for label zero 
  
- - 小结
+### 小结
  ![](../../res/logistic2.png)
  
  ![](../../res/logistic3.png)
  
  找到合适的W和b，使得S和L的距离D的平均值，在整个数据集n中最小。
  
- - 最小化cross-entropy
+### 最小化cross-entropy
  
  ![](../../res/avg_train_loss.png)
  
