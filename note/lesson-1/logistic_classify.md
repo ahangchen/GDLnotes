@@ -1,15 +1,13 @@
 # Logistic Classification
 
->
-Github工程地址：https://github.com/ahangchen/GDLnotes
->
-欢迎star，有问题可以到[Issue区](https://github.com/ahangchen/GDLnotes/issues)讨论
->
-官方教程[地址](https://classroom.udacity.com/courses/ud730/lessons/6370362152/concepts/63798118170923)
->
-[视频](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Videos.zip)/[字幕](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Subtitles.zip)下载
+> Github工程地址：https://github.com/ahangchen/GDLnotes
 
-     
+> 欢迎star，有问题可以到[Issue区](https://github.com/ahangchen/GDLnotes/issues)讨论
+
+> 官方教程[地址](https://classroom.udacity.com/courses/ud730/lessons/6370362152/concepts/63798118170923)
+
+> [视频](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Videos.zip)/[字幕](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Subtitles.zip)下载
+    
 ## About
 
 > simple but important classifier
@@ -91,7 +89,51 @@ Github工程地址：https://github.com/ahangchen/GDLnotes
    > 修改参数，检查误差是否变大，往变小的方向修改，直到抵达bottom。
    
    > 图中weight是二维的，但事实上可能有极多的weight
-   
+
+### Numerical Stability
+
+> 量级相差太多的数运算会导致许多错误
+
+Example:[num_stable.py](../../src/num_stable.py)
+
+- 你可能以为输出是1， 但结果是一个接近0.95的数。
+- 但将1billion换成1，结果就很接近1。
+- 因此需要让前面提到的Train loss函数中的数据不要too big or too small
+
+### Normalized Inputs and Initial Wights 
+> 归一化输入和初始参数
+
+- 理想目标
+  - 均值为0
+  - 方差处处相等
+ ![](../../res/normal_target.png)
+- Math Reason
+
+> Easier for the optimizer to find a good solution
+ ![](../../res/math_reason.png)
+
+- Example: Images Normalization
+```python
+R = (R - 128) / 128
+G = (G - 128) / 128
+B = (B - 128) / 128
+```
+- Weight Initialization
+找到好的weight和bias for the gradient descent to proceed
+
+> A simple, general method
+
+![](../../res/gauss_init.png)
+- 用均值为0，标准偏差的高斯分布产生随机的数据填充W矩阵
+![](../../res/train_loss_init.png)
+- 高斯分布模型也决定了初始输出(softmax输出)的概率分布
+- 高斯分布的sigma越小，说明预测越不确定，sigma的取值很主观
+- 我们的工作即是，选一个较小的sigma，让sigma变小到合适的值，使得预测更确定。
+
+- 优化
+![](../../res/normal_optimize.png)
+调整W和b，使得Train loss最小
+
 [下一节](practical.md)实践
 
 > 如果觉得我的文章对您有帮助，请随意打赏～

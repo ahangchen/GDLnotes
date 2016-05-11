@@ -1,2 +1,1 @@
 # Practical Aspects of Learning
-## 
