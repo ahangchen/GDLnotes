@@ -65,3 +65,8 @@
 
 - 然后用tarfile模块来解压刚刚下载的压缩包
 - 代码示例：[extract.py](../../src/assign_1/extract.py)
+
+- 用ndimage读取一部分图片，用pickle将读取到的对象（ndarray对象的list）序列化存储到磁盘
+- 用matplotlib.plot.imshow实现图片显示，可以展示任意的numpy.ndarray，详见show_imgs(dataset)
+- 这里展示的是二值化图片，可以设置显示为灰度图
+- 代码示例：[img_pickle.py](../../src/assign_1/img_pickle.py)
