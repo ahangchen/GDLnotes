@@ -76,7 +76,6 @@ def show_imgs(imgs, show_max=-1):
         # they are binary images, if RGBs, don't add cmap="Graeys"
         plt.imshow(imgs[image_index], cmap="Greys")
         plt.show()
-        # plt.draw()
 
 
 def load_pickle(pickle_name):

@@ -6,18 +6,19 @@
 常用方法：
 
 - 生成数据：
-  - arange
-  - ones_like
-  - random模块
+  - arange： 生成一定范围内的数据
+  - ones_like：生成与参数维度相同的数据
+  - random模块：随机相关
+    - np.random.shuffle：给一个ndarray做洗牌
 
 - 数学计算：
-  - exp
-  - sum
+  - exp：自然指数
+  - sum：求和
   
 - 数据修改：
-  - delete
+  - delete：从一个列表中删除
 - 数据格式化：
-  - vstack
+  - vstack：转为纵向向量
 
   
 

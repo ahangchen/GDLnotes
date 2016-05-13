@@ -58,7 +58,8 @@
 
 修改的[MNIST](http://yann.lecun.com/exdb/mnist/)，不够干净，更接近真实数据，比MNIST任务更困难。
 
-我将官方教程的一个文件拆成了多个，然后在[schedule.py](../../src/assign_1/schedule.py)里统一调用，在各个文件里可以执行各个部分的功能测试。
+## Todo
+我将官方教程的一个文件拆成了多个（以文件持久化为边界），然后在[schedule.py](../../src/assign_1/schedule.py)里统一调用，在各个文件里可以执行各个部分的功能测试。
 
 - 首先使用urlretrieve来获取数据集notMNIST_large.tar.gz和notMNIST_small.tar.gz
 - 代码示例：[load_data.py](../../src/assign_1/load_data.py)
@@ -70,3 +71,16 @@
 - 用matplotlib.plot.imshow实现图片显示，可以展示任意的numpy.ndarray，详见show_imgs(dataset)
 - 这里展示的是二值化图片，可以设置显示为灰度图
 - 代码示例：[img_pickle.py](../../src/assign_1/img_pickle.py)
+
+- 用pickle读取pickle文件，
+- 从train_folder中为10个class分别获取10000个valid_dataset和20000个train_dataset，
+- 其中对每个class读取到的数据，用random.shuffle将数据乱序化
+- 将各个class及其对应的label序列化到磁盘，分别为训练器和校验集
+- 从test_folder中为10个class分别获取10000个test_dataset,
+- 其中对每个class读取到的数据，用random.shuffle将数据乱序化
+- 将各个class及其对应的label序列化到磁盘，作为测试集
+- 代码示例merge_prune.py
+
+- 去除重复数据
+
+- 训练一个logistics 模型
