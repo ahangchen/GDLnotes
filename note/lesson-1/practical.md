@@ -81,6 +81,23 @@
 - 将各个class及其对应的label序列化到磁盘，作为测试集
 - 代码示例merge_prune.py
 
-- 去除重复数据
+- 去除重复数据 （[clean_overlap.py](../../src/assign_1/clean_overlap.py)）
+    - load_pickle，加载dataset
+    - 先将valid_dataset中与test_dataset重复部分剔除，再将train_dataset中与valid_dataset重复部分剔除
+    - 每个dataset都是一个二维浮点数组的list，也可以理解为三维浮点数组，
+    - 比较list中的每个图，也就是将list1中每个二维浮点数组与list2中每个二维浮点数组比较
+    - 示例代码即为[clean_overlap.py](../../src/assign_1/clean_overlap.py)中的imgs_idx_except
+    
+    - 我们在拿list1中的一个元素跟list2中的一个元素比较时，总共需要比较len(list1) * len(list2) * image_size * image_size次，速度极慢
+    - 实际上这是有重复的计算的，就在于，list2中的每个元素，都被遍历了len(list1)次
+    - 因此有这样的一个优化，我们遍历每个图，用图中的灰度值，仿照BKDRHash，得到每个图都不同的hash值，比较hash值来比较图像
+    - 示例代码即为[clean_overlap.py](../../src/assign_1/clean_overlap.py)中的imgs_idx_hash_except
+    
+    - 这样每个图都只需要访问一次，计算hash的时间变为(len(list1) + len(list2)) * image_size * image_size
+    - 比较的次数是len(list1) * len(list2)
+    - 由于我们的数据中，list1和list2的长度是大数，所以节省的时间是相当可观的
+    - 在我的机器上，比较完valid_dataset和test_dataset需要的时间分别是25000秒（10000次比较，每次2-3秒）和60秒
+    
+    - 然后再将清理后的数据序列化到磁盘即可
 
 - 训练一个logistics 模型
