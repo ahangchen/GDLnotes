@@ -1,7 +1,8 @@
 import cPickle as pickle
 import os
+import numpy as np
 
-from src.assign_1.img_pickle import load_pickle
+from src.assign_1.img_pickle import load_pickle, pick_obj
 
 image_size = 28  # Pixel width and height.
 
@@ -74,16 +75,14 @@ def imgs_idx_except(left, right):
 
 def imgs_idx_hash_except(left, right):
     except_idxs = []
-    imgs = []
     right_hashes = [img_hash(img) for img in right]
     print len(right_hashes)
     for i in range(len(left)):
         if img_hash(left[i]) in right_hashes:
             print('compare left[%d] to right found the same' % i)
             except_idxs.append(i)
-        else:
-            imgs.append(left[i])
-    return except_idxs, imgs
+    res = np.delete(left, except_idxs, axis=0)
+    return except_idxs, res
 
 
 def list_except(objs, idxs):
@@ -100,39 +99,36 @@ def clean():
     test_labels = datasets['test_labels']
     print('test_dataset:%d' % len(test_dataset))
     print('test_labels:%d' % len(test_labels))
+
     except_valid_idx, valid_dataset = imgs_idx_hash_except(datasets['valid_dataset'], test_dataset)
-    valid_labels = list_except(datasets['valid_labels'], except_valid_idx)
+    valid_labels = np.delete(datasets['valid_labels'], except_valid_idx)
     print('valid_dataset:%d' % len(valid_dataset))
     print('valid_labels:%d' % len(valid_labels))
+
+    # except with valid_dataset
     except_train_idx, train_dataset = imgs_idx_hash_except(datasets['train_dataset'], valid_dataset)
-    train_labels = list_except(datasets['train_labels'], except_valid_idx)
+    train_labels = np.delete(datasets['train_labels'], except_train_idx)
+    # except with test_dataset
+    except_train_idx, train_dataset = imgs_idx_hash_except(train_dataset, test_dataset)
+    train_labels = np.delete(train_labels, except_train_idx)
+
     print('train_dataset:%d' % len(train_dataset))
     print('train_labels:%d' % len(train_labels))
-
     print('valid_dataset:%d' % len(valid_dataset))
     print('valid_labels:%d' % len(valid_labels))
     print('test_dataset:%d' % len(test_dataset))
     print('test_labels:%d' % len(test_labels))
 
     pickle_file = 'notMNIST_clean.pickle'
-
-    try:
-        f = open(pickle_file, 'wb')
-        save = {
-            'train_dataset': train_dataset,
-            'train_labels': train_labels,
-            'valid_dataset': valid_dataset,
-            'valid_labels': valid_labels,
-            'test_dataset': test_dataset,
-            'test_labels': test_labels,
-        }
-        pickle.dump(save, f, pickle.HIGHEST_PROTOCOL)
-        f.close()
-    except Exception as e:
-        print('Unable to save data to', pickle_file, ':', e)
-        raise
-    statinfo = os.stat(pickle_file)
-    print('Compressed pickle size:', statinfo.st_size)
+    save = {
+        'train_dataset': train_dataset,
+        'train_labels': train_labels,
+        'valid_dataset': valid_dataset,
+        'valid_labels': valid_labels,
+        'test_dataset': test_dataset,
+        'test_labels': test_labels,
+    }
+    pick_obj(pickle_file, save)
 
 
 if __name__ == '__main__':
