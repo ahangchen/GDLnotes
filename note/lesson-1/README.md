@@ -18,7 +18,8 @@
   - Rank：从各种链接中找到与某个关键词相关的一类链接
 
 
-- [Logistic Classification](logistic_classify.md)
+- [Logistic Classification](logistic_classify.md
+- [Logistic Classification实践](note/lesson-1/practical.md))
     
 
 - Stochastic Optimization
