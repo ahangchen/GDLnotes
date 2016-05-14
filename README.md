@@ -1,6 +1,6 @@
 # Google Deep Learning Notes
 
-- Google 深度学习笔记
+> Google 深度学习笔记
 
 > Github工程地址：https://github.com/ahangchen/GDLnotes
 
@@ -9,6 +9,8 @@
 > 官方教程[地址](https://classroom.udacity.com/courses/ud730/lessons/6370362152/concepts/63798118170923)
 
 > [视频](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Videos.zip)/[字幕](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Subtitles.zip)下载
+
+> 最近tensorflow团队出了一个[model项目](https://github.com/tensorflow/models)，和这个课程无关，但是可以参考
     
 
 框架： TensorFlow
