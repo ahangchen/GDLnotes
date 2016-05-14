@@ -82,6 +82,18 @@ def load_pickle(pickle_name):
     # load a pickle file to memory
     return pickle.load(open(pickle_name, "r"))
 
+
+def pick_obj(pickle_file, obj):
+    try:
+        f = open(pickle_file, 'wb')
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+        f.close()
+    except Exception as e:
+        print('Unable to save data to', pickle_file, ':', e)
+        raise
+    statinfo = os.stat(pickle_file)
+    print('Compressed pickle size:', statinfo.st_size)
+
 if __name__ == '__main__':
     train_folders = ['notMNIST_large/A', 'notMNIST_large/B', 'notMNIST_large/C', 'notMNIST_large/D', 'notMNIST_large/E',
                      'notMNIST_large/F', 'notMNIST_large/G', 'notMNIST_large/H', 'notMNIST_large/I', 'notMNIST_large/J']
