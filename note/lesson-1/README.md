@@ -19,7 +19,7 @@
 
 
 - [Logistic Classification](logistic_classify.md)
-- [Logistic Classification实践](note/lesson-1/practical.md)
+- [Logistic Classification实践](practical.md)
     
 
 - Stochastic Optimization
