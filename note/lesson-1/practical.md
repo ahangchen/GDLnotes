@@ -64,12 +64,12 @@
 - 下载
   - 使用urlretrieve来获取数据集notMNIST_large.tar.gz和notMNIST_small.tar.gz
 
-> 代码示例：[load_data.py](../../src/assign_1/load_data.py)
+  > 代码示例：[load_data.py](../../src/assign_1/load_data.py)
 
 - 解压
   - 使用tarfile模块来解压刚刚下载的压缩包
 
-> 代码示例：[extract.py](../../src/assign_1/extract.py)
+  > 代码示例：[extract.py](../../src/assign_1/extract.py)
 
 - 读图 - 展示 - 序列化
   - 用ndimage读取一部分图片，用pickle将读取到的对象（ndarray对象的list）序列化存储到磁盘
@@ -77,7 +77,7 @@
   - 这里展示的是二值化图片，可以设置显示为灰度图
   - 将每个class对应的图像数据集序列化到磁盘
 
-> 代码示例：[img_pickle.py](../../src/assign_1/img_pickle.py)
+  > 代码示例：[img_pickle.py](../../src/assign_1/img_pickle.py)
 
 - 整理数据集
   - 用pickle读取pickle文件，
@@ -88,7 +88,7 @@
   - 其中对每个class读取到的数据，用random.shuffle将数据乱序化
   - 将各个class及其对应的label序列化到磁盘，作为测试集
 
-> 代码示例merge_prune.py
+  > 代码示例merge_prune.py
 
 - 去除重复数据 
     - load_pickle，加载dataset
@@ -109,8 +109,8 @@
     
     - 然后再将清理后的数据序列化到磁盘即可
 
-> 代码示例： [clean_overlap.py](../../src/assign_1/clean_overlap.py)
+  > 代码示例： [clean_overlap.py](../../src/assign_1/clean_overlap.py)
 
 - 训练一个logistics 模型
 
-> 代码示例： [clean_overlap.py](../../src/assign_1/logistic_train.py)
+  > 代码示例： [clean_overlap.py](../../src/assign_1/logistic_train.py)
