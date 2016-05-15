@@ -121,8 +121,32 @@
   > 代码示例： [clean_overlap.py](../../src/assign_1/clean_overlap.py)
 
 - 训练一个logistics 模型
-
+  - 将train_dataset作为输入，用valid_dataset进行验证（预测成功率82.5%）
+  - 为了重复利用训练后的分类器，将其序列化到磁盘
   > 代码示例： [clean_overlap.py](../../src/assign_1/logistic_train.py)
+ 
+- Measure Performance
+  - 分类器会尝试去记住训练集
+  - 遇到训练集中没有的数据时，分类器可能就没辙了
+  - 所以我们应该measure的是，分类器如何产生新数据（生成能力（推导能力）越大，说明它应对新数据能力越强）
+  - 仅measure分类器记忆数据集的能力并不能应对新数据（没有学到规律），所以不应该拿旧数据去measure
+  - 因此measure的方式应该是拿新数据去看分类器的预测准确度（never see, can't memorize）
+  
+  - 但是在measure的过程中，我们会根据测试数据去重新调整分类器，使其对所有测试数据都生效
+  - 也就是说测试数据变成了训练集的一部分，因此这部分数据我们只能作为valid_dataset，而不能用于衡量最后的performance
+  
+  - 解决方法之一即，最终进行performance measure的数据集，必须是调整分类器的过程中没有使用过的
+  
+  - 即坚持一个原则，测试数据不用于训练
+  
+  > 在机器学习比赛Kaggle中，有public data，validate data，并有用于测试（选手未知）的private data，只有在训练时自己的分类器时，预先取一部分数据作为test data，
+  才能不会在train和valid的过程中被已有数据所蒙蔽
+  
+- Validation dataset
+  - 验证集越大，验证的可信度越大
+  - 统计学上，调整分类器后，当30个以上预测结果的正确性发生变化的话，这种变化是可信的，值得注意的，小于30是噪音
+  - 因此Validation dataset通常数据要大于30000个，在准确率变化高于0.1%时，认为分类器的performance变化
+  - 但这样需要的数据往往偏多，所以可以尝试交叉验证（cross validation），交叉验证有个缺点是速度慢
 
 > 如果觉得我的文章对您有帮助，请随意打赏～
 
