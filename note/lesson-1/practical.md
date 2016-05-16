@@ -148,6 +148,4 @@
   - 因此Validation dataset通常数据要大于30000个，在准确率变化高于0.1%时，认为分类器的performance变化
   - 但这样需要的数据往往偏多，所以可以尝试交叉验证（cross validation），交叉验证有个缺点是速度慢
 
-> 如果觉得我的文章对您有帮助，请随意打赏～
-
-<img src="../../res/wxmoney.jpg" width = "400" height = "400" alt="图片名称" align=center />
+> 觉得得我的文章对您有帮助的话，就给个[star](https://github.com/ahangchen/GDLnotes)吧～

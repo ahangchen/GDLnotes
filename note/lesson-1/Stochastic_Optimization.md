@@ -51,6 +51,4 @@
     - 使得SGD对参数不像原来那样敏感
     - 自动调整效果不如原来的好，但仍然是一个option
  
-> 如果觉得我的文章对您有帮助，请随意打赏～
-
-<img src="../../res/wxmoney.jpg" width = "400" height = "400" alt="图片名称" align=center />
+> 觉得得我的文章对您有帮助的话，就给个[star](https://github.com/ahangchen/GDLnotes)吧～
