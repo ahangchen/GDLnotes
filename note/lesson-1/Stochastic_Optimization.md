@@ -13,4 +13,20 @@
   - 这样也就增加了调整的次数
   - 但可观地减小了计算量
 
-![](../../res/sdg.png)
+![](../../res/sgd.png)
+
+## SGD的优化
+
+> 实际上SDG会使得每次寻找的方向都不是很准，因此有了这些优化
+
+- 随机的初始值
+![](../../res/init_for_sdg.png)
+- Momentum
+
+> 考虑以前的平均调整方向来决定每一步的调整方向
+![](../../res/momentum1.jpg)
+![](../../res/momentum2.jpg)
+
+- Learning Rate Decay
+  - 训练越靠近目标，步长应该越小
+ 
