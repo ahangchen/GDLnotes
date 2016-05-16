@@ -123,6 +123,7 @@
 - 训练一个logistics 模型
   - 将train_dataset作为输入，用valid_dataset进行验证（预测成功率82.5%）
   - 为了重复利用训练后的分类器，将其序列化到磁盘
+  
   > 代码示例： [logistic_train.py](../../src/assign_1/logistic_train.py)
  
 - Measure Performance
