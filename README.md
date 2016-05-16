@@ -26,9 +26,9 @@
     - [Logistic Classification](note/lesson-1/logistic_classify.md)
     - [Logistic Classification实践](note/lesson-1/practical.md)
     - [Stochastic Optimization](note/lesson-1/Stochastic_Optimization.md)
-    - Data & Parameter tuning
     
     > general data practices to train models
+    
 - Lesson 2 [Deep Neural Network](note/lesson-2/README.md)
     - Deep Networks
     
