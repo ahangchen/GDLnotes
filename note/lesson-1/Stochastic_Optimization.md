@@ -17,7 +17,7 @@
 
 ## SGD的优化
 
-> 实际上SDG会使得每次寻找的方向都不是很准，因此有了这些优化
+> 实际上SGD会使得每次寻找的方向都不是很准，因此有了这些优化
 
 - 随机的初始值
 ![](../../res/init_for_sdg.png)
@@ -29,4 +29,13 @@
 
 - Learning Rate Decay
   - 训练越靠近目标，步长应该越小
+  
+- Parameter Hyperspace
+  - Learning Rate（即调整的step）不是越大越好，可能有瓶颈
+  - SGD有许多参数可以调整，所以被称为黑魔法
+  ![](../../res/SDG_param.png)
+  - AdaGurad
+    - 自动执行momentum和learning rate decay
+    - 使得SGD对参数不像原来那样敏感
+    - 自动调整效果不如原来的好，但仍然是一个option
  

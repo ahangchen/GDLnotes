@@ -20,9 +20,7 @@
 
 - [Logistic Classification](logistic_classify.md)
 - [Logistic Classification实践](practical.md)
-    
+- [Stochastic Optimization](Stochastic_Optimization.md)
 
-- Stochastic Optimization
-- Data & Parameter tuning
 
 > general data practices to train models
