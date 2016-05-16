@@ -29,10 +29,12 @@
 > 实际上SGD会使得每次寻找的方向都不是很准，因此有了这些优化
 
 - 随机的初始值
+
 ![](../../res/init_for_sdg.png)
 - Momentum
 
 > 考虑以前的平均调整方向来决定每一步的调整方向
+
 ![](../../res/momentum1.jpg)
 ![](../../res/momentum2.jpg)
 
@@ -42,6 +44,7 @@
 - Parameter Hyperspace
   - Learning Rate（即调整的step）不是越大越好，可能有瓶颈
   - SGD有许多参数可以调整，所以被称为黑魔法
+  
   ![](../../res/SDG_param.png)
   - AdaGurad
     - 自动执行momentum和learning rate decay
