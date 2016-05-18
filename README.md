@@ -48,6 +48,7 @@
 附录：
 - [NumPy笔记](note/numpy/README.md)（待完善）
 - [matplotlib笔记](note/matplotlib/README.md)（待完善）
+- [sklearn笔记](note/sklearn/README.md)（待完善）
 
 > 觉得得我的文章对您有帮助的话，就给个[star](https://github.com/ahangchen/GDLnotes)吧～
 
