@@ -1,6 +1,6 @@
-src/assign_1/notMNIST_large/
-src/assign_1/notMNIST_small/
-src/assign_1/notMNIST_large.tar.gz
-src/assign_1/notMNIST_small.tar.gz
+src/not_mnist/notMNIST_large/
+src/not_mnist/notMNIST_small/
+src/not_mnist/notMNIST_large.tar.gz
+src/not_mnist/notMNIST_small.tar.gz
 .idea/
 *.pickle

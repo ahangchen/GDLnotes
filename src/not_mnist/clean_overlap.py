@@ -2,7 +2,7 @@ import cPickle as pickle
 import os
 import numpy as np
 
-from src.assign_1.img_pickle import load_pickle, pick_obj
+from not_mnist.img_pickle import load_pickle, pick_obj
 
 image_size = 28  # Pixel width and height.
 

@@ -1,19 +1,13 @@
 from __future__ import print_function
 
-import matplotlib.pyplot as plt
-import numpy as np
 import os
-import sys
-import tarfile
-from IPython.display import display, Image
-from scipy import ndimage
-from sklearn.linear_model import LogisticRegression
+
+import numpy as np
 # from six.moves.urllib.request import urlretrieve
 # from six.moves import cPickle as pickle
-from urllib import urlretrieve
 import cPickle as pickle
 
-from src.assign_1.img_pickle import maybe_pickle
+from not_mnist.img_pickle import maybe_pickle
 
 image_size = 28  # Pixel width and height.
 

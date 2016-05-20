@@ -4,7 +4,7 @@ import os
 
 from sklearn.linear_model import LogisticRegression
 
-from src.assign_1.img_pickle import load_pickle, pick_obj
+from not_mnist.img_pickle import load_pickle, pick_obj
 
 
 def load_train():

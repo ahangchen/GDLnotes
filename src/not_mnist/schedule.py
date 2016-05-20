@@ -1,9 +1,9 @@
-from src.assign_1.extract import maybe_extract
-from src.assign_1.img_pickle import maybe_pickle
-from src.assign_1.load_data import maybe_download
-from src.assign_1.clean_overlap import clean
-from src.assign_1.logistic_train import load_train
-from src.assign_1.merge_prune import merge_datasets
+from not_mnist.clean_overlap import clean
+from not_mnist.extract import maybe_extract
+from not_mnist.img_pickle import maybe_pickle
+from not_mnist.load_data import maybe_download
+from not_mnist.logistic_train import load_train
+from not_mnist.merge_prune import merge_datasets
 
 train_filename = maybe_download('notMNIST_large.tar.gz', 247336696)
 test_filename = maybe_download('notMNIST_small.tar.gz', 8458043)
