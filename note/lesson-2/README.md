@@ -1,8 +1,7 @@
 # Deep Neural Network
 
-- Limit of Linear Model
-- Neural network
- 
+- [Limit of Linear Model](limit_linear.md)
+- [Neural network](neural_network.md)
 - Deep Networks
   - Turn logistic classifier to Deep Network
 
