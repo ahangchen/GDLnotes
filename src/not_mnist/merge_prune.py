@@ -7,7 +7,7 @@ import numpy as np
 # from six.moves import cPickle as pickle
 import cPickle as pickle
 
-from not_mnist.img_pickle import maybe_pickle
+from not_mnist.img_pickle import maybe_pickle, save_obj
 
 image_size = 28  # Pixel width and height.
 
@@ -55,11 +55,15 @@ def merge_datasets(pickle_files, train_size, valid_size=0):
 
     return valid_dataset, valid_labels, train_dataset, train_labels
 
-if __name__ == "__main__":
-    train_folders = ['notMNIST_large/A', 'notMNIST_large/B', 'notMNIST_large/C', 'notMNIST_large/D', 'notMNIST_large/E',
-                         'notMNIST_large/F', 'notMNIST_large/G', 'notMNIST_large/H', 'notMNIST_large/I', 'notMNIST_large/J']
-    test_folders = ['notMNIST_small/A', 'notMNIST_small/B', 'notMNIST_small/C', 'notMNIST_small/D', 'notMNIST_small/E',
-                    'notMNIST_small/F', 'notMNIST_small/G', 'notMNIST_small/H', 'notMNIST_small/I', 'notMNIST_small/J']
+
+def randomize(dataset, labels):
+    permutation = np.random.permutation(labels.shape[0])
+    shuffled_dataset = dataset[permutation, :, :]
+    shuffled_labels = labels[permutation]
+    return shuffled_dataset, shuffled_labels
+
+
+def merge_prune(train_floders, test_folders):
     train_datasets = maybe_pickle(train_folders, 45000)
     test_datasets = maybe_pickle(test_folders, 1800)
 
@@ -75,22 +79,25 @@ if __name__ == "__main__":
     print('Validation:', valid_dataset.shape, valid_labels.shape)
     print('Testing:', test_dataset.shape, test_labels.shape)
 
-    pickle_file = 'notMNIST.pickle'
+    train_dataset, train_labels = randomize(train_dataset, train_labels)
+    test_dataset, test_labels = randomize(test_dataset, test_labels)
+    valid_dataset, valid_labels = randomize(valid_dataset, valid_labels)
 
-    try:
-        f = open(pickle_file, 'wb')
-        save = {
-            'train_dataset': train_dataset,
-            'train_labels': train_labels,
-            'valid_dataset': valid_dataset,
-            'valid_labels': valid_labels,
-            'test_dataset': test_dataset,
-            'test_labels': test_labels,
-        }
-        pickle.dump(save, f, pickle.HIGHEST_PROTOCOL)
-        f.close()
-    except Exception as e:
-        print('Unable to save data to', pickle_file, ':', e)
-        raise
-    statinfo = os.stat(pickle_file)
-    print('Compressed pickle size:', statinfo.st_size)
+    pickle_file = 'notMNIST.pickle'
+    save = {
+        'train_dataset': train_dataset,
+        'train_labels': train_labels,
+        'valid_dataset': valid_dataset,
+        'valid_labels': valid_labels,
+        'test_dataset': test_dataset,
+        'test_labels': test_labels,
+    }
+    save_obj(pickle_file, save)
+
+
+if __name__ == "__main__":
+    train_folders = ['notMNIST_large/A', 'notMNIST_large/B', 'notMNIST_large/C', 'notMNIST_large/D', 'notMNIST_large/E',
+                     'notMNIST_large/F', 'notMNIST_large/G', 'notMNIST_large/H', 'notMNIST_large/I', 'notMNIST_large/J']
+    test_folders = ['notMNIST_small/A', 'notMNIST_small/B', 'notMNIST_small/C', 'notMNIST_small/D', 'notMNIST_small/E',
+                    'notMNIST_small/F', 'notMNIST_small/G', 'notMNIST_small/H', 'notMNIST_small/I', 'notMNIST_small/J']
+    merge_prune(train_folders, test_folders)

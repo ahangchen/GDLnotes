@@ -2,15 +2,8 @@
 
 - [Limit of Linear Model](limit_linear.md)
 - [Neural network](neural_network.md)
-- Deep Networks
-  - Turn logistic classifier to Deep Network
-
-  > just a few lines of code
-
-  - 优化器是怎么工作的
-  
-  > train your first deep network
-  
-- Regularization
-
-  > Train even lager models
+  - [神经网络实践](neural_practical.md)
+- 优化神经网络：[Deep Network](deep_network.md)
+  - 防止深度神经网络过拟合
+    - Regularization
+    - Dropout

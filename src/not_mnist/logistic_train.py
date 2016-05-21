@@ -4,7 +4,7 @@ import os
 
 from sklearn.linear_model import LogisticRegression
 
-from not_mnist.img_pickle import load_pickle, pick_obj
+from not_mnist.img_pickle import load_pickle, save_obj
 
 
 def load_train():
@@ -21,7 +21,7 @@ def load_train():
     else:
         classifier = LogisticRegression()
         classifier.fit(train_dataset.reshape(train_dataset.shape[0], -1), train_labels)
-        pick_obj(classifier_name, classifier)
+        save_obj(classifier_name, classifier)
 
     # simple valid
     valid_idx_s = 3000

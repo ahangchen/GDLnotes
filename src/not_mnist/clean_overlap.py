@@ -2,7 +2,7 @@ import cPickle as pickle
 import os
 import numpy as np
 
-from not_mnist.img_pickle import load_pickle, pick_obj
+from not_mnist.img_pickle import load_pickle, save_obj
 
 image_size = 28  # Pixel width and height.
 
@@ -128,7 +128,7 @@ def clean():
         'test_dataset': test_dataset,
         'test_labels': test_labels,
     }
-    pick_obj(pickle_file, save)
+    save_obj(pickle_file, save)
 
 
 if __name__ == '__main__':

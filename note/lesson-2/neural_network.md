@@ -15,3 +15,5 @@
  
   - 计算train_loss时，数据正向流入，计算梯度时，逆向计算
   - 计算梯度需要的内存和计算时间是计算train_loss的两倍
+  
+- 利用上面的知识，结合lesson1中的SGD，训练一个全连接神经网络：[神经网络实践](neural_practical.md)

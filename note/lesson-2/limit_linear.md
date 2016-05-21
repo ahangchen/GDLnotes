@@ -7,7 +7,7 @@
 - Linear Model不能应对非线性的问题
 ![](../../res/linear_are_linear.png)
 - Linear Model的好处
-  - GPU就是设计用于大矩阵相乘的，因此它们用来计算Linear Model非常efficient
+  - GPU就是设计用于大矩阵相乘的，因此它们用来计算Linear Model非常高效
   - Stable：input的微小改变不会很大地影响output
   ![](../../res/stable_linear.png)
   - 求导方便：线性求导是常数

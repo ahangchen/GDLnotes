@@ -79,7 +79,7 @@ def load_pickle(pickle_name):
     return pickle.load(open(pickle_name, "r"))
 
 
-def pick_obj(pickle_file, obj):
+def save_obj(pickle_file, obj):
     try:
         f = open(pickle_file, 'wb')
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)

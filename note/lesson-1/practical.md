@@ -31,8 +31,11 @@
 安装教程就在TensorFlow的github页上>>>[点击查看](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/g3doc/get_started/os_setup.md)
 
 按照官方的流程装就好了，这里讲一下几种方式的特点：
+
 1. pip: 安装在全局的python解释器中，简单
+
 2. Third party: Virtualenv, Anaconda and Docker：都能创建tensorflow独立的编译环境，但就是多了一份包
+
 3. Source: 能够适应不同的python版本（比如编译一个3.5版的），但源码编译可能有许多坑
 
 - ubuntu安装时，需要注意自己的python - pip - tensorflow版本是否对应（比如是否都是2.7），
@@ -56,7 +59,7 @@
   - 切换到tensorflow环境下（实际上是更换了环境变量里的pip和python），下载安装tensorflow，需要sudo权限
   ```
     $ source activate tensorflow
-    (tensorflow)$ sudo pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.8.0rc0-cp27-none-linux_x86_64.wh
+    (tensorflow)$ sudo pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.8.0rc0-cp27-none-linux_x86_64.whl
     $ source deactivate
   ```
   注意如果安装的是gpu版本，还需要按照官网说明安装cuda和cudaCNN
@@ -121,7 +124,7 @@
   > 代码示例： [clean_overlap.py](../../src/assign_1/clean_overlap.py)
 
 - 训练一个logistics 模型
-  - 将train_dataset作为输入，用valid_dataset进行验证（预测成功率82.5%）
+  - 将train_dataset作为输入，用valid_dataset进行验证（预测成功率81.9%）
   - 为了重复利用训练后的分类器，将其序列化到磁盘
   
   > 代码示例： [logistic_train.py](../../src/assign_1/logistic_train.py)
