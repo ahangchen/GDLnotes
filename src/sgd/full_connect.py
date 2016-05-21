@@ -1,7 +1,9 @@
 from __future__ import print_function
+
 import numpy as np
 import tensorflow as tf
-import cPickle as pickle
+
+from not_mnist.img_pickle import load_pickle
 
 
 def reformat(dataset, labels):
@@ -211,19 +213,17 @@ def tf_sgd_relu_nn():
 if __name__ == '__main__':
     # First reload the data we generated in 1_notmnist.ipynb.
     pickle_file = '../not_mnist/notMNIST.pickle'
-
-    with open(pickle_file, 'rb') as f:
-        save = pickle.load(f)
-        train_dataset = save['train_dataset']
-        train_labels = save['train_labels']
-        valid_dataset = save['valid_dataset']
-        valid_labels = save['valid_labels']
-        test_dataset = save['test_dataset']
-        test_labels = save['test_labels']
-        del save  # hint to help gc free up memory
-        print('Training set', train_dataset.shape, train_labels.shape)
-        print('Validation set', valid_dataset.shape, valid_labels.shape)
-        print('Test set', test_dataset.shape, test_labels.shape)
+    save = load_pickle(pickle_file)
+    train_dataset = save['train_dataset']
+    train_labels = save['train_labels']
+    valid_dataset = save['valid_dataset']
+    valid_labels = save['valid_labels']
+    test_dataset = save['test_dataset']
+    test_labels = save['test_labels']
+    del save  # hint to help gc free up memory
+    print('Training set', train_dataset.shape, train_labels.shape)
+    print('Validation set', valid_dataset.shape, valid_labels.shape)
+    print('Test set', test_dataset.shape, test_labels.shape)
 
     # Reformat into a shape that's more adapted to the models we're going to train:
     # data as a flat matrix,
