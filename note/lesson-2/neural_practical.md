@@ -107,4 +107,4 @@ def reformat(dataset, labels):
   hidden = tf.nn.relu(ys)
   logits = tf.matmul(hidden, weights2) + biases2
   ```
-  - 计算3000次，可以发现准确率提高得很快，最终测试准确率提高到88.8%
+  - 计算3000次，可以发现准确率一开始提高得很快，后面提高速度变缓，最终测试准确率提高到88.8%
