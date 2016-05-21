@@ -1,4 +1,5 @@
 # 全连接神经网络
+辅助阅读：[TensorFlow中文社区教程](http://www.tensorfly.cn/tfdoc/tutorials/mnist_tf.html) - [英文官方教程](https://www.tensorflow.org/versions/r0.8/tutorials/mnist/pros/index.html#train-the-model)
 - 加载lesson 1中的数据集
 - 将Data降维成一维，将label映射为one-hot encoding
 - 使用梯度计算train_loss，用tf.Graph()创建一个级逻辑回归计算单元
