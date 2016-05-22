@@ -30,6 +30,7 @@
 > Hyper parameter：拍脑袋参数→_→
 
   - l2模的导数容易计算，即W本身
+  
 ### DropOut
 最近才出现，效果极其好
 - 从一个layer到另一个layer的value被称为activation
