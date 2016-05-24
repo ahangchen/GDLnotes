@@ -19,7 +19,8 @@
 ### Early Termination
 - 当训练结果与验证集符合度下降时，就停止训练
 ![](../../res/early_termination.png)
-### Regulation
+
+### Regularization
 - 给神经网络里加一些常量，做一些限制，减少自由的参数
 - L2 regularization
 

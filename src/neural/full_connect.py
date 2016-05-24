@@ -6,7 +6,7 @@ import tensorflow as tf
 from not_mnist.img_pickle import load_pickle
 
 
-def reformat(dataset, labels):
+def reformat(dataset, labels, image_size, num_labels):
     dataset = dataset.reshape((-1, image_size * image_size)).astype(np.float32)
     # Map 0 to [1.0, 0.0, 0.0 ...], 1 to [0.0, 1.0, 0.0 ...]
     labels = (np.arange(num_labels) == labels[:, None]).astype(np.float32)
@@ -210,9 +210,8 @@ def tf_sgd_relu_nn():
         print("Test accuracy: %.1f%%" % accuracy(test_prediction.eval(), test_labels))
 
 
-if __name__ == '__main__':
-    # First reload the data we generated in 1_notmnist.ipynb.
-    pickle_file = '../not_mnist/notMNIST.pickle'
+def load_reformat_not_mnist(image_size, num_labels):
+    pickle_file = '../not_mnist/notMNIST_clean.pickle'
     save = load_pickle(pickle_file)
     train_dataset = save['train_dataset']
     train_labels = save['train_labels']
@@ -224,19 +223,21 @@ if __name__ == '__main__':
     print('Training set', train_dataset.shape, train_labels.shape)
     print('Validation set', valid_dataset.shape, valid_labels.shape)
     print('Test set', test_dataset.shape, test_labels.shape)
-
-    # Reformat into a shape that's more adapted to the models we're going to train:
-    # data as a flat matrix,
-    # labels as float 1-hot encodings.
-    image_size = 28
-    num_labels = 10
-
-    train_dataset, train_labels = reformat(train_dataset, train_labels)
-    valid_dataset, valid_labels = reformat(valid_dataset, valid_labels)
-    test_dataset, test_labels = reformat(test_dataset, test_labels)
+    train_dataset, train_labels = reformat(train_dataset, train_labels, image_size, num_labels)
+    valid_dataset, valid_labels = reformat(valid_dataset, valid_labels, image_size, num_labels)
+    test_dataset, test_labels = reformat(test_dataset, test_labels, image_size, num_labels)
     print('Training set', train_dataset.shape, train_labels.shape)
     print('Validation set', valid_dataset.shape, valid_labels.shape)
     print('Test set', test_dataset.shape, test_labels.shape)
+    return train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels
+
+if __name__ == '__main__':
+    # First reload the data we generated in 1_notmnist.ipynb.
+    image_size = 28
+    num_labels = 10
+    train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels = \
+        load_reformat_not_mnist(image_size, num_labels)
+
     # tf_logist()
     # tf_sgd()
     tf_sgd_relu_nn()

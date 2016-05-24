@@ -34,8 +34,7 @@ def reformat(dataset, labels):
   ```
   - 用tf.nn.softmax_cross_entropy_with_logits计算WX+b的结果相较于原来的label的train_loss，并求均值，train_loss只是一个变量而非结果
   ```python
-  loss = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
+  loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
   ```
   - 使用梯度找到最小train_loss
   ```python
