@@ -16,33 +16,20 @@ def reformat(dataset, labels):
 ### TensorFlow Graph
 - 使用梯度计算train_loss，用tf.Graph()创建一个计算单元
   - 用tf.constant将dataset和label转为tensorflow可用的训练格式（训练中不可修改）
-  ```python
-  tf_train_dataset = tf.constant(train_dataset[:train_subset, :])
-  ```
   - 用tf.truncated_normal生成正太分布的数据，作为W的初始值，初始化b为可变的0矩阵
-  ```python
-  tf.truncated_normal([image_size * image_size, num_labels])
-  ```
   - 用tf.variable将上面的矩阵转为tensorflow可用的训练格式（训练中可以修改）
-  ```python
-  biases = tf.Variable(tf.zeros([num_labels]))
-  ```
   - 用tf.matmul实现矩阵相乘，计算WX+b，这里实际上logit只是一个变量，而非结果
-  ```python
-  tf.matmul(tf_train_dataset, weights)
-  ```
-  - 用tf.nn.softmax_cross_entropy_with_logits计算WX+b的结果相较于原来的label的train_loss，并求均值，train_loss只是一个变量而非结果
-  ```python
-  loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
-  ```
+  - 用tf.nn.softmax_cross_entropy_with_logits计算WX+b的结果相较于原来的label的train_loss，并求均值
   - 使用梯度找到最小train_loss
   ```python
   optimizer = tf.train.GradientDescentOptimizer(0.5).minimize(loss)
   ```
   - 计算相对valid_dataset和test_dataset对应的label的train_loss
+  
+  > 上面这些变量都是一种Tensor的概念，它们是一个个的计算单元，我们在Graph中设置了这些计算单元，规定了它们的组合方式，就好像把一个个门电路串起来那样
 
 ### TensorFLow Session
-Session用来执行Graph里规定的计算
+Session用来执行Graph里规定的计算，就好像给一个个门电路通上电，我们在Session里，给计算单元冲上数据，That’s Flow.
 - 重复计算单元反复训练800次，提高其准确度
   - 为了快速查看训练效果，每轮训练只给10000个训练数据(subset)，恩，每次都是相同的训练数据
   - 将计算单元graph传给session
