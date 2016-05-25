@@ -140,7 +140,6 @@ def tf_deep_nn(regular=False, drop_out=False, lrd=False, layer_cnt=2):
         keep_prob = 0.5
         if drop_out:
             hidden_drop = tf.nn.dropout(hidden, keep_prob)
-            hidden_drop = hidden_drop
         # first wx+b for valid
         valid_y0 = tf.matmul(tf_valid_dataset, weights1) + biases1
         valid_hidden = tf.nn.relu(valid_y0)
@@ -148,43 +147,33 @@ def tf_deep_nn(regular=False, drop_out=False, lrd=False, layer_cnt=2):
         test_y0 = tf.matmul(tf_test_dataset, weights1) + biases1
         test_hidden = tf.nn.relu(test_y0)
 
-        # middle value for calculate
-        y0s = [y0]
-        y1s = []
-        hiddens = [hidden]
-        hidden_drops = [hidden_drop]
-        valid_y0s = [valid_y0]
-        valid_hiddens = [valid_hidden]
-        test_y0s = [test_y0]
-        test_hiddens = [test_hidden]
-
         # middle layer
         for i in range(layer_cnt - 2):
-            y1s.append(tf.matmul(hidden_drops[i], weights[i]) + biases[i])
-            hidden_drops.append(tf.nn.relu(y1s[i]))
+            y1 = tf.matmul(hidden_drop, weights[i]) + biases[i]
+            hidden_drop = tf.nn.relu(y1)
             if drop_out:
                 keep_prob += 0.5 * i / (layer_cnt + 1)
-                hidden_drops[i + 1] = tf.nn.dropout(hidden_drops[i + 1], keep_prob)
+                hidden_drop = tf.nn.dropout(hidden_drop, keep_prob)
 
-            y0s.append(tf.matmul(hiddens[i], weights[i]) + biases[i])
-            hiddens.append(tf.nn.relu(y0s[i + 1]))
+            y0 = tf.matmul(hidden, weights[i]) + biases[i]
+            hidden = tf.nn.relu(y0)
 
-            valid_y0s.append(tf.matmul(valid_hiddens[i], weights[i]) + biases[i])
-            valid_hiddens.append(tf.nn.relu(valid_y0s[i + 1]))
+            valid_y0 = tf.matmul(valid_hidden, weights[i]) + biases[i]
+            valid_hidden = tf.nn.relu(valid_y0)
 
-            test_y0s.append(tf.matmul(test_hiddens[i], weights[i]) + biases[i])
-            test_hiddens.append(tf.nn.relu(test_y0s[i + 1]))
+            test_y0 = tf.matmul(test_hidden, weights[i]) + biases[i]
+            test_hidden = tf.nn.relu(test_y0)
 
         # last weight
         weights2 = tf.Variable(tf.truncated_normal([hidden_cur_cnt, num_labels], stddev=hidden_stddev / 2))
         biases2 = tf.Variable(tf.zeros([num_labels]))
         # last wx + b
-        logits = tf.matmul(hidden_drops[layer_cnt - 2], weights2) + biases2
+        logits = tf.matmul(hidden_drop, weights2) + biases2
 
         # predicts
-        logits_predict = tf.matmul(hiddens[layer_cnt - 2], weights2) + biases2
-        valid_predict = tf.matmul(valid_hiddens[layer_cnt - 2], weights2) + biases2
-        test_predict = tf.matmul(test_hiddens[layer_cnt - 2], weights2) + biases2
+        logits_predict = tf.matmul(hidden, weights2) + biases2
+        valid_predict = tf.matmul(valid_hidden, weights2) + biases2
+        test_predict = tf.matmul(test_hidden, weights2) + biases2
 
         l2_loss = 0
         # enable regularization
@@ -224,7 +213,7 @@ def tf_deep_nn(regular=False, drop_out=False, lrd=False, layer_cnt=2):
             feed_dict = {tf_train_dataset: batch_data, tf_train_labels: batch_labels}
             _, l, predictions = session.run(
                 [optimizer, loss, train_prediction], feed_dict=feed_dict)
-            if step % 100 == 0:
+            if step % 500 == 0:
                 print("Minibatch loss at step %d: %f" % (step, l))
                 print("Minibatch accuracy: %.1f%%" % accuracy(predictions, batch_labels))
                 print("Validation accuracy: %.1f%%" % accuracy(
