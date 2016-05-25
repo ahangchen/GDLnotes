@@ -13,18 +13,17 @@ def reformat(dataset, labels):
     labels = (np.arange(num_labels) == labels[:, None]).astype(np.float32)
     return dataset, labels
 ```
-- 使用梯度计算train_loss，用tf.Graph()创建一个级逻辑回归计算单元
-
-  
+### TensorFlow Graph
+- 使用梯度计算train_loss，用tf.Graph()创建一个计算单元
   - 用tf.constant将dataset和label转为tensorflow可用的训练格式（训练中不可修改）
   ```python
   tf_train_dataset = tf.constant(train_dataset[:train_subset, :])
   ```
-  - 用tf.truncated_normal生成正太分布的数据，作为W的初始值，初始化b为0向量
+  - 用tf.truncated_normal生成正太分布的数据，作为W的初始值，初始化b为可变的0矩阵
   ```python
   tf.truncated_normal([image_size * image_size, num_labels])
   ```
-  - 用tf.variable将上面的矩阵和向量转为tensorflow可用的训练格式（训练中可以修改）
+  - 用tf.variable将上面的矩阵转为tensorflow可用的训练格式（训练中可以修改）
   ```python
   biases = tf.Variable(tf.zeros([num_labels]))
   ```
@@ -41,7 +40,9 @@ def reformat(dataset, labels):
   optimizer = tf.train.GradientDescentOptimizer(0.5).minimize(loss)
   ```
   - 计算相对valid_dataset和test_dataset对应的label的train_loss
-  
+
+### TensorFLow Session
+Session用来执行Graph里规定的计算
 - 重复计算单元反复训练800次，提高其准确度
   - 为了快速查看训练效果，每轮训练只给10000个训练数据(subset)，恩，每次都是相同的训练数据
   - 将计算单元graph传给session
@@ -63,7 +64,8 @@ def reformat(dataset, labels):
   
   > 这样训练的准确度为83.2%
   
-- 使用SGD，即每次只取一小部分数据做训练，计算loss时，也只取一小部分数据计算loss
+## SGD
+- 每次只取一小部分数据做训练，计算loss时，也只取一小部分数据计算loss
   - 对应到程序中，即修改计算单元中的训练数据，
     - 每次输入的训练数据只有128个，随机取起点，取连续128个数据：
   ```python
@@ -71,7 +73,7 @@ def reformat(dataset, labels):
   batch_data = train_dataset[offset:(offset + batch_size), :]
   batch_labels = train_labels[offset:(offset + batch_size), :]
   ```
-  - 由于这里的数据变化，因此用tf.placeholder来存放这块空间
+  - 由于这里的数据是会变化的，因此用tf.placeholder来存放这块空间
   ```python
   tf_train_dataset = tf.placeholder(tf.float32,
                                           shape=(batch_size, image_size * image_size))
@@ -79,8 +81,9 @@ def reformat(dataset, labels):
   ```
   - 计算3000次，训练总数据量为384000，比之前8000000少
   
-  > 准确率提高到86.5%
-  
+  > 准确率提高到86.5%，而且准确率随训练次数增加而提高的速度变快了
+
+## 神经网络 
 - 上面SGD的模型只有一层WX+b，现在使用一个RELU作为中间的隐藏层，连接两个WX+b
   - 仍然只需要修改Graph计算单元为
   ```python
