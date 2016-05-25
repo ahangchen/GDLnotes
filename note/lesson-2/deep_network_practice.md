@@ -65,11 +65,14 @@ if drop_out:
 
 ## Deep Network
 增加神经网络层数到4层，也就是共有3个RELU，增加训练次数到20000
-- 为了实现简单的次数控制，用数组存储中间层的变量
+- 为了避免修改网络层数需要重写代码，用循环实现中间层
 - 第一次测试时，用正太分布设置所有W的数值，将标准差设置为1，由于网络增加了一层，寻找step调整方向时具有更大的不确定性，很容易导致loss变得很大
-- 因此需要用stddev调整其标准差到一个较小的范围（恩，拍脑袋参数），防止梯度下降时的饱和
+- 因此需要用stddev调整其标准差到一个较小的范围（怎么调整有许多研究，这里直接找了一个来用）
+```python
+stddev = np.sqrt(2.0 / n)
+```
 - 启用regular时，也要适当调一下β，不要让它对原本的loss造成过大的影响
-- DropOut时，需要动态调整丢弃的比例，到后面的layer，丢弃的比例要减小
-- 训练时，调节参数，你可能遇到[消失（或爆炸）的梯度问题](http://wiki.jikexueyuan.com/project/neural-networks-and-deep-learning-zh-cn/chapter5.html)
-- 最好的训练结果是，准确率97.5%
+- DropOut时，因为后面的layer得到的信息越重要，需要动态调整丢弃的比例，到后面的layer，丢弃的比例要减小
+- 训练时，调节参数，你可能遇到[消失（或爆炸）的梯度问题](http://wiki.jikexueyuan.com/project/neural-networks-and-deep-learning-zh-cn/chapter5.html)，训练到一定程度后，梯度优化器没有什么作用，loss和准确率总是在一定范围内徘徊
+- 官方教程表示最好的训练结果是，准确率97.5%，我的[nn_overfit.py](../../src/nn_overfit.py)中最好的训练结果是，准确率95.3%
 
