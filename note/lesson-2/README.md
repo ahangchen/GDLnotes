@@ -7,3 +7,4 @@
   - 防止深度神经网络过拟合
     - Regularization
     - Dropout
+  - [深度神经网络实践](deep_network_practice.md)

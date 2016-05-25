@@ -30,13 +30,17 @@
     > general data practices to train models
     
 - Lesson 2 [Deep Neural Network](note/lesson-2/README.md)
-    - Deep Networks
+    - [Limit of Linear Model](limit_linear.md)
+    - [Neural network](neural_network.md)
+      - [神经网络实践](neural_practical.md)
+    - 优化神经网络：[Deep Network](deep_network.md)
+      - 防止深度神经网络过拟合
+        - Regularization
+        - Dropout
+    - [深度神经网络实践](deep_network_practice.md)
     
-    > train your first deep network
+    > train your first deep network; Train even bigger models; 
     
-    - Regularization
-    
-    > Train even bigger models
 - Lesson 3 [Convolutional Networks](note/lesson-3/README.md)
 
     > deep dive into images and convolutional models
