@@ -1,5 +1,5 @@
 # 深度神经网络实践
-代码见(../../src/neural/nn_overfit.py)
+代码见[nn_overfit.py](../../src/neural/nn_overfit.py)
 ## 优化
 ### Regularization
 在前面实现的[RELU连接的两层神经网络](../../src/neural/full_connect.py)中，加Regularization进行约束，采用加l2 norm的方法，进行负反馈：
