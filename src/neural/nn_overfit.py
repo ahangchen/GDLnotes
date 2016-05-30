@@ -1,10 +1,9 @@
 from __future__ import print_function
 
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
 
 from neural.full_connect import load_reformat_not_mnist, accuracy
-from not_mnist.img_pickle import save_obj, load_pickle
 
 
 def tf_better_nn(offset_range=-1, regular=False, drop_out=False, lrd=False):
