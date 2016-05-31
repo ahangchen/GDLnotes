@@ -102,8 +102,8 @@ for i in range(layer_cnt - 2):
 ```python
 keep_prob += 0.5 * i / (layer_cnt + 1)
 ```
-- 训练时，调节参数，你可能遇到[消失（或爆炸）的梯度问题](http://wiki.jikexueyuan.com/project/neural-networks-and-deep-learning-zh-cn/chapter5.html)，
-训练到一定程度后，梯度优化器没有什么作用，loss和准确率总是在一定范围内徘徊
+- 训练时，调节参数，你可能遇到[消失的梯度问题](http://wiki.jikexueyuan.com/project/neural-networks-and-deep-learning-zh-cn/chapter5.html)，
+对于一个幅度为1的信号，在BP反向传播梯度时，每隔一层下降0.25，指数下降使得后面的层级根本接收不到有效的训练信号
 - 官方教程表示最好的训练结果是，准确率97.5%，
 - 我的[nn_overfit.py](../../src/neural/nn_overfit.py)开启六层神经网络，
 启用Regularization、DropOut、Learning Rate Decay， 
