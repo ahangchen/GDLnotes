@@ -2,10 +2,6 @@
 
 > deep dive into images and convolutional models
 
-如果我们在训练前能提供一些信息，训练会更有效，
-
-> 比如排除不必要的信息，或者指明关键信息
-
 ## Convnet
 ### BackGround 
 - 人眼在识别图像时，往往从局部到全局
@@ -70,4 +66,7 @@
 ![](../../res/inception.png)
 
 ## [卷积神经网络实践](practice.md)
-参考链接：张雨石 [Conv神经网络](http://blog.csdn.net/stdcoutzyx/article/details/41596663)
+
+## 参考链接
+- 张雨石 [Conv神经网络](http://blog.csdn.net/stdcoutzyx/article/details/41596663)
+- Bill Xia [卷积神经网络（CNN）](http://ibillxia.github.io/blog/2013/04/06/Convolutional-Neural-Networks/)
