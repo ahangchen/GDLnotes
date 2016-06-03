@@ -45,6 +45,8 @@
 
     > deep dive into images and convolutional models
     
+    - [卷积神经网络实践](note/lesson-3/practice.md)
+    
 - Lessson 4 [Deep Models for Text and Sequence](note/lesson-4/README.md)
     - Embeddings 
     - Recurrent Models
