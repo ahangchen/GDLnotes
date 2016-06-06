@@ -3,6 +3,7 @@
 > deep dive into images and convolutional models
 
 ## Convnet
+
 ### BackGround 
 - 人眼在识别图像时，往往从局部到全局
 - 局部与局部之间联系往往不太紧密
@@ -18,6 +19,7 @@
 
 - 可以增加切片个数提取更多特征
 - 在这个过程中，梯度的计算跟之前是一样的
+
 ### Concept
 ![](../../res/conv_concept.png)
 - Patch/Kernel：一个局部切片

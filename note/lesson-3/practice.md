@@ -11,6 +11,7 @@ def reformat(dataset, labels, image_size, num_labels, num_channels):
 - 将lesson2的dnn转为cnn很简单，只要把WX+b改为conv2d(X)+b即可
 - 关键在于conv2d
 - - - 
+
 ### `tf.nn.conv2d(input, filter, strides, padding, use_cudnn_on_gpu=None, data_format=None, name=None)` {#conv2d}
 
 给定四维的`input`和`filter` tensor，计算一个二维卷积
@@ -84,6 +85,7 @@ Performs the max pooling on the input.
 
 ## 优化
 仿照lesson2，添加learning rate decay 和 drop out，可以将准确率提高到90.6%
+
 ## 参考链接
 - [Tensorflow 中 conv2d 都干了啥](http://stackoverflow.com/questions/34619177/what-does-tf-nn-conv2d-do-in-tensorflow)
 - [TensorFlow Example](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/examples/3_NeuralNetworks/convolutional_network.py)
