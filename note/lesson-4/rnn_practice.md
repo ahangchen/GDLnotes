@@ -26,7 +26,7 @@ embeddings = tf.Variable(
 embed = tf.nn.embedding_lookup(embeddings, train_dataset)
 ```
 
-- 调用tf.nn.embedding_lookup，构造与训练数据对应的向量
+- 调用tf.nn.embedding_lookup，索引与train_dataset对应的向量，相当于用train_dataset作为一个id，去检索矩阵中与这个id对应的embedding
 
 ```python
 loss = tf.reduce_mean(
@@ -40,7 +40,7 @@ loss = tf.reduce_mean(
 optimizer = tf.train.AdagradOptimizer(1.0).minimize(loss)
 ```
 
-- 自适应梯度调节器，调节参数
+- 自适应梯度调节器，调节embedding列表的数据，使得偏差最小
 
 - 预测，并用cos值计算预测向量与实际数据的夹角作为预测准确度（相似度）指标
 
@@ -52,6 +52,10 @@ data_index = (data_index + 1) % len(data)
 ```
 
 - 依旧是每次取一部分随机数据传入
+  - 等距离截取一小段文本
+  - 构造训练集：每个截取窗口的中间位置作为一个train_data
+  - 构造标签：每个截取窗口中，除了train_data之外的部分，随机取几个作为label
+  - 这样就形成了根据目标词汇预测上下文的机制，即Skip-gram
 - 训练100001次，每2000次输出这两千次的平均损失
 - 每10000次计算相似度，并输出与验证集中的词最接近的词汇列表
 - 用tSNE降维呈现词汇接近程度
