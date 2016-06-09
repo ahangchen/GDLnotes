@@ -48,8 +48,32 @@
     - [卷积神经网络实践](note/lesson-3/practice.md)
     
 - Lessson 4 [Deep Models for Text and Sequence](note/lesson-4/README.md)
-    - Embeddings 
-    - Recurrent Models
+  
+> Deep Models for Text and Sequence
+  
+  - Challenge
+    - Rare Event
+    - 语法多义性
+    - 无监督学习
+  - Model
+    - Embeddings
+    - Word2Vec
+    - Comparing embeddings
+    -  Predict Words
+    - t-SNE
+    - 类比
+  - Sequence
+    - CNN and RNN
+    - RNN Derivatives
+    - Clip Gradient
+    - LSTM（Long Short-Term Memory）
+    - Memory Cell
+    - LSTM Regularization
+    - Beam Search
+    - 翻译与识图
+
+
+  - [循环神经网络实践](note/lesson-4/rnn_practice.md)
     
 附录：
 - [NumPy笔记](note/numpy/README.md)（待完善）
