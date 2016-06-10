@@ -76,7 +76,9 @@ def show_imgs(imgs, show_max=-1):
 
 def load_pickle(pickle_name):
     # load a pickle file to memory
-    return pickle.load(open(pickle_name, "r"))
+    if os.path.exists(pickle_name):
+        return pickle.load(open(pickle_name, "r"))
+    return None
 
 
 def save_obj(pickle_file, obj):

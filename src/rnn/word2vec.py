@@ -73,6 +73,7 @@ words = read_data(filename)
 print('Data size %d' % len(words))
 
 vocabulary_size = 50000
+context_size = 1
 
 data, count, dictionary, reverse_dictionary = build_dataset(words)
 print('Most common words (+UNK)', count[:5])
