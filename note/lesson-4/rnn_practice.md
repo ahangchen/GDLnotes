@@ -85,7 +85,7 @@ embed_sum = tf.reduce_sum(embed, 0)
 - 训练中依旧是调节embeding的参数来优化loss
 - 训练结果如下图，可以看到不同单词的接近程度
 
-![](../../res/cbow.png)
+![](../../res/cbow_res.png)
 
 
 
