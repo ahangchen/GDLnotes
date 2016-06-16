@@ -45,7 +45,7 @@ def generate_batch(batch_size, num_skips, skip_window):
     assert num_skips <= 2 * skip_window
     context_size = 2 * skip_window
     labels = np.ndarray(shape=(batch_size, 1), dtype=np.int32)
-    batchs = np.ndarray(shape=(batch_size, context_size), dtype=np.int32)
+    batchs = np.ndarray(shape=(context_size, batch_size), dtype=np.int32)
     span = 2 * skip_window + 1  # [ skip_window target skip_window ]
     buffer = collections.deque(maxlen=span)
     for _ in range(span):
@@ -62,12 +62,14 @@ def generate_batch(batch_size, num_skips, skip_window):
                 if bj == target:
                     met_target = True
                 if met_target:
-                    batchs[i * num_skips + j, bj] = buffer[bj + 1]
+                    batchs[bj, i * num_skips + j] = buffer[bj + 1]
                 else:
-                    batchs[i * num_skips + j, bj] = buffer[bj]
+                    batchs[bj, i * num_skips + j] = buffer[bj]
 
         buffer.append(data[data_index])
         data_index = (data_index + 1) % len(data)
+    # print('generate batch')
+    # print(batchs)
     return batchs, labels
 
 
@@ -126,7 +128,7 @@ with graph.as_default(), tf.device('/cpu:0'):
     # Input data.
     train_dataset = tf.placeholder(tf.int32, shape=[2 * skip_window, batch_size])
     train_labels = tf.placeholder(tf.int32, shape=[batch_size, 1])
-    valid_dataset = tf.constant(valid_examples, dtype=tf.int32)
+    valid_dataset = tf.constant(valid_examples, shape=[2 * skip_window, batch_size], dtype=tf.int32)
 
     # Variables.
     embeddings = tf.Variable(
@@ -139,13 +141,8 @@ with graph.as_default(), tf.device('/cpu:0'):
     # Model.
     # Look up embeddings for inputs.
     embed = tf.nn.embedding_lookup(embeddings, train_dataset)
-    # embed_sum = tf.segment_sum(embed, tf.constant([0, 1]))
+    # sum up vectors on first dimensions, as context vectors
     embed_sum = tf.reduce_sum(embed, 0)
-    # sum as context
-    # context = np.sum(embed, axis=1)
-    # context = embed[0]
-    # for i in range(1, len(embed)):
-    #     context += embed[i]
 
     # Compute the softmax loss, using a sample of the negative labels each time.
     loss = tf.reduce_mean(
@@ -162,6 +159,7 @@ with graph.as_default(), tf.device('/cpu:0'):
     normalized_embeddings = embeddings / norm
     valid_embeddings = tf.nn.embedding_lookup(
         normalized_embeddings, valid_dataset)
+    # sum up vectors
     valid_embeddings_sum = tf.reduce_sum(valid_embeddings, 0)
     similarity = tf.matmul(valid_embeddings_sum, tf.transpose(normalized_embeddings))
 
@@ -175,8 +173,8 @@ with tf.Session(graph=graph) as session:
     for step in range(num_steps):
         batch_data, batch_labels = generate_batch(
             batch_size, num_skips, skip_window)
-        print(batch_data.shape)
-        print(batch_labels.shape)
+        # print(batch_data.shape)
+        # print(batch_labels.shape)
         feed_dict = {train_dataset: batch_data, train_labels: batch_labels}
         _, l = session.run([optimizer, loss], feed_dict=feed_dict)
         average_loss += l
