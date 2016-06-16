@@ -73,6 +73,20 @@ data_index = (data_index + 1) % len(data)
   - 构造训练集：每个截取窗口中，除了train_label之外的部分，随机取几个成为一个list，作为train_data（这里只随机取了一个）
   - 这样就形成了根据上下文预测目标词汇的机制，即CBOW
 
+- 分别从embeding里找到train_data里每个word对应的vector，用tf.reduce_sum将其相加，将相加结果与train_label比较
+
+```python
+# Look up embeddings for inputs.
+embed = tf.nn.embedding_lookup(embeddings, train_dataset)
+# sum up vectors on first dimensions, as context vectors
+embed_sum = tf.reduce_sum(embed, 0)
+```
+
+- 训练中依旧是调节embeding的参数来优化loss
+- 训练结果如下图，可以看到不同单词的接近程度
+
+![](../../res/cbow.png)
+
 
 
 ## 参考链接
