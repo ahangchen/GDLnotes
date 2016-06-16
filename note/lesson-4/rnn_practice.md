@@ -70,7 +70,7 @@ data_index = (data_index + 1) % len(data)
 
 - 修改截取数据的方式
   - 构造标签：每个截取窗口的中间位置作为一个train_label
-  - 构造训练集：每个截取窗口中，除了train_label之外的部分，随机取几个成为一个list，作为train_data（这里只随机取了一个）
+  - 构造训练集：每个截取窗口中，除了train_label之外的部分，作为train_data（这里只随机取了一个）
   - 这样就形成了根据上下文预测目标词汇的机制，即CBOW
 
 
