@@ -87,6 +87,9 @@ embed_sum = tf.reduce_sum(embed, 0)
 
 ![](../../res/cbow_res.png)
 
+代码见：
+[cbow.py](../../src/rnn/cbow.py)
+
 
 
 ## 参考链接
