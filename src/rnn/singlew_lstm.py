@@ -81,6 +81,9 @@ class BatchGenerator(object):
 
     def _next_batch(self):
         """Generate a single batch from the current cursor position in the data."""
+        # take character from text on cursor[b]
+        # set to 1 for the taken character
+        # so we have a matrix of 1/0 as input, an one hot encoding
         batch = np.zeros(shape=(self._batch_size, vocabulary_size), dtype=np.float)
         for b in range(self._batch_size):
             # same id, same index of second dimension
