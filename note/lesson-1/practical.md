@@ -151,5 +151,6 @@
   - 统计学上，调整分类器后，当30个以上预测结果的正确性发生变化的话，这种变化是可信的，值得注意的，小于30是噪音
   - 因此Validation dataset通常数据要大于30000个，在准确率变化高于0.1%时，认为分类器的performance变化
   - 但这样需要的数据往往偏多，所以可以尝试交叉验证（cross validation），交叉验证有个缺点是速度慢
+  - 验证时，使用tensor.eval(input)，相当于tf.get_default_session().run(tensor)
 
 > 觉得得我的文章对您有帮助的话，就给个[star](https://github.com/ahangchen/GDLnotes)吧～
