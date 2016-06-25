@@ -14,6 +14,7 @@
 - 数学计算：
   - exp：自然指数
   - sum：求和
+  - [numpy.linalg.norm](http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html)：求模
   
 - 数据修改：
   - delete：从一个列表中删除
