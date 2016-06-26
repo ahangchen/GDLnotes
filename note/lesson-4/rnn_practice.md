@@ -90,7 +90,94 @@ embed_sum = tf.reduce_sum(embed, 0)
 代码见：
 [cbow.py](../../src/rnn/cbow.py)
 
+## RNN 造句
+整体思路是，以一个文本中的一个词作为train data，后续的所有词作为train label，从而能够根据一个给定词，预测后续的片段。
 
+### 训练数据
+- BatchGenerator
+ - text: 全部的文本数据
+ - text_size：全部文本的字符串长度
+ - batch_size：每段训练数据的大小
+ - num_unrollings：要生成的训练数据段的数目
+ - segment：整个训练数据集可以分成几个训练数据片段
+ - cursor：重要，
+   - 一开始记录每个训练数据片段的起始位置坐标，即这个片段位于text的哪个index
+   - 执行next_batch生成一个训练数据的时候，游标会从初始位置自增，直到取够batch_size个数据
+ - last_batch：上一个训练数据片段
+ - 每调用一次next，生成一个num_unrollings长的array，以last_batch开头，跟着num_unrollings个batch
+ - 每个batch的作为train_input，每个batch后面的一个batch作为train_label，每个step训练num_unrolling个batch
+ 
+
+### lstm-cell
+- 为了解决消失的梯度问题，引入lstm-cell，增强model的记忆能力
+- 根据这篇论文设计lstm-cell: http://arxiv.org/pdf/1402.1128v1.pdf
+- 分别有三个门：输入门，遗忘门，输出门，构成一个cell
+  - 输入数据是num_nodes个词，可能有vocabulary_size种词
+  - 输入门：
+  
+  ```python
+  input_gate = sigmoid(i * ix + o * im + ib)
+  ```
+  
+    - 给输入乘一个vocabulary_size * num_nodes大小的矩阵，给输出乘一个num_nodes * num_nodes大小的矩阵;
+    - 用这两个矩阵调节对输入数据的取舍程度
+    - 用sigmoid这个非线性函数进行激活
+  
+  - 遗忘门：
+  
+  ```python
+  forget_gate = sigmoid(i * fx + o * fm + fb)
+  ```
+  
+  思路同输入门，用以对历史数据做取舍
+  
+  - 输出门：
+  
+  ```python
+  output_gate = sigmoid(i * ox + o * om + ob)
+  ```
+  
+  思路同输入门，用以对输出状态做取舍
+  
+  - 组合：
+  
+  ```python
+  update = i * cx + o * cm + cb
+  state = forget_gate * state + input_gate * tanh(update)
+  lstm_cell = output_gate * tanh(state)
+  ```
+  
+    - 用同样的方式构造新状态update
+    - 用遗忘门处理历史状态state
+    - 用tanh激活新状态update
+    - 用输入门处理新状态update
+    - 整合新旧状态，再用tanh激活状态state
+    - 用输出门处理state
+    
+### lstm优化
+上面的cell中，update，output_gate，forget_gate，input_gate计算方法都是一样的，
+可以把四组参数分别合并，一次计算，再分别取出：
+
+```python
+values = tf.split(1, gate_count, tf.matmul(i, input_weights) + tf.matmul(o, output_weights) + bias)
+input_gate = tf.sigmoid(values[0])
+forget_gate = tf.sigmoid(values[1])
+update = values[2]
+```
+
+
+### Optimizer
+- 采用one-hot encoding作为label预测
+- 采用交叉熵计算损失
+- 引入learning rate decay
+
+### Flow
+- 填入训练数据到placeholder中
+- 验证集的准确性用logprob来计算，即对可能性取对数
+- 每10次训练随机挑取5个字母作为起始词，进行造句测试
+
+## Beam Search
+上面的流程里，每次都是以一个字符作为单位，可以使用多一点的字符做预测，取最高概率的那个，防止特殊情况导致的误判
 
 ## 参考链接
 [林洲汉-知乎](https://www.zhihu.com/question/28473843/answer/68797210)
