@@ -165,6 +165,8 @@ forget_gate = tf.sigmoid(values[1])
 update = values[2]
 ```
 
+再将lstm-cell的输出扔到一个WX+b中调整作为输出
+
 
 ### Optimizer
 - 采用one-hot encoding作为label预测
@@ -175,12 +177,35 @@ update = values[2]
 - 填入训练数据到placeholder中
 - 验证集的准确性用logprob来计算，即对可能性取对数
 - 每10次训练随机挑取5个字母作为起始词，进行造句测试
+- 你可能注意到输出的sentence是由sample得到的词组成的，而非选择概率最高的词，这是因为，如果一直取概率最高的词，最后会一直重复这个概率最高的词
 
 ## Beam Search
 上面的流程里，每次都是以一个字符作为单位，可以使用多一点的字符做预测，取最高概率的那个，防止特殊情况导致的误判
 
+在这里我们增加字符为2个，形成bigram，代码见：bigram_lstm.py
+
+主要通过BigramBatchGenerator类实现
+
+## Embedding look up
+
+由于bigram情况下，vocabulary_size变为 27\*27个，使用one-hot encoding 做predict的话会产生非常稀疏的矩阵，浪费算力，计算速度慢
+
+因此引入embedding_lookup,代码见embed_bigram_lstm.py
+
+- 数据输入：BatchGenerator不再生成one-hot-encoding的向量作为输入，而是直接生成bigram对应的index列表
+- embedding look up调整embedding，使bigram与vector对应起来
+- 将embedding look up的结果喂给lstm cell即可
+- 输出时，需要将label和output都转为One-hot-encoding，才能用交叉熵和softmax计算损失
+- 在tensor里做data到one-hot-encoding转换时，主要依赖tf.gather函数
+- 在对valid数据做转换时，主要依赖one_hot_voc函数
+
+## Drop out
+- 在lstm cell中对input和output做drop out
+- Refer to this [article](http://arxiv.org/abs/1409.2329)
+
 ## 参考链接
 [林洲汉-知乎](https://www.zhihu.com/question/28473843/answer/68797210)
 [词向量](http://www.jeyzhang.com/tensorflow-learning-notes-3.html)
+[rudolfix - udacity_deeplearn](https://github.com/rudolfix/udacity_deeplearn/)
 
 
