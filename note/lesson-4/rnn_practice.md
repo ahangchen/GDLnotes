@@ -203,9 +203,51 @@ update = values[2]
 - 在lstm cell中对input和output做drop out
 - Refer to this [article](http://arxiv.org/abs/1409.2329)
 
+## Seq2Seq
+- 最后一个问题是，将一个句子中每个词转为它的逆序字符串，也就是一个seq到seq的转换
+- 正经的实现思路是，word 2 vector 2 lstm 2 vector 2 word
+- 不过tensorflow已经有了这样一个模型来做这件事情：Seq2SeqModel，关于这个模型可以看[这个分析](http://www.cnblogs.com/edwardbi/p/5559338.html)
+- 只需要从batch中，根据字符串逆序的规律生成target sequence，放到seq2seqmodel里即可，主要依赖rev_id函数
+- 实现见seq2seq.py
+- 注意，用Seq2SeqModel的时候，size和num_layer会在学习到正确的规律前就收敛，我把它调大了一点
+
+```python
+def create_model(sess, forward_only):
+    model = seq2seq_model.Seq2SeqModel(source_vocab_size=vocabulary_size,
+                                       target_vocab_size=vocabulary_size,
+                                       buckets=[(20, 21)],
+                                       size=128,
+                                       num_layers=2, 
+                                       max_gradient_norm=2.0,
+                                       batch_size=batch_size,
+                                       learning_rate=0.1,
+                                       learning_rate_decay_factor=0.9,
+                                       forward_only=forward_only)
+    return model
+```
+- 参数含义
+  - source_vocab_size: size of the source vocabulary.
+  - target_vocab_size: size of the target vocabulary.
+  - buckets: a list of pairs (I, O), where I specifies maximum input length
+    that will be processed in that bucket, and O specifies maximum output
+    length. Training instances that have inputs longer than I or outputs
+    longer than O will be pushed to the next bucket and padded accordingly.
+    We assume that the list is sorted, e.g., [(2, 4), (8, 16)].
+  - size: number of units in each layer of the model.
+  - num_layers: number of layers in the model.
+  - max_gradient_norm: gradients will be clipped to maximally this norm.
+  - batch_size: the size of the batches used during training;
+    the model construction is independent of batch_size, so it can be
+    changed after initialization if this is convenient, e.g., for decoding.
+  - learning_rate: learning rate to start with.
+  - learning_rate_decay_factor: decay learning rate by this much when needed.
+  - use_lstm: if true, we use LSTM cells instead of GRU cells.
+  - num_samples: number of samples for sampled softmax.
+  - forward_only: if set, we do not construct the backward pass in the model.
+  
 ## 参考链接
 [林洲汉-知乎](https://www.zhihu.com/question/28473843/answer/68797210)
 [词向量](http://www.jeyzhang.com/tensorflow-learning-notes-3.html)
 [rudolfix - udacity_deeplearn](https://github.com/rudolfix/udacity_deeplearn/)
-
+[Edwardbi - 解析Tensorflow官方English-Franch翻译器demo](http://www.cnblogs.com/edwardbi/p/5559338.html)
 
