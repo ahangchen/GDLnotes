@@ -216,12 +216,13 @@ def create_model(sess, forward_only):
     model = seq2seq_model.Seq2SeqModel(source_vocab_size=vocabulary_size,
                                        target_vocab_size=vocabulary_size,
                                        buckets=[(20, 21)],
-                                       size=128,
-                                       num_layers=2, 
-                                       max_gradient_norm=2.0,
+                                       size=256,
+                                       num_layers=4,
+                                       max_gradient_norm=5.0,
                                        batch_size=batch_size,
-                                       learning_rate=0.1,
+                                       learning_rate=1.0,
                                        learning_rate_decay_factor=0.9,
+                                       use_lstm=True,
                                        forward_only=forward_only)
     return model
 ```
