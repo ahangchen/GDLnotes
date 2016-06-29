@@ -207,6 +207,7 @@ update = values[2]
 - 最后一个问题是，将一个句子中每个词转为它的逆序字符串，也就是一个seq到seq的转换
 - 正经的实现思路是，word 2 vector 2 lstm 2 vector 2 word
 - 不过tensorflow已经有了这样一个模型来做这件事情：Seq2SeqModel，关于这个模型可以看[这个分析](http://www.cnblogs.com/edwardbi/p/5559338.html)
+以及tensorflow的[example](https://github.com/tensorflow/tensorflow/blob/63409bd23facad471973b110df998782c0e19c06/tensorflow/models/rnn/translate/translate.py#L132)
 - 只需要从batch中，根据字符串逆序的规律生成target sequence，放到seq2seqmodel里即可，主要依赖rev_id函数
 - 实现见seq2seq.py
 - 注意，用Seq2SeqModel的时候，size和num_layer会在学习到正确的规律前就收敛，我把它调大了一点
