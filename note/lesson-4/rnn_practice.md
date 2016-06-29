@@ -63,6 +63,8 @@ data_index = (data_index + 1) % len(data)
 
 ![](../../res/word2vec_res.png)
 
+代码见：[cbow.py](../../src/rnn/word2vec.py)
+
 ## CBOW
 上面训练的是Skip-gram模型，是根据目标词汇预测上下文，而word2vec还有一种方式，CBOW，根据上下文预测目标词汇。
 
@@ -87,8 +89,7 @@ embed_sum = tf.reduce_sum(embed, 0)
 
 ![](../../res/cbow_res.png)
 
-代码见：
-[cbow.py](../../src/rnn/cbow.py)
+代码见：[cbow.py](../../src/rnn/cbow.py)
 
 ## RNN 造句
 整体思路是，以一个文本中的一个词作为train data，后续的所有词作为train label，从而能够根据一个给定词，预测后续的片段。
@@ -167,6 +168,7 @@ update = values[2]
 
 再将lstm-cell的输出扔到一个WX+b中调整作为输出
 
+代码见：[singlew_lstm.py](../../src/rnn/singlew_lstm.py)
 
 ### Optimizer
 - 采用one-hot encoding作为label预测
@@ -182,7 +184,7 @@ update = values[2]
 ## Beam Search
 上面的流程里，每次都是以一个字符作为单位，可以使用多一点的字符做预测，取最高概率的那个，防止特殊情况导致的误判
 
-在这里我们增加字符为2个，形成bigram，代码见：bigram_lstm.py
+在这里我们增加字符为2个，形成bigram，代码见：[bigram_lstm.py](../../src/rnn/bigram_lstm.py)
 
 主要通过BigramBatchGenerator类实现
 
@@ -190,7 +192,7 @@ update = values[2]
 
 由于bigram情况下，vocabulary_size变为 27\*27个，使用one-hot encoding 做predict的话会产生非常稀疏的矩阵，浪费算力，计算速度慢
 
-因此引入embedding_lookup,代码见embed_bigram_lstm.py
+因此引入embedding_lookup,代码见[embed_bigram_lstm.py](../../src/rnn/embed_bigram_lstm.py)
 
 - 数据输入：BatchGenerator不再生成one-hot-encoding的向量作为输入，而是直接生成bigram对应的index列表
 - embedding look up调整embedding，使bigram与vector对应起来
@@ -248,8 +250,8 @@ def create_model(sess, forward_only):
   - forward_only: if set, we do not construct the backward pass in the model.
   
 ## 参考链接
-[林洲汉-知乎](https://www.zhihu.com/question/28473843/answer/68797210)
-[词向量](http://www.jeyzhang.com/tensorflow-learning-notes-3.html)
-[rudolfix - udacity_deeplearn](https://github.com/rudolfix/udacity_deeplearn/)
-[Edwardbi - 解析Tensorflow官方English-Franch翻译器demo](http://www.cnblogs.com/edwardbi/p/5559338.html)
+- [林洲汉-知乎](https://www.zhihu.com/question/28473843/answer/68797210)
+- [词向量](http://www.jeyzhang.com/tensorflow-learning-notes-3.html)
+- [rudolfix - udacity_deeplearn](https://github.com/rudolfix/udacity_deeplearn/)
+- [Edwardbi - 解析Tensorflow官方English-Franch翻译器demo](http://www.cnblogs.com/edwardbi/p/5559338.html)
 
