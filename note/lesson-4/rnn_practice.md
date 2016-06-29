@@ -63,7 +63,7 @@ data_index = (data_index + 1) % len(data)
 
 ![](../../res/word2vec_res.png)
 
-代码见：[cbow.py](../../src/rnn/word2vec.py)
+代码见：[word2vec.py](../../src/rnn/word2vec.py)
 
 ## CBOW
 上面训练的是Skip-gram模型，是根据目标词汇预测上下文，而word2vec还有一种方式，CBOW，根据上下文预测目标词汇。
