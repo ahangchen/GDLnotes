@@ -26,7 +26,7 @@
 
 官方推荐使用docker来进行这部分教程，但简单起见我们先用ipython notebook
 
-- [安装tensorflow](https://github.com/ahangchen/GDLnotes/tree/master/note/tensorflow)
+## [安装tensorflow](https://github.com/ahangchen/GDLnotes/tree/master/note/tensorflow)
 
 ## notMNIST
 
