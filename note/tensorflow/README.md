@@ -21,8 +21,11 @@
   ```
     确认使用的是否都来自anaconda，如果不是，则应该使用类似这样的命令运行对应的pip：
   ```
-    $ /home/cwh/anaconda2/bin/pip -V
+    $ /home/cwh/.conda/envs/tensorflow/bin/pip -V
   ```
+  
+  即最好安装到tensorflow自己的python环境里，不跟anaconda原来的环境混淆
+  
     使用sudo命令时最好也看一下版本
     
   - 使用anaconda创建一个tensorflow虚拟环境：
