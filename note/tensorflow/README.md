@@ -38,6 +38,6 @@
     (tensorflow)$ sudo pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.8.0rc0-cp27-none-linux_x86_64.whl
     $ source deactivate
   ```
-  注意如果安装的是gpu版本，还需要按照官网说明安装cuda和cudaCNN，具体教程看这个[视频](https://www.youtube.com/watch?v=cVWVRA8XXxs)
+  注意如果安装的是gpu版本，还需要按照官网说明安装cuda和cudaCNN，具体教程看这个[视频](https://www.youtube.com/watch?v=cVWVRA8XXxs)，不能科学上网的访问这个[地址]()
   
   - 安装成功后就可以在tensorflow的python环境下，执行import tensorflow看看了。
