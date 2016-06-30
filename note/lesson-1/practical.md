@@ -48,8 +48,11 @@
   ```
     确认使用的是否都来自anaconda，如果不是，则应该使用类似这样的命令运行对应的pip：
   ```
-    $ /home/cwh/anaconda2/bin/pip -V
+    $ /home/cwh/.conda/envs/tensorflow/bin/pip -V
   ```
+  
+  即最好安装到tensorflow自己的python环境里，不跟anaconda原来的环境混淆
+  
     使用sudo命令时最好也看一下版本
     
   - 使用anaconda创建一个tensorflow虚拟环境：
@@ -62,10 +65,10 @@
     (tensorflow)$ sudo pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.8.0rc0-cp27-none-linux_x86_64.whl
     $ source deactivate
   ```
-  注意如果安装的是gpu版本，还需要按照官网说明安装cuda和cudaCNN，具体教程看这个[视频](https://www.youtube.com/watch?v=cVWVRA8XXxs)
+  注意如果安装的是gpu版本，还需要按照官网说明安装cuda和cudaCNN，具体教程看这个[视频](https://www.youtube.com/watch?v=cVWVRA8XXxs)，不能科学上网的访问这个[地址]()
   
   - 安装成功后就可以在tensorflow的python环境下，执行import tensorflow看看了。
-   
+
 ## notMNIST
 
 修改的[MNIST](http://yann.lecun.com/exdb/mnist/)，不够干净，更接近真实数据，比MNIST任务更困难。
