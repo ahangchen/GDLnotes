@@ -9,9 +9,8 @@
 
 循环神经网络解决了这个问题。在循环神经网络里，有循环，允许信息持续产生作用。
 
-<img src="../../res/RNN-rolled.png" height = "200"  alt="图片名称" align="center" />
+<img src="../../res/RNN-rolled.png" height = "200"  alt="图片名称" />
 
-<center>循环神经网络有循环</center>
 
 在上面的图中，一大块神经网络，A，观察一些输入x<sub>t</sub>，输出一个值h<sub>t</sub>。循环允许信息从网络的一步传到下一步。
 
@@ -19,7 +18,6 @@
 
 ![](../../res/RNN-unrolled.png)
 
-<center>An unrolled recurrent neural network</center>
 
 这个链式本质揭示了，循环神经网络跟序列和列表是紧密相关的。它们是神经网络为这类数据而生的自然架构。
 
@@ -91,7 +89,7 @@ LSTM确实有能力移除或增加信息到cell状态中，由被称为门的结
 
 sigmod层输出[0, 1]区间内的数，描述了每个部分中应该通过的比例。输出0意味着“什么都不能通过”，而输出1意味着“让所有东西通过！”。
 
-一个LSTM有这个这样的门，以保护和控制cell的状态。
+一个LSTM有四个这样的门，以保护和控制cell的状态。
 
 ## 深入浅出LSTM
 
