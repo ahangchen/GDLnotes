@@ -13,7 +13,7 @@
 
 循环神经网络有循环
 
-在上面的图中，一大块神经网络，A，观察一些输入x<sub>t<sub>，输出一个值h<sub>t</sub>。循环允许信息从网络的一步传到下一步。
+在上面的图中，一大块神经网络，A，观察一些输入x<sub>t</sub>，输出一个值h<sub>t</sub>。循环允许信息从网络的一步传到下一步。
 
 这些循环使得循环神经网络似乎有点神秘。然而，如果你想多一点，其实它们跟一个正常的神经网络没有神秘区别。一个循环神经网络可以被认为是同一个网络的多重副本，每个部分会向继任者传递一个信息。想一想，如果我们展开了循环会发生什么：
 
@@ -58,34 +58,43 @@ LSTMs are explicitly designed to avoid the long-term dependency problem. Remembe
 
 All recurrent neural networks have the form of a chain of repeating modules of neural network. In standard RNNs, this repeating module will have a very simple structure, such as a single tanh layer.
 
+![](../../res/LSTM3-SimpleRNN.png)
 
 The repeating module in a standard RNN contains a single layer.
+
 LSTMs also have this chain like structure, but the repeating module has a different structure. Instead of having a single neural network layer, there are four, interacting in a very special way.
 
-A LSTM neural network.
+![](../../res/LSTM3-chain.png)
+
 The repeating module in an LSTM contains four interacting layers.
+
 Don’t worry about the details of what’s going on. We’ll walk through the LSTM diagram step by step later. For now, let’s just try to get comfortable with the notation we’ll be using.
 
+![](../../res/LSTM2-notation.png)
 
 In the above diagram, each line carries an entire vector, from the output of one node to the inputs of others. The pink circles represent pointwise operations, like vector addition, while the yellow boxes are learned neural network layers. Lines merging denote concatenation, while a line forking denote its content being copied and the copies going to different locations.
-The Core Idea Behind LSTMs
 
-The key to LSTMs is the cell state, the horizontal line running through the top of the diagram.
+## LSTM背后的核心思想
 
-The cell state is kind of like a conveyor belt. It runs straight down the entire chain, with only some minor linear interactions. It’s very easy for information to just flow along it unchanged.
+LSTM的关键在于cell的状态，也就是图中贯穿顶部的那条水平线。
 
+cell的状态像是一条传送带，它贯穿整条链，其中只发生一些小的线性作用。信息流过这条线而不改变是非常容易的。
 
-The LSTM does have the ability to remove or add information to the cell state, carefully regulated by structures called gates.
+![](../../res/LSTM3-C-line.png)
 
-Gates are a way to optionally let information through. They are composed out of a sigmoid neural net layer and a pointwise multiplication operation.
+LSTM确实有能力移除或增加信息到cell状态中，由被称为门的结构精细控制。
 
+门是一种让信息可选地通过的方法。它们由一个sigmoid神经网络层和一个点乘操作组成。
 
-The sigmoid layer outputs numbers between zero and one, describing how much of each component should be let through. A value of zero means “let nothing through,” while a value of one means “let everything through!”
+![](../../res/LSTM3-gate.png)
 
-An LSTM has three of these gates, to protect and control the cell state.
+sigmod层输出[0, 1]区间内的数，描述了每个部分中应该通过的比例。输出0意味着“什么都不能通过”，而输出1意味着“让所有东西通过！”。
 
-Step-by-Step LSTM Walk Through
+一个LSTM有这个这样的门，以保护和控制cell的状态。
 
+## 深入浅出LSTM
+
+我们的LSTM的第一步是决定我们需要从cell状态中扔掉什么样的信息。这个决策由一个称为“遗忘门”的sigmoid层做出。它
 The first step in our LSTM is to decide what information we’re going to throw away from the cell state. This decision is made by a sigmoid layer called the “forget gate layer.” It looks at ht−1ht−1 and xtxt, and outputs a number between 00 and 11 for each number in the cell state Ct−1Ct−1. A 11 represents “completely keep this” while a 00 represents “completely get rid of this.”
 
 Let’s go back to our example of a language model trying to predict the next word based on all the previous ones. In such a problem, the cell state might include the gender of the present subject, so that the correct pronouns can be used. When we see a new subject, we want to forget the gender of the old subject.
