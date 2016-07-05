@@ -111,6 +111,7 @@ CNN 在空间上共享参数，RNN在时间上（顺序上）共享参数
   - 由于整个模型都是线性的，所以可以方便地求导和训练
   
 - 关于lstm有这样一篇博客讲的很好：[地址](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)
+- 稍微翻了一个[中文版](unstand_lstm.md)
 
 #### LSTM Regularization
 - L2, works
