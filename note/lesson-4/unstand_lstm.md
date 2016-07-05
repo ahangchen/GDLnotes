@@ -9,7 +9,7 @@
 
 循环神经网络解决了这个问题。在循环神经网络里，有循环，允许信息持续产生作用。
 
-<img src="../../res/RNN-rolled.png"width = "200" height = "200" alt="图片名称" align=center />
+<img src="../../res/RNN-rolled.png"width = "200"  alt="图片名称" align=center />
 
 <center>循环神经网络有循环</center>
 
