@@ -100,7 +100,7 @@ sigmod层输出[0, 1]区间内的数，描述了每个部分中应该通过的�
 
 ![](../../res/LSTM3-focus-f.png)
 
-下一步是决定我们需要在cell状态里存储什么样的信息。这个问题有两个部分。第一，一个sigmoid层调用“输入门”以决定哪些数据是需要更新的。然后，一个tanh层为新的候选值创建一个向量\overline{C}
+下一步是决定我们需要在cell状态里存储什么样的信息。这个问题有两个部分。第一，一个sigmoid层调用“输入门”以决定哪些数据是需要更新的。然后，一个tanh层为新的候选值创建一个向量C^{~}_t
 The next step is to decide what new information we’re going to store in the cell state. This has two parts. First, a sigmoid layer called the “input gate layer” decides which values we’ll update. Next, a tanh layer creates a vector of new candidate values, C~tC~t, that could be added to the state. In the next step, we’ll combine these two to create an update to the state.
 
 In the example of our language model, we’d want to add the gender of the new subject to the cell state, to replace the old one we’re forgetting.
