@@ -1,5 +1,5 @@
 # 理解LSTM 网络
-* Posted on August 27, 2015 *
+- Posted on August 27, 2015 
 
 ## 循环神经网络
 
@@ -9,9 +9,9 @@
 
 循环神经网络解决了这个问题。在循环神经网络里，有循环，允许信息持续产生作用。
 
-![](../../res/RNN-rolled.png)
+<img src="../../res/RNN-rolled.png"width = "200" height = "200" alt="图片名称" align=center />
 
-循环神经网络有循环
+<center>循环神经网络有循环</center>
 
 在上面的图中，一大块神经网络，A，观察一些输入x<sub>t</sub>，输出一个值h<sub>t</sub>。循环允许信息从网络的一步传到下一步。
 
@@ -19,7 +19,7 @@
 
 ![](../../res/RNN-unrolled.png)
 
-An unrolled recurrent neural network.
+<center>An unrolled recurrent neural network</center>
 
 这个链式本质揭示了，循环神经网络跟序列和列表是紧密相关的。它们是神经网络为这类数据而生的自然架构。
 
@@ -80,7 +80,8 @@ LSTM的关键在于cell的状态，也就是图中贯穿顶部的那条水平线
 
 cell的状态像是一条传送带，它贯穿整条链，其中只发生一些小的线性作用。信息流过这条线而不改变是非常容易的。
 
-![](../../res/LSTM3-C-line.png)
+<img src="../../res/LSTM3-C-line.png" width = "200" height = "200" alt="图片名称" align=center />
+
 
 LSTM确实有能力移除或增加信息到cell状态中，由被称为门的结构精细控制。
 
@@ -125,7 +126,7 @@ sigmod层输出[0, 1]区间内的数，描述了每个部分中应该通过的�
 
 ## LSTM变种
 
-到目前为止我所描述的是一种非常普通的LSTM，但不是所有的LSTM都和上面描述的这种一样。事实上，几乎所有涉及LSTM的文章用的版本都稍有不欧诺个，差别微小，但值得一谈。
+到目前为止我所描述的是一种非常普通的LSTM，但不是所有的LSTM都和上面描述的这种一样。事实上，几乎所有涉及LSTM的文章用的版本都稍有不同，差别微小，但值得一谈。
 
 一种由[Gers & Schmidhuber (2000)](ftp://ftp.idsia.ch/pub/juergen/TimeCount-IJCNN2000.pdf)介绍的广受欢迎的LSTM变种，添加了“门镜连接”。这意味着我们可以让门观察cell状态。
 
