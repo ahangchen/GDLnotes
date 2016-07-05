@@ -13,7 +13,7 @@
 > 最近tensorflow团队出了一个[model项目](https://github.com/tensorflow/models)，和这个课程无关，但是可以参考
     
 
-框架： TensorFlow
+框架： TensorFlow （[安装教程](https://github.com/ahangchen/GDLnotes/tree/master/note/tensorflow)）
 > 谷歌出品的基于Python的深度学习工具集
 
 工具：Ipython, Pycharm
