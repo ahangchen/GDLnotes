@@ -9,7 +9,7 @@
 
 循环神经网络解决了这个问题。在循环神经网络里，有循环，允许信息持续产生作用。
 
-<img src="../../res/RNN-rolled.png"width = "200"  alt="图片名称" align=center />
+<img src="../../res/RNN-rolled.png" height = "200"  alt="图片名称" align=center />
 
 <center>循环神经网络有循环</center>
 
@@ -80,14 +80,14 @@ LSTM的关键在于cell的状态，也就是图中贯穿顶部的那条水平线
 
 cell的状态像是一条传送带，它贯穿整条链，其中只发生一些小的线性作用。信息流过这条线而不改变是非常容易的。
 
-<img src="../../res/LSTM3-C-line.png" width = "200" height = "200" alt="图片名称" align=center />
+![](../../res/LSTM3-C-line.png)
 
 
 LSTM确实有能力移除或增加信息到cell状态中，由被称为门的结构精细控制。
 
 门是一种让信息可选地通过的方法。它们由一个sigmoid神经网络层和一个点乘操作组成。
 
-![](../../res/LSTM3-gate.png)
+<img src="../../res/LSTM3-gate.png" height = "200"  alt="图片名称" align=center />
 
 sigmod层输出[0, 1]区间内的数，描述了每个部分中应该通过的比例。输出0意味着“什么都不能通过”，而输出1意味着“让所有东西通过！”。
 
