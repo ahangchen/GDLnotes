@@ -100,49 +100,62 @@ sigmod层输出[0, 1]区间内的数，描述了每个部分中应该通过的�
 
 ![](../../res/LSTM3-focus-f.png)
 
-下一步是决定我们需要在cell状态里存储什么样的信息。这个问题有两个部分。第一，一个sigmoid层调用“输入门”以决定哪些数据是需要更新的。然后，一个tanh层为新的候选值创建一个向量C<sup>~</sup><sub>t</sub>，这个值
-The next step is to decide what new information we’re going to store in the cell state. This has two parts. First, a sigmoid layer called the “input gate layer” decides which values we’ll update. Next, a tanh layer creates a vector of new candidate values, C~tC~t, that could be added to the state. In the next step, we’ll combine these two to create an update to the state.
+下一步是决定我们需要在cell state里存储什么样的信息。这个问题有两个部分。第一，一个sigmoid层调用“输入门”以决定哪些数据是需要更新的。然后，一个tanh层为新的候选值创建一个向量C<sup>~</sup><sub>t</sub>，这些值能够加入state中。下一步，我们要将这两个部分合并以创建对state的更新。
 
-In the example of our language model, we’d want to add the gender of the new subject to the cell state, to replace the old one we’re forgetting.
+在我们的语言模型的例子中，我们想要把主题的种类加入到cell state中，以替代我们要遗忘的旧的种类。
 
+![](../../res/LSTM3-focus-i.png)
 
-It’s now time to update the old cell state, Ct−1Ct−1, into the new cell state CtCt. The previous steps already decided what to do, we just need to actually do it.
+现在是时候更新旧的cell stateC<sub>t-1</sub>到新的cell stateC<sub>t</sub>。前一步已经决定了我们需要做的事情，我们只需要实现它。
 
-We multiply the old state by ftft, forgetting the things we decided to forget earlier. Then we add it∗C~tit∗C~t. This is the new candidate values, scaled by how much we decided to update each state value.
+我们把旧的state与f<sub>t</sub>相乘，遗忘我们先前决定遗忘的东西，然后我们加上i<sub>t</sub> \* C<sup>~</sup><sub>t</sub>。这是新的候选值，受我们对每个状态值的更新度约束而缩放。
 
-In the case of the language model, this is where we’d actually drop the information about the old subject’s gender and add the new information, as we decided in the previous steps.
+在语言模型的例子中，这就是我们真正扔掉旧主题种类，并增加新的信息的地方，正如我们之前所决定的。
 
+![](../../res/LSTM3-focus-C.png)
 
-Finally, we need to decide what we’re going to output. This output will be based on our cell state, but will be a filtered version. First, we run a sigmoid layer which decides what parts of the cell state we’re going to output. Then, we put the cell state through tanhtanh (to push the values to be between −1−1 and 11) and multiply it by the output of the sigmoid gate, so that we only output the parts we decided to.
+最后，我们需要决定要输出的东西。这个输出基于我们的cell state，但会是一个过滤版本。首先，我们运行一个sigmoid层，以决定cell state中的那个部分是我们将要输出的。然后我们把cell state放进tanh（将数值压到-1和1之间），最后将它与sigmoid门的输出相乘，这样我们就只输出了我们想要的部分了。
 
-For the language model example, since it just saw a subject, it might want to output information relevant to a verb, in case that’s what is coming next. For example, it might output whether the subject is singular or plural, so that we know what form a verb should be conjugated into if that’s what follows next.
+![](../../res/LSTM3-focus-o.png)
 
+语言模型的例子中，由于它仅关注一个主题，它可能会输出与一个动词相关的信息，以防后面还有其他的词。比如，它可能输出这个主题是单数还是复数，让我们知道如果后面还有东西，动词才会对应出现。
 
-Variants on Long Short Term Memory
-
-What I’ve described so far is a pretty normal LSTM. But not all LSTMs are the same as the above. In fact, it seems like almost every paper involving LSTMs uses a slightly different version. The differences are minor, but it’s worth mentioning some of them.
-
-One popular LSTM variant, introduced by Gers & Schmidhuber (2000), is adding “peephole connections.” This means that we let the gate layers look at the cell state.
+![](../../res/LSTM3-focus-o-1.png)
 
 
-The above diagram adds peepholes to all the gates, but many papers will give some peepholes and not others.
+## LSTM变种
 
-Another variation is to use coupled forget and input gates. Instead of separately deciding what to forget and what we should add new information to, we make those decisions together. We only forget when we’re going to input something in its place. We only input new values to the state when we forget something older.
+到目前为止我所描述的是一种非常普通的LSTM，但不是所有的LSTM都和上面描述的这种一样。事实上，几乎所有涉及LSTM的文章用的版本都稍有不欧诺个，差别微小，但值得一谈。
 
+一种由[Gers & Schmidhuber (2000)](ftp://ftp.idsia.ch/pub/juergen/TimeCount-IJCNN2000.pdf)介绍的广受欢迎的LSTM变种，添加了“门镜连接”。这意味着我们可以让门观察cell状态。
 
-A slightly more dramatic variation on the LSTM is the Gated Recurrent Unit, or GRU, introduced by Cho, et al. (2014). It combines the forget and input gates into a single “update gate.” It also merges the cell state and hidden state, and makes some other changes. The resulting model is simpler than standard LSTM models, and has been growing increasingly popular.
+![](../../res/LSTM3-var-peepholes.png)
+
+上面的图为每个门都添加了门镜，但许多文章只会给一部分门镜。
+
+另一种变种是使用多个遗忘门和输入门。我们不再分别判断该遗忘和添加的东西，我们同时做出决策。我们只在填充某个位置的时候遗忘原来的东西，我们值在遗忘某些东西的时候输入新的数据。
+
+![](../../res/LSTM3-var-tied.png)
+
+一个稍微更奇特的变种是循环门单元（Gated Recurrent Unit，GRU），由 [Cho, et al. (2014)](http://arxiv.org/pdf/1406.1078v3.pdf)提出。它组合了遗忘门和输入门到一个单独的“更新门”中。它也合并了cell state和hidden state，并且做了一些其他的改变。结果模型比标准LSTM模型更简单，并且正越来越受欢迎。
+
+![](../../res/LSTM3-var-GRU.png)
 
 A gated recurrent unit neural network.
-These are only a few of the most notable LSTM variants. There are lots of others, like Depth Gated RNNs by Yao, et al. (2015). There’s also some completely different approach to tackling long-term dependencies, like Clockwork RNNs by Koutnik, et al. (2014).
 
-Which of these variants is best? Do the differences matter? Greff, et al. (2015) do a nice comparison of popular variants, finding that they’re all about the same. Jozefowicz, et al. (2015) tested more than ten thousand RNN architectures, finding some that worked better than LSTMs on certain tasks.
+这些只是一些最值得一提的LSTM变种。还有许多其他种类，像[Yao, et al. (2015)](http://arxiv.org/pdf/1508.03790v2.pdf)提出的Depth Gate RNN。也有许多复杂的不同方法来处理长期依赖，像 [Koutnik, et al. (2014)](http://arxiv.org/pdf/1402.3511v1.pdf)提出的Clockwork RNN。
+ 
+哪种变种是最好的？这些区别重要吗？ [Greff, et al. (2015)](http://arxiv.org/pdf/1503.04069.pdf)对流行的变种做了一个很好的比较，发现它们都是一样的。[Jozefowicz, et al. (2015)](http://jmlr.org/proceedings/papers/v37/jozefowicz15.pdf)测试了超过一万中RNN结构，发现某些任务情形下，有些比LSTM工作得更好。
 
-Conclusion
+## 结论
 
-Earlier, I mentioned the remarkable results people are achieving with RNNs. Essentially all of these are achieved using LSTMs. They really work a lot better for most tasks!
+首先，我讲述了人们用RNN获得的巨大成果。而这些成果都用到了LSTM，它们在大多数任务中都工作得好得多！
 
-Written down as a set of equations, LSTMs look pretty intimidating. Hopefully, walking through them step by step in this essay has made them a bit more approachable.
+列出方程的话，LSTM看起来很吓人。幸好，在这篇文章里一步步看下来让它们变得相对可以接受了些。
 
-LSTMs were a big step in what we can accomplish with RNNs. It’s natural to wonder: is there another big step? A common opinion among researchers is: “Yes! There is a next step and it’s attention!” The idea is to let every step of an RNN pick information to look at from some larger collection of information. For example, if you are using an RNN to create a caption describing an image, it might pick a part of the image to look at for every word it outputs. In fact, Xu, et al. (2015) do exactly this – it might be a fun starting point if you want to explore attention! There’s been a number of really exciting results using attention, and it seems like a lot more are around the corner…
+LSTM是我们在RNN上取得的一大步。我们自然会想：还有另一个突破口吗？研究人员中的一个通常的观点是“有！是注意力！”思路是让一个RNN收集信息的每一步都关注更大的一个信息。例如，如果你用一个RNN抽取图片信息来描述它，RNN可能可以为每个输出的词都从图片拿一部分进行分析。事实上，[Xu, et al. (2015)](http://arxiv.org/pdf/1502.03044v2.pdf)就是这样做的 - 这可能是一个有趣的出发点，如果你想要探索注意力这个话题的话。已经有许多令人惊艳的成果了，并且似乎还有更多不为人知的研究。
 
-Attention isn’t the only exciting thread in RNN research. For example, Grid LSTMs by Kalchbrenner, et al. (2015) seem extremely promising. Work using RNNs in generative models – such as Gregor, et al. (2015), Chung, et al. (2015), or Bayer & Osendorfer (2015) – also seems very interesting. The last few years have been an exciting time for recurrent neural networks, and the coming ones promise to only be more so!
+注意力不是RNN研究中唯一刺激的线。例如，网格LSTM（[Kalchbrenner, et al. (2015)](http://arxiv.org/pdf/1507.01526v1.pdf)）,生产模型中使用RNN（ [Gregor, et al. (2015)](http://arxiv.org/pdf/1502.04623.pdf), [Chung, et al. (2015)](http://arxiv.org/pdf/1506.02216v3.pdf), or [Bayer & Osendorfer (2015)](http://arxiv.org/pdf/1411.7610v3.pdf)），都很有趣。最近几年是RNN的黄金时代，下一年更是如此。
+
+## 致谢
+略
