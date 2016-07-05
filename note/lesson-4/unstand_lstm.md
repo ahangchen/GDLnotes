@@ -25,7 +25,7 @@ An unrolled recurrent neural network.
 
 并且它们真的起了作用！在过去的几年里，应用RNN到许多问题中都取得了难以置信的成功：语音识别，语言建模，翻译，图像截取，等等。我会留一个话题，讨论学习Andrej Karpathy的博客能够取得多么令人惊艳的成绩：
 
-![The Unreasonable Effectiveness of Recurrent Neural Networks](http://karpathy.github.io/2015/05/21/rnn-effectiveness/)。但它们真的相当惊艳。
+[The Unreasonable Effectiveness of Recurrent Neural Networks](http://karpathy.github.io/2015/05/21/rnn-effectiveness/)。但它们真的相当惊艳。
 
 与这些成功紧密相关的是对LSTM的使用，一个非常特殊的循环神经网络的类型。它在许多任务上都能比标准的RNN工作的好得多。几乎所有基于RNN的神经网络取得的激动人心的成果都由LSTM获得。这篇文章将要探索的就是这些LSTM。
 
@@ -94,12 +94,13 @@ sigmod层输出[0, 1]区间内的数，描述了每个部分中应该通过的�
 
 ## 深入浅出LSTM
 
-我们的LSTM的第一步是决定我们需要从cell状态中扔掉什么样的信息。这个决策由一个称为“遗忘门”的sigmoid层做出。它
-The first step in our LSTM is to decide what information we’re going to throw away from the cell state. This decision is made by a sigmoid layer called the “forget gate layer.” It looks at ht−1ht−1 and xtxt, and outputs a number between 00 and 11 for each number in the cell state Ct−1Ct−1. A 11 represents “completely keep this” while a 00 represents “completely get rid of this.”
+我们的LSTM的第一步是决定我们需要从cell状态中扔掉什么样的信息。这个决策由一个称为“遗忘门”的sigmoid层做出。它观察h<sub>t-1</sub>和x<sub>t</sub>，位cell状态C<sub>t-1</sub>中每个number输出一个0和1之间的数。1代表“完全保留这个值”，而0代表“完全扔掉这个值”。
 
-Let’s go back to our example of a language model trying to predict the next word based on all the previous ones. In such a problem, the cell state might include the gender of the present subject, so that the correct pronouns can be used. When we see a new subject, we want to forget the gender of the old subject.
+让我们回到我们那个基于上文预测最后一个词的语言模型。在这样一个问题中，cell的状态可能包含当前主题的种类，这样才能使用正确的名词。当我们看到一个新的主题的时候，我们会想要遗忘旧的主题的种类。
 
+![](../../res/LSTM3-focus-f.png)
 
+下一步是决定我们需要在cell状态里存储什么样的信息。这个问题有两个部分。第一，一个sigmoid层调用“输入门”以决定哪些数据是需要更新的。然后，一个tanh层为新的候选值创建一个向量\overline{C}
 The next step is to decide what new information we’re going to store in the cell state. This has two parts. First, a sigmoid layer called the “input gate layer” decides which values we’ll update. Next, a tanh layer creates a vector of new candidate values, C~tC~t, that could be added to the state. In the next step, we’ll combine these two to create an update to the state.
 
 In the example of our language model, we’d want to add the gender of the new subject to the cell state, to replace the old one we’re forgetting.
