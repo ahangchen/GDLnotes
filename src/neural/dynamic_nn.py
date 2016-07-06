@@ -118,7 +118,7 @@ def tf_deep_nn(regular=False, drop_out=False, lrd=False, layer_cnt=2):
         hidden_stddev = np.sqrt(2.0 / 784)
         weights1 = tf.Variable(tf.truncated_normal([image_size * image_size, hidden_node_count], stddev=hidden_stddev))
         biases1 = tf.Variable(tf.zeros([hidden_node_count]))
-        layer_count = tf.Variable(tf.float32)
+        layer_count = tf.Variable(0, trainable=True)
         # middle weight
         weights = []
         biases = []
