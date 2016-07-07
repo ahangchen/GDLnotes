@@ -9,7 +9,7 @@
 
 NVIDIA Grid系列，支持GPU虚拟化的[成果](http://www.nvidia.cn/object/grid-boards-cn.html)
 
-> 兼容 VMware vSphere Hypervisor
+> 兼容 VMware vSphere Hypervisor，甚至有专门的[驱动](http://www.nvidia.com/object/vmware-trygrid.html)
 
 初步锁定GRID K1或GRID K2
 
