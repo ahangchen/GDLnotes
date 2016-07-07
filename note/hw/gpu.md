@@ -24,7 +24,7 @@ NVIDIA Grid系列，支持GPU虚拟化的[成果](http://www.nvidia.cn/object/gr
 
 - NF5280M3标配参数[详情](http://www.inspur.com/lcjtww/443012/444624/447247/450192/450233/458384/index.html)
 
-## 存疑
+## Question
 - Grid显卡是否支持tensorflow/cuda？
 
 > 支持：[CUDA FAQ](https://developer.nvidia.com/cuda-faq)提及:CUDA is a standard feature in all NVIDIA GeForce, Quadro, and Tesla GPUs as well as NVIDIA GRID solutions.
