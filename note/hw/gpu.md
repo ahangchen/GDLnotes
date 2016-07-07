@@ -9,7 +9,7 @@
 
 NVIDIA Grid系列，支持GPU虚拟化的[成果](http://www.nvidia.cn/object/grid-boards-cn.html)
 
-> 兼容 VMware vSphere Hypervisor，甚至有专门的[驱动](http://www.nvidia.com/object/vmware-trygrid.html)
+> 兼容 VMware vSphere Hypervisor，甚至有专门的[驱动](http://www.nvidia.com/object/vmware-trygrid.html)和[教程](https://blogs.vmware.com/euc/2015/12/horizon-6-view-esri-arcgis-nvidia-dell-desktop-virtualization-appliance.html)
 
 初步锁定GRID K1或GRID K2
 
@@ -37,3 +37,5 @@ NVIDIA Grid系列，支持GPU虚拟化的[成果](http://www.nvidia.cn/object/gr
   - 可以咨询浪潮方面厂商
   
 - Grid显卡在算力表中没有，是否达到算力3？分布式虚拟化之后是否达到算力3？
+
+> 这篇文章做出了一些解释，用vGPU的方式可以实现高算力和多机共享GPU的效果 
