@@ -30,4 +30,10 @@ NVIDIA Grid系列，支持GPU虚拟化的[成果](http://www.nvidia.cn/object/gr
 > 支持：[CUDA FAQ](https://developer.nvidia.com/cuda-faq)提及:CUDA is a standard feature in all NVIDIA GeForce, Quadro, and Tesla GPUs as well as NVIDIA GRID solutions.
 
 - Grid显卡和Tesla显卡是不同系列的吧，那么Grid显卡是否能够安装到NF5280M3上？
-- Grid显卡在算力表中没有，是否达到算力3？
+
+  - [Grid显卡介绍附图](http://www.nvidia.cn/object/grid-boards-cn.html)
+  - [Tesla显卡介绍附图](http://www.nvidia.com/object/tesla-servers.html)
+  - 观察图可以看到引脚是一致的
+  - 可以咨询浪潮方面厂商
+  
+- Grid显卡在算力表中没有，是否达到算力3？分布式虚拟化之后是否达到算力3？
