@@ -7,7 +7,9 @@
 
 - 可虚拟化：因为我们需要在浪潮服务器上虚拟化多台ubuntu做分布式运算，所以需要虚拟化
 
-NVIDIA与VMWare关于GPU虚拟化的[成果](http://www.nvidia.cn/object/grid-boards-cn.html)
+NVIDIA Grid系列，支持GPU虚拟化的[成果](http://www.nvidia.cn/object/grid-boards-cn.html)
+
+> 兼容 VMware vSphere Hypervisor
 
 初步锁定GRID K1或GRID K2
 
@@ -15,6 +17,12 @@ NVIDIA与VMWare关于GPU虚拟化的[成果](http://www.nvidia.cn/object/grid-bo
 - 支持：[13年一次比赛](http://scc.ustc.edu.cn/yjdt/201305/t20130506_150923.html)就是用的这两家的产品
 - 使用的是NVIDIA的Tesla K20GPU加速卡
 - Tesla系列显卡算力可以在上面的显卡算力中查到，
+- NF5280M3的GPU能力：
+> http://www.jxkenuo.com/Info/View.Asp?id=309
+
+> https://citrixready.citrix.com/inspur-cn/nf5280m3-cn.html
+
+- NF5280M3标配参数[详情](http://www.inspur.com/lcjtww/443012/444624/447247/450192/450233/458384/index.html)
 
 ## 存疑
 - Grid显卡是否支持tensorflow/cuda？
