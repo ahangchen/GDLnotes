@@ -11,7 +11,7 @@ NVIDIA Grid系列，支持GPU虚拟化的[成果](http://www.nvidia.cn/object/gr
 
 > 兼容 VMware vSphere Hypervisor，甚至有专门的[驱动](http://www.nvidia.com/object/vmware-trygrid.html)和[教程](https://blogs.vmware.com/euc/2015/12/horizon-6-view-esri-arcgis-nvidia-dell-desktop-virtualization-appliance.html)
 
-初步锁定GRID K1或GRID K2
+- **初步锁定GRID K1或GRID K2**
 
 ##  NF5280M3是否支持NVIDIA显卡？
 - 支持：[13年一次比赛](http://scc.ustc.edu.cn/yjdt/201305/t20130506_150923.html)就是用的这两家的产品
