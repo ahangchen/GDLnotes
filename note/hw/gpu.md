@@ -18,6 +18,7 @@ NVIDIA Grid系列，支持GPU虚拟化的[成果](http://www.nvidia.cn/object/gr
 - 使用的是NVIDIA的Tesla K20GPU加速卡
 - Tesla系列显卡算力可以在上面的显卡算力中查到，
 - NF5280M3的GPU能力：
+
 > http://www.jxkenuo.com/Info/View.Asp?id=309
 
 > https://citrixready.citrix.com/inspur-cn/nf5280m3-cn.html
