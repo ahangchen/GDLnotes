@@ -38,4 +38,4 @@ NVIDIA Grid系列，支持GPU虚拟化的[成果](http://www.nvidia.cn/object/gr
   
 - Grid显卡在算力表中没有，是否达到算力3？分布式虚拟化之后是否达到算力3？
 
-> 这篇文章做出了一些解释，用vGPU的方式可以实现高算力和多机共享GPU的效果 
+> 这篇[文章](http://www.brianmadden.com/opinion/Clearing-up-the-confusion-around-VMware-Nvidias-vGPU-vDGA-DaaS-announcement)做出了一些解释，用vGPU的方式可以实现高算力和多机共享GPU的效果 
