@@ -1,5 +1,5 @@
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
 
 from neural.full_connect import accuracy
 from not_mnist.img_pickle import load_pickle
@@ -255,7 +255,7 @@ def better_conv_train(drop=False, lrd=False):
         train_prediction = tf.nn.softmax(logits)
         valid_prediction = tf.nn.softmax(model(tf_valid_dataset))
         test_prediction = tf.nn.softmax(model(tf_test_dataset))
-    num_steps = 2001
+    num_steps = 5001
 
     with tf.Session(graph=graph) as session:
         tf.initialize_all_variables().run()
@@ -282,4 +282,4 @@ if __name__ == '__main__':
         load_reformat_not_mnist(image_size, num_labels, 1)
     # conv_max_pool_train()
     # conv_train()
-    better_conv_train()
+    better_conv_train(lrd=True)

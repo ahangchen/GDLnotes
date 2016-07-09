@@ -86,6 +86,9 @@ Performs the max pooling on the input.
 ## 优化
 仿照lesson2，添加learning rate decay 和 drop out，可以将准确率提高到90.6%
 
+## 补充
+- 最近在用GPU版本的TensorFlow，发现，如果import tensorflow放在代码第一行，运行会报段错误（pycharm debug模式下不会），因此最好在import tensorflow前import numpy或者其他的module
+
 ## 参考链接
 - [Tensorflow 中 conv2d 都干了啥](http://stackoverflow.com/questions/34619177/what-does-tf-nn-conv2d-do-in-tensorflow)
 - [TensorFlow Example](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/examples/3_NeuralNetworks/convolutional_network.py)
