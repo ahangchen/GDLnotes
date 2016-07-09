@@ -50,27 +50,32 @@ RNN吸引人的一个地方是它们能够链接先前的信息与当前的任�
 
 ## LSTM 网络
 
-Long Short Term Memory networks – usually just called “LSTMs” – are a special kind of RNN, capable of learning long-term dependencies. They were introduced by Hochreiter & Schmidhuber (1997), and were refined and popularized by many people in following work.1 They work tremendously well on a large variety of problems, and are now widely used.
+长短期记忆网络 - 通常简称为“LSTMs”，是一种特殊的RNN，适用于学习长期依赖。
+他们由[Hochreiter 和 Schmidhuber（1997）](http://deeplearning.cs.cmu.edu/pdfs/Hochreiter97_lstm.pdf)介绍引入，
+由许多其他的人们在后续的工作中重新定义和丰富。
+他们在各种各样的问题中都工作的特别好，并且现在已经被广泛使用。
 
-LSTMs are explicitly designed to avoid the long-term dependency problem. Remembering information for long periods of time is practically their default behavior, not something they struggle to learn!
+LSTMs 是为了避免长期依赖问题而特殊设计的。为长期时间记忆信息实际上是他们默认的行为，
+而非他们需要学习的东西！
 
-All recurrent neural networks have the form of a chain of repeating modules of neural network. In standard RNNs, this repeating module will have a very simple structure, such as a single tanh layer.
+所有RNN都有重复神经网络模型的链式形式。在标准的RNN中，这种重复模型会有一种非常简单的结构，比如简单的tanh层。
 
 ![](../../res/LSTM3-SimpleRNN.png)
 
 The repeating module in a standard RNN contains a single layer.
 
-LSTMs also have this chain like structure, but the repeating module has a different structure. Instead of having a single neural network layer, there are four, interacting in a very special way.
+LSTM也有这种链式结构，但重复单元有着一种不同的结构。里面不再是只有单一的神经网络层，里面有四个，以非常简单的方式起作用。
 
 ![](../../res/LSTM3-chain.png)
 
 The repeating module in an LSTM contains four interacting layers.
 
-Don’t worry about the details of what’s going on. We’ll walk through the LSTM diagram step by step later. For now, let’s just try to get comfortable with the notation we’ll be using.
+不要担心内部的细节。我们稍后会一步一步遍历LSTM图。现在，我们要熟悉我们将要使用的定义：
 
 ![](../../res/LSTM2-notation.png)
 
-In the above diagram, each line carries an entire vector, from the output of one node to the inputs of others. The pink circles represent pointwise operations, like vector addition, while the yellow boxes are learned neural network layers. Lines merging denote concatenation, while a line forking denote its content being copied and the copies going to different locations.
+在上面的图中，每行都有一个箭头，从一个结点的输出到另外的结点的输入。粉色的圆代表结点操作，比如向量相加，而黄色的长方形是学习的神经网络层。
+线的合并代表denote的链接，而箭头的分叉代表内容复制后流向不同的位置。
 
 ## LSTM背后的核心思想
 
