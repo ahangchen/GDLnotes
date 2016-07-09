@@ -75,6 +75,9 @@
 
   - [循环神经网络实践](note/lesson-4/rnn_practice.md)
     
+
+- [More about TensorFlow](note/other.md)
+
 附录：
 - [NumPy笔记](note/numpy/README.md)（待完善）
 - [matplotlib笔记](note/matplotlib/README.md)（待完善）
