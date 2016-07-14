@@ -1,49 +1,17 @@
-import numpy as np
 import tensorflow as tf
 
+from convnet.conv_mnist import maxpool2d, load_reformat_not_mnist
 from neural.full_connect import accuracy
-from not_mnist.img_pickle import load_pickle
 
 
-def reformat(dataset, labels, image_size, num_labels, num_channels):
-    dataset = dataset.reshape(
-        (-1, image_size, image_size, num_channels)).astype(np.float32)
-    labels = (np.arange(num_labels) == labels[:, None]).astype(np.float32)
-    return dataset, labels
-
-
-def load_reformat_not_mnist(image_size, num_labels, num_channels):
-    pickle_file = '../not_mnist/notMNIST_clean.pickle'
-    save = load_pickle(pickle_file)
-    train_dataset = save['train_dataset']
-    train_labels = save['train_labels']
-    valid_dataset = save['valid_dataset']
-    valid_labels = save['valid_labels']
-    test_dataset = save['test_dataset']
-    test_labels = save['test_labels']
-    del save  # hint to help gc free up memory
-    print('Training set', train_dataset.shape, train_labels.shape)
-    print('Validation set', valid_dataset.shape, valid_labels.shape)
-    print('Test set', test_dataset.shape, test_labels.shape)
-    train_dataset, train_labels = reformat(train_dataset, train_labels, image_size, num_labels, num_channels)
-    valid_dataset, valid_labels = reformat(valid_dataset, valid_labels, image_size, num_labels, num_channels)
-    test_dataset, test_labels = reformat(test_dataset, test_labels, image_size, num_labels, num_channels)
-    print('Training set', train_dataset.shape, train_labels.shape)
-    print('Validation set', valid_dataset.shape, valid_labels.shape)
-    print('Test set', test_dataset.shape, test_labels.shape)
-    return train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels
-
-
-def maxpool2d(data, k=2, s=2):
-    # MaxPool2D wrapper
-    return tf.nn.max_pool(data, ksize=[1, k, k, 1], strides=[1, s, s, 1],
-                          padding='SAME')
-
-
-def conv_train(batch_size=16, patch_size=5, depth=16, num_hidden=64, num_channels=1, drop=False, lrd=False):
+def conv_train(basic_hps, stride_p, drop=False, lrd=False):
+    batch_size = basic_hps['batch_size']
+    patch_size = basic_hps['patch_size']
+    depth = basic_hps['depth']
+    num_hidden = basic_hps['num_hidden']
+    num_channels = basic_hps['num_channels']
 
     graph = tf.Graph()
-
     with graph.as_default():
         # Input data.
         tf_train_dataset = tf.placeholder(
@@ -53,37 +21,42 @@ def conv_train(batch_size=16, patch_size=5, depth=16, num_hidden=64, num_channel
         tf_test_dataset = tf.constant(test_dataset)
 
         # Variables.
-        layer1_weights = tf.Variable(tf.truncated_normal(
+        input_weights = tf.Variable(tf.truncated_normal(
             [patch_size, patch_size, num_channels, depth], stddev=0.1))
-        layer1_biases = tf.Variable(tf.zeros([depth]))
+        input_biases = tf.Variable(tf.zeros([depth]))
+
         layer2_weights = tf.Variable(tf.truncated_normal(
             [patch_size, patch_size, depth, depth], stddev=0.1))
         layer2_biases = tf.Variable(tf.constant(1.0, shape=[depth]))
-        layer3_weights = tf.Variable(tf.truncated_normal(
+
+        output_weights = tf.Variable(tf.truncated_normal(
             [64, num_hidden], stddev=0.1))
-        layer3_biases = tf.Variable(tf.constant(1.0, shape=[num_hidden]))
-        layer4_weights = tf.Variable(tf.truncated_normal(
+        output_biases = tf.Variable(tf.constant(1.0, shape=[num_hidden]))
+        final_weights = tf.Variable(tf.truncated_normal(
             [num_hidden, num_labels], stddev=0.1))
-        layer4_biases = tf.Variable(tf.constant(1.0, shape=[num_labels]))
+        final_biases = tf.Variable(tf.constant(1.0, shape=[num_labels]))
 
         # Model.
         def model(data):
-            conv = tf.nn.conv2d(data, layer1_weights, [1, 2, 2, 1], padding='SAME')
+            conv = tf.nn.conv2d(data, input_weights, stride_p, padding='SAME')
             conv = maxpool2d(conv)
-            hidden = tf.nn.relu(conv + layer1_biases)
+            hidden = tf.nn.relu(conv + input_biases)
             if drop:
                 hidden = tf.nn.dropout(hidden, 0.5)
-            conv = tf.nn.conv2d(hidden, layer2_weights, [1, 2, 2, 1], padding='SAME')
+
+            conv = tf.nn.conv2d(hidden, layer2_weights, stride_p, padding='SAME')
             conv = maxpool2d(conv)
             hidden = tf.nn.relu(conv + layer2_biases)
             if drop:
                 hidden = tf.nn.dropout(hidden, 0.7)
+
             shape = hidden.get_shape().as_list()
             reshape = tf.reshape(hidden, [shape[0], shape[1] * shape[2] * shape[3]])
-            hidden = tf.nn.relu(tf.matmul(reshape, layer3_weights) + layer3_biases)
+            hidden = tf.nn.relu(tf.matmul(reshape, output_weights) + output_biases)
             if drop:
                 hidden = tf.nn.dropout(hidden, 0.8)
-            return tf.matmul(hidden, layer4_weights) + layer4_biases
+            return tf.matmul(hidden, final_weights) + final_biases
+
         # Training computation.
         logits = model(tf_train_dataset)
         loss = tf.reduce_mean(
@@ -128,4 +101,12 @@ if __name__ == '__main__':
         load_reformat_not_mnist(image_size, num_labels, 1)
     # conv_max_pool_train()
     # conv_train()
-    conv_train(lrd=True)
+    basic_hypers = {
+        'batch_size': 16,
+        'patch_size': 5,
+        'depth': 16,
+        'num_hidden': 64,
+        'num_channels': 1,
+    }
+    stride_param = [1, 3, 2, 1]
+    conv_train(basic_hypers, stride_param, lrd=True)
