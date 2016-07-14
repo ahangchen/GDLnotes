@@ -51,7 +51,7 @@ def dig_nn(dataset, train_labels, batch_size, data_count, label_count):
         loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
         optimizer = tf.train.GradientDescentOptimizer(0.5).minimize(loss)
 
-    num_steps = 9990
+    num_steps = 1000
 
     with tf.Session(graph=graph) as session:
         tf.initialize_all_variables().run()
@@ -73,4 +73,4 @@ def dig_nn(dataset, train_labels, batch_size, data_count, label_count):
 
 if __name__ == '__main__':
     inputs, labels = train_data()
-    dig_nn(inputs, labels, 10, 2, 3)
+    dig_nn(inputs, labels, 100, 2, 3)
