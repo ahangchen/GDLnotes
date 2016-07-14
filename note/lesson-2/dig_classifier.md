@@ -8,11 +8,13 @@
 ## 问题分解
 - 构建数据集
   - 实际上，我们需要先判断x是否落在目标区间，是，则为1，不是则为0，将结果相加
-  - 代码见train_data
+  - 代码见train_data函数
 - 神经网络搭建
   - 思路同之前的[深度神经网络训练手写文字识别](deep_network_pratice.md)
   - 暂时不做优化
   - 仅搭建两层神经网络
   - 暂时不做validate，因为数据充分，每次训练都是新数据，新数据都相当于validate
+
+> 代码：[digit_nn.py](../../src/neural/digit_nn.py)
  
  
