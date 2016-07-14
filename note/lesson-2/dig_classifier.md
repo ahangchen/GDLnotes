@@ -16,5 +16,14 @@
   - 暂时不做validate，因为数据充分，每次训练都是新数据，新数据都相当于validate
 
 > 代码：[digit_nn.py](../../src/neural/digit_nn.py)
+
+## 训练结果
+仅截取最后一次结果为例
+```
+current first data [0.206416, 0.101028]
+current first predict: [0.000000, 0.000177, 0.999823]
+Minibatch loss at step 9980: 0.036539
+Minibatch accuracy: 100.0%
+```
  
  
