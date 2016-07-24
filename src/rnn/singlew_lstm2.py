@@ -3,7 +3,7 @@
 import numpy as np
 import tensorflow as tf
 
-MAX_DATA_SIZE = 1000000
+MAX_DATA_SIZE = 10000000
 
 
 def logprob(predictions, labels):
@@ -14,7 +14,8 @@ def logprob(predictions, labels):
 
 
 def raw_data():
-    return [1.0 / 1.00001 ** (i + 1) for i in range(MAX_DATA_SIZE)]
+    return [1.00001 ** (- i) for i in range(MAX_DATA_SIZE)]
+    # return [1.0 / 1.0000001 ** (i + 1) for i in range(MAX_DATA_SIZE)]
 
 
 def piece_data(raw_data, i, piece_size):
@@ -48,8 +49,11 @@ class TrainBatch(object):
             self.X_train[batch_cnt_per_step * (self.cur_idx - 1): batch_cnt_per_step * self.cur_idx])
         cur_train_label = np.array(
             self.y_train[batch_cnt_per_step * (self.cur_idx - 1): batch_cnt_per_step * self.cur_idx])
-        # print(cur_train_data.shape)
-        # print(cur_train_label.shape)
+        # print('*' * 80)
+        # print(cur_train_data)
+        # print('=' * 80)
+        # print(cur_train_label)
+        # print('*' * 80)
         # print(self.cur_idx)
         return cur_train_data.reshape((batch_cnt_per_step, batch_size, vocabulary_size)), \
                cur_train_label.reshape((batch_cnt_per_step, batch_size, vocabulary_size))
@@ -69,20 +73,18 @@ class TrainBatch(object):
 
 # Parameters
 
-training_steps = 3000
-
 # Network Parameters
 # 每次训练10条数据
 batch_cnt_per_step = 10
 batch_size = 10  # 10 num to predict one num
-n_hidden = 128  # hidden layer num of features
-EMBEDDING_SIZE = 128
+n_hidden = 16  # hidden layer num of features
+EMBEDDING_SIZE = 16
 
 # hyperbola data
 raw = raw_data()
 
 # Simple LSTM Model.
-num_nodes = 64
+num_nodes = 16
 vocabulary_size = 1
 train_batch = TrainBatch()
 
@@ -141,12 +143,12 @@ with graph.as_default():
         logits = tf.nn.xw_plus_b(tf.concat(0, outputs), w, b)
         print(logits)
         print(tf.concat(0, train_labels))
-        loss = tf.reduce_mean(tf.square(tf.sub(tf.concat(0, logits), tf.concat(0, train_labels))))
+        loss = tf.reduce_mean(tf.square(tf.sub(logits, tf.concat(0, train_labels))))
 
     # Optimizer.
     global_step = tf.Variable(0)
     learning_rate = tf.train.exponential_decay(
-        10.0, global_step, 5000, 0.1, staircase=True)
+        1.0, global_step, 200, 0.99, staircase=True)
     optimizer = tf.train.GradientDescentOptimizer(learning_rate)
     gradients, v = zip(*optimizer.compute_gradients(loss))
     gradients, _ = tf.clip_by_global_norm(gradients, 1.25)
@@ -169,8 +171,8 @@ with graph.as_default():
                                   saved_sample_state.assign(sample_state)]):
         sample_prediction = tf.nn.xw_plus_b(sample_output, w, b)
 
-num_steps = 8501  # 上限8900
-sum_freq = 100
+num_steps = 3501  # 上限89000
+sum_freq = 50
 
 with tf.Session(graph=graph) as session:
     tf.initialize_all_variables().run()
@@ -199,11 +201,12 @@ with tf.Session(graph=graph) as session:
             mean_loss = 0
             print('Minibatch perplexity: %.2f' % float(
                 np.exp(logprob(predictions, label_s))))
-            if step % (sum_freq * 5) == 0:
+            if step % (sum_freq * 10) == 0:
                 # Generate some samples.
-                print('=' * 80)
-                feeds, feed_labels = train_batch.next_test()
-                for i in range(batch_cnt_per_step):
+                print(('=' * 40) + 'valid' + '=' * 40)
+
+                feeds, feed_labels = train_batch.next_train()
+                for i in range(batch_cnt_per_step / 3):
                     feed = feeds[i]
                     feed_label = feed_labels[i]
                     f_prediction = sample_prediction.eval({sample_input: feed})
