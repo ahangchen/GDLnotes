@@ -14,7 +14,7 @@ def logprob(predictions, labels):
 
 
 def raw_data():
-    return [1.0 / (i + 1) for i in range(MAX_DATA_SIZE)]
+    return [1.0 / 1.00001 ** (i + 1) for i in range(MAX_DATA_SIZE)]
 
 
 def piece_data(raw_data, i, piece_size):
@@ -26,7 +26,8 @@ def piece_label(raw_data, i, piece_size):
 
 
 def data_idx():
-    return [i for i in range(MAX_DATA_SIZE / 100 * 9)], [j + MAX_DATA_SIZE / 100 * 9 for j in range(MAX_DATA_SIZE / 100)]
+    return [i for i in range(MAX_DATA_SIZE / 100 * 9)], [j + MAX_DATA_SIZE / 100 * 9 for j in
+                                                         range(MAX_DATA_SIZE / 100)]
     # return [i for i in range(900)], [j + 90 for j in range(100)]
 
 
@@ -47,11 +48,11 @@ class TrainBatch(object):
             self.X_train[batch_cnt_per_step * (self.cur_idx - 1): batch_cnt_per_step * self.cur_idx])
         cur_train_label = np.array(
             self.y_train[batch_cnt_per_step * (self.cur_idx - 1): batch_cnt_per_step * self.cur_idx])
-        print(cur_train_data.shape)
-        print(cur_train_label.shape)
-        print(self.cur_idx)
+        # print(cur_train_data.shape)
+        # print(cur_train_label.shape)
+        # print(self.cur_idx)
         return cur_train_data.reshape((batch_cnt_per_step, batch_size, vocabulary_size)), \
-            cur_train_label.reshape((batch_cnt_per_step, batch_size, vocabulary_size))
+               cur_train_label.reshape((batch_cnt_per_step, batch_size, vocabulary_size))
 
     def next_test(self):
         self.cur_test_idx += 1
@@ -59,12 +60,11 @@ class TrainBatch(object):
             self.X_test[batch_cnt_per_step * (self.cur_test_idx - 1): batch_cnt_per_step * self.cur_test_idx])
         cur_train_label = np.array(
             self.y_test[batch_cnt_per_step * (self.cur_test_idx - 1): batch_cnt_per_step * self.cur_test_idx])
-        print(cur_train_data.shape)
-        print(cur_train_label.shape)
-        print(self.cur_test_idx)
+        # print(cur_train_data.shape)
+        # print(cur_train_label.shape)
+        # print(self.cur_test_idx)
         return cur_train_data.reshape((batch_cnt_per_step, batch_size, vocabulary_size)), \
                cur_train_label.reshape((batch_cnt_per_step, batch_size, vocabulary_size))
-
 
 
 # Parameters
@@ -139,9 +139,9 @@ with graph.as_default():
                                   saved_state.assign(state)]):
         # Classifier.
         logits = tf.nn.xw_plus_b(tf.concat(0, outputs), w, b)
-        loss = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits(
-                logits, tf.concat(0, train_labels)))
+        print(logits)
+        print(tf.concat(0, train_labels))
+        loss = tf.reduce_mean(tf.square(tf.sub(tf.concat(0, logits), tf.concat(0, train_labels))))
 
     # Optimizer.
     global_step = tf.Variable(0)
@@ -169,7 +169,7 @@ with graph.as_default():
                                   saved_sample_state.assign(sample_state)]):
         sample_prediction = tf.nn.xw_plus_b(sample_output, w, b)
 
-num_steps = 7000  # 上限900
+num_steps = 8501  # 上限8900
 sum_freq = 100
 
 with tf.Session(graph=graph) as session:
@@ -199,7 +199,7 @@ with tf.Session(graph=graph) as session:
             mean_loss = 0
             print('Minibatch perplexity: %.2f' % float(
                 np.exp(logprob(predictions, label_s))))
-            if step % (sum_freq * 10) == 0:
+            if step % (sum_freq * 5) == 0:
                 # Generate some samples.
                 print('=' * 80)
                 feeds, feed_labels = train_batch.next_test()
@@ -207,9 +207,9 @@ with tf.Session(graph=graph) as session:
                     feed = feeds[i]
                     feed_label = feed_labels[i]
                     f_prediction = sample_prediction.eval({sample_input: feed})
-                    # print ('label:')
-                    # print(feed_label)
-                    # print('predict:')
-                    # print(f_prediction)
+                    print ('label:')
+                    print(feed_label)
+                    print('predict:')
+                    print(f_prediction)
                     print('Minibatch perplexity: %.2f' % float(np.exp(logprob(f_prediction, feed_label))))
                 print('=' * 80)
