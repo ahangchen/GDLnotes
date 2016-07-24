@@ -6,11 +6,11 @@ import tensorflow as tf
 MAX_DATA_SIZE = 10000000
 
 # Network Parameters
-# 每次训练10条数据
-batch_cnt_per_step = 10
-batch_size = 32  # 10 num to predict one num
+# 每次训练5组数据
+batch_cnt_per_step = 5
+batch_size = 10  # 10 num to predict one num
 n_hidden = 10  # hidden layer num of features
-EMBEDDING_SIZE = 64
+EMBEDDING_SIZE = 1
 
 
 def raw_data():
@@ -20,11 +20,11 @@ def raw_data():
 
 
 def piece_data(raw_data, i, piece_size):
-    return raw_data[piece_size * i: piece_size * (i + 1)]
+    return raw_data[i: piece_size + i]
 
 
 def piece_label(raw_data, i, piece_size):
-    return raw_data[piece_size * i + 1: piece_size * (i + 1) + 1]
+    return raw_data[i + 1: piece_size + i + 1]
 
 
 def data_idx():
@@ -54,13 +54,12 @@ class TrainBatch(object):
         # print(cur_train_label)
         # print('*' * 80)
         # print(self.cur_idx)
-        return cur_train_data.reshape((batch_cnt_per_step, batch_size, vocabulary_size)), \
-               cur_train_label.reshape((batch_cnt_per_step, batch_size, vocabulary_size))
+        return cur_train_data.reshape((batch_cnt_per_step, batch_size, EMBEDDING_SIZE)), \
+               cur_train_label.reshape((batch_cnt_per_step, batch_size, EMBEDDING_SIZE))
 
 
 # Simple LSTM Model.
 num_nodes = 16
-vocabulary_size = 1
 train_batch = TrainBatch()
 
 
@@ -75,7 +74,7 @@ graph = tf.Graph()
 with graph.as_default():
     # Parameters:
     # Input, Forget, Memory, Output gate: input, previous output, and bias.
-    ifcox = tf.Variable(tf.truncated_normal([vocabulary_size, num_nodes * 4], -0.1, 0.1))
+    ifcox = tf.Variable(tf.truncated_normal([EMBEDDING_SIZE, num_nodes * 4], -0.1, 0.1))
     ifcom = tf.Variable(tf.truncated_normal([num_nodes, num_nodes * 4], -0.1, 0.1))
     ifcob = tf.Variable(tf.zeros([1, num_nodes * 4]))
 
@@ -83,8 +82,8 @@ with graph.as_default():
     saved_output = tf.Variable(tf.zeros([batch_size, num_nodes]), trainable=False)
     saved_state = tf.Variable(tf.zeros([batch_size, num_nodes]), trainable=False)
     # Classifier weights and biases.
-    w = tf.Variable(tf.truncated_normal([num_nodes, vocabulary_size], -0.1, 0.1))
-    b = tf.Variable(tf.zeros([vocabulary_size]))
+    w = tf.Variable(tf.truncated_normal([num_nodes, EMBEDDING_SIZE], -0.1, 0.1))
+    b = tf.Variable(tf.zeros([EMBEDDING_SIZE]))
 
 
     def _slice(_x, n, dim):
@@ -107,8 +106,8 @@ with graph.as_default():
 
 
     # Input data.
-    train_inputs = [tf.placeholder(tf.float32, shape=[batch_size, vocabulary_size]) for _ in range(batch_cnt_per_step)]
-    train_labels = [tf.placeholder(tf.float32, shape=[batch_size, vocabulary_size]) for _ in range(batch_cnt_per_step)]
+    train_inputs = [tf.placeholder(tf.float32, shape=[batch_size, EMBEDDING_SIZE]) for _ in range(batch_cnt_per_step)]
+    train_labels = [tf.placeholder(tf.float32, shape=[batch_size, EMBEDDING_SIZE]) for _ in range(batch_cnt_per_step)]
     # print('#######', train_inputs)
     # print('#######', train_labels)
 
@@ -135,7 +134,7 @@ with graph.as_default():
     # Optimizer.
     global_step = tf.Variable(0)
     learning_rate = tf.train.exponential_decay(
-        1.0, global_step, 200, 0.5, staircase=True)
+        1.0, global_step, 20, 0.5, staircase=True)
     optimizer = tf.train.GradientDescentOptimizer(learning_rate)
     gradients, v = zip(*optimizer.compute_gradients(loss))
     gradients, _ = tf.clip_by_global_norm(gradients, 1.25)
@@ -146,7 +145,7 @@ with graph.as_default():
     train_prediction = logits
 
     # Sampling and validation eval: batch 1, no unrolling.
-    sample_input = tf.placeholder(tf.float32, shape=[batch_size, vocabulary_size])
+    sample_input = tf.placeholder(tf.float32, shape=[batch_size, EMBEDDING_SIZE])
     saved_sample_output = tf.Variable(tf.zeros([batch_size, num_nodes]))
     saved_sample_state = tf.Variable(tf.zeros([batch_size, num_nodes]))
     reset_sample_state = tf.group(
@@ -158,8 +157,8 @@ with graph.as_default():
                                   saved_sample_state.assign(sample_state)]):
         sample_prediction = tf.nn.xw_plus_b(sample_output, w, b)
 
-num_steps = 3501  # 上限89000
-sum_freq = 50
+num_steps = 351  # 上限89000
+sum_freq = 5
 
 with tf.Session(graph=graph) as session:
     tf.initialize_all_variables().run()
@@ -177,9 +176,9 @@ with tf.Session(graph=graph) as session:
         # train
         _, l, predictions, lr = session.run(
             [optimizer, loss, train_prediction, learning_rate], feed_dict=feed_dict)
-        predictions = predictions.reshape((batch_cnt_per_step, batch_size, vocabulary_size))
+        predictions = predictions.reshape((batch_cnt_per_step, batch_size, EMBEDDING_SIZE))
         mean_loss += l
-        if step % sum_freq == 0:
+        if step % sum_freq == 0 and step != 0:
             if step > 0:
                 mean_loss /= sum_freq
             # The mean loss is an estimate of the loss over the last few batches.
