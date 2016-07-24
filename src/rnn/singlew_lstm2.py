@@ -14,7 +14,8 @@ def logprob(predictions, labels):
 
 
 def raw_data():
-    return [1.00001 ** (- i) for i in range(MAX_DATA_SIZE)]
+    return [1.0 / (i + 1) for i in range(MAX_DATA_SIZE)]
+    # return [1.00001 ** (- i) for i in range(MAX_DATA_SIZE)]
     # return [1.0 / 1.0000001 ** (i + 1) for i in range(MAX_DATA_SIZE)]
 
 
