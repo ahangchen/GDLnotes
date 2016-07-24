@@ -5,12 +5,12 @@ import tensorflow as tf
 
 MAX_DATA_SIZE = 10000000
 
-
-def logprob(predictions, labels):
-    # prevent negative probability
-    """Log-probability of the true labels in a predicted batch."""
-    predictions[predictions < 1e-10] = 1e-10
-    return np.sum(np.multiply(labels, -np.log(predictions))) / labels.shape[0]
+# Network Parameters
+# 每次训练10条数据
+batch_cnt_per_step = 10
+batch_size = 32  # 10 num to predict one num
+n_hidden = 10  # hidden layer num of features
+EMBEDDING_SIZE = 64
 
 
 def raw_data():
@@ -39,10 +39,8 @@ class TrainBatch(object):
         self.cur_test_idx = 0
         self.raw = raw_data()
         self.train_idxs, test_idxs = data_idx()
-        self.X_train = [piece_data(raw, i, batch_size) for i in self.train_idxs]
-        self.y_train = [piece_label(raw, i, batch_size) for i in self.train_idxs]
-        self.X_test = [piece_data(raw, i, batch_size) for i in test_idxs]
-        self.y_test = [piece_label(raw, i, batch_size) for i in test_idxs]
+        self.X_train = [piece_data(self.raw, i, batch_size) for i in self.train_idxs]
+        self.y_train = [piece_label(self.raw, i, batch_size) for i in self.train_idxs]
 
     def next_train(self):
         self.cur_idx += 1
@@ -59,35 +57,19 @@ class TrainBatch(object):
         return cur_train_data.reshape((batch_cnt_per_step, batch_size, vocabulary_size)), \
                cur_train_label.reshape((batch_cnt_per_step, batch_size, vocabulary_size))
 
-    def next_test(self):
-        self.cur_test_idx += 1
-        cur_train_data = np.array(
-            self.X_test[batch_cnt_per_step * (self.cur_test_idx - 1): batch_cnt_per_step * self.cur_test_idx])
-        cur_train_label = np.array(
-            self.y_test[batch_cnt_per_step * (self.cur_test_idx - 1): batch_cnt_per_step * self.cur_test_idx])
-        # print(cur_train_data.shape)
-        # print(cur_train_label.shape)
-        # print(self.cur_test_idx)
-        return cur_train_data.reshape((batch_cnt_per_step, batch_size, vocabulary_size)), \
-               cur_train_label.reshape((batch_cnt_per_step, batch_size, vocabulary_size))
-
-
-# Parameters
-
-# Network Parameters
-# 每次训练10条数据
-batch_cnt_per_step = 10
-batch_size = 10  # 10 num to predict one num
-n_hidden = 16  # hidden layer num of features
-EMBEDDING_SIZE = 16
-
-# hyperbola data
-raw = raw_data()
 
 # Simple LSTM Model.
 num_nodes = 16
 vocabulary_size = 1
 train_batch = TrainBatch()
+
+
+def logprob(predictions, labels):
+    # prevent negative probability
+    """Log-probability of the true labels in a predicted batch."""
+    predictions[predictions < 1e-10] = 1e-10
+    return np.sum(np.multiply(labels, -np.log(predictions))) / labels.shape[0]
+
 
 graph = tf.Graph()
 with graph.as_default():
@@ -108,16 +90,20 @@ with graph.as_default():
     def _slice(_x, n, dim):
         return _x[:, n * dim:(n + 1) * dim]
 
-
     # Definition of the cell computation.
-    def lstm_cell(cur_input, last_output, last_state):
+    def lstm_cell(cur_input, last_output, last_state, drop):
+        if drop:
+            cur_input = tf.nn.dropout(cur_input, 0.8)
         ifco_gates = tf.matmul(cur_input, ifcox) + tf.matmul(last_output, ifcom) + ifcob
         input_gate = tf.sigmoid(_slice(ifco_gates, 0, num_nodes))
         forget_gate = tf.sigmoid(_slice(ifco_gates, 1, num_nodes))
         update = _slice(ifco_gates, 2, num_nodes)
         last_state = forget_gate * last_state + input_gate * tf.tanh(update)
         output_gate = tf.sigmoid(_slice(ifco_gates, 3, num_nodes))
-        return output_gate * tf.tanh(last_state), last_state
+        output_gate *= tf.tanh(last_state)
+        if drop:
+            output_gate = tf.nn.dropout(output_gate, 0.8)
+        return output_gate, last_state
 
 
     # Input data.
@@ -133,7 +119,7 @@ with graph.as_default():
     #######################################################################################
     # This is multi lstm layer
     for i in train_inputs:
-        output, state = lstm_cell(i, output, state)
+        output, state = lstm_cell(i, output, state, True)
         outputs.append(output)
     #######################################################################################
 
@@ -149,7 +135,7 @@ with graph.as_default():
     # Optimizer.
     global_step = tf.Variable(0)
     learning_rate = tf.train.exponential_decay(
-        1.0, global_step, 200, 0.99, staircase=True)
+        1.0, global_step, 200, 0.5, staircase=True)
     optimizer = tf.train.GradientDescentOptimizer(learning_rate)
     gradients, v = zip(*optimizer.compute_gradients(loss))
     gradients, _ = tf.clip_by_global_norm(gradients, 1.25)
@@ -160,14 +146,14 @@ with graph.as_default():
     train_prediction = logits
 
     # Sampling and validation eval: batch 1, no unrolling.
-    sample_input = tf.placeholder(tf.float32, shape=[batch_cnt_per_step, vocabulary_size])
-    saved_sample_output = tf.Variable(tf.zeros([batch_cnt_per_step, num_nodes]))
-    saved_sample_state = tf.Variable(tf.zeros([batch_cnt_per_step, num_nodes]))
+    sample_input = tf.placeholder(tf.float32, shape=[batch_size, vocabulary_size])
+    saved_sample_output = tf.Variable(tf.zeros([batch_size, num_nodes]))
+    saved_sample_state = tf.Variable(tf.zeros([batch_size, num_nodes]))
     reset_sample_state = tf.group(
-        saved_sample_output.assign(tf.zeros([batch_cnt_per_step, num_nodes])),
-        saved_sample_state.assign(tf.zeros([batch_cnt_per_step, num_nodes])))
+        saved_sample_output.assign(tf.zeros([batch_size, num_nodes])),
+        saved_sample_state.assign(tf.zeros([batch_size, num_nodes])))
     sample_output, sample_state = lstm_cell(
-        sample_input, saved_sample_output, saved_sample_state)
+        sample_input, saved_sample_output, saved_sample_state, False)
     with tf.control_dependencies([saved_sample_output.assign(sample_output),
                                   saved_sample_state.assign(sample_state)]):
         sample_prediction = tf.nn.xw_plus_b(sample_output, w, b)
@@ -191,7 +177,7 @@ with tf.Session(graph=graph) as session:
         # train
         _, l, predictions, lr = session.run(
             [optimizer, loss, train_prediction, learning_rate], feed_dict=feed_dict)
-        predictions = predictions.reshape((10, 10, 1))
+        predictions = predictions.reshape((batch_cnt_per_step, batch_size, vocabulary_size))
         mean_loss += l
         if step % sum_freq == 0:
             if step > 0:
