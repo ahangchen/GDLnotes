@@ -9,13 +9,12 @@ MAX_DATA_SIZE = 10000000
 # 每次训练5组数据
 batch_cnt_per_step = 5
 batch_size = 10  # 10 num to predict one num
-n_hidden = 10  # hidden layer num of features
 EMBEDDING_SIZE = 1
 
 
 def raw_data():
     return [1.0 / (i + 1) for i in range(MAX_DATA_SIZE)]
-    # return [1.00001 ** (- i) for i in range(MAX_DATA_SIZE)]
+    # return [1.0001 ** (- i) for i in range(MAX_DATA_SIZE)]
     # return [1.0 / 1.0000001 ** (i + 1) for i in range(MAX_DATA_SIZE)]
 
 
@@ -59,7 +58,7 @@ class TrainBatch(object):
 
 
 # Simple LSTM Model.
-num_nodes = 16
+num_nodes = 64
 train_batch = TrainBatch()
 
 
@@ -134,7 +133,7 @@ with graph.as_default():
     # Optimizer.
     global_step = tf.Variable(0)
     learning_rate = tf.train.exponential_decay(
-        1.0, global_step, 20, 0.5, staircase=True)
+        1.0, global_step, 100, 0.9, staircase=True)
     optimizer = tf.train.GradientDescentOptimizer(learning_rate)
     gradients, v = zip(*optimizer.compute_gradients(loss))
     gradients, _ = tf.clip_by_global_norm(gradients, 1.25)
@@ -157,8 +156,8 @@ with graph.as_default():
                                   saved_sample_state.assign(sample_state)]):
         sample_prediction = tf.nn.xw_plus_b(sample_output, w, b)
 
-num_steps = 351  # 上限89000
-sum_freq = 5
+num_steps = 3501  # 上限89000
+sum_freq = 50
 
 with tf.Session(graph=graph) as session:
     tf.initialize_all_variables().run()

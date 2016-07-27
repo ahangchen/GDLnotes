@@ -242,6 +242,7 @@ def better_conv_train(drop=False, lrd=False):
         logits = model(tf_train_dataset)
         loss = tf.reduce_mean(
             tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
+
         # Optimizer.
         if lrd:
             cur_step = tf.Variable(0)  # count the number of steps taken.
@@ -256,7 +257,7 @@ def better_conv_train(drop=False, lrd=False):
         valid_prediction = tf.nn.softmax(model(tf_valid_dataset))
         test_prediction = tf.nn.softmax(model(tf_test_dataset))
     num_steps = 5001
-
+    losses = []
     with tf.Session(graph=graph) as session:
         tf.initialize_all_variables().run()
         print('Initialized')
@@ -267,12 +268,16 @@ def better_conv_train(drop=False, lrd=False):
             feed_dict = {tf_train_dataset: batch_data, tf_train_labels: batch_labels}
             _, l, predictions = session.run(
                 [optimizer, loss, train_prediction], feed_dict=feed_dict)
+            losses.append(l)
             if step % 50 == 0:
                 print('Minibatch loss at step %d: %f' % (step, l))
                 print('Minibatch accuracy: %.1f%%' % accuracy(predictions, batch_labels))
                 print('Validation accuracy: %.1f%%' % accuracy(
                     valid_prediction.eval(), valid_labels))
-        print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
+        # print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
+        print(losses)
+        # for i_l in losses:
+        #     print(i_l)
 
 
 if __name__ == '__main__':
