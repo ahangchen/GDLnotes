@@ -41,6 +41,7 @@ Session用来执行Graph里规定的计算，就好像给一个个门电路通�
         for step in range(num_steps):
             _, l, predictions = session.run([optimizer, loss, train_prediction])
   ```
+  - 值得注意的是，如果session.run的时候，不把optimizer fetch回来，optimizer是不会工作的
   - 在循环过程中，W和b会保留，并不断得到修正
   - 在每100次循环后，会用验证集进行验证一次，验证也同时修正了一部分参数
   ```python
