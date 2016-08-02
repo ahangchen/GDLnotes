@@ -1,8 +1,13 @@
 from __future__ import print_function
+
+import json
+
 from convnet.conv_mnist import maxpool2d, load_reformat_not_mnist
 from neural.full_connect import accuracy
 
 import tensorflow as tf
+
+from util.request import fit_loss
 
 
 def up_div(y, x):
@@ -98,6 +103,7 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
         valid_prediction = tf.nn.softmax(model(tf_valid_dataset))
         test_prediction = tf.nn.softmax(model(tf_test_dataset))
     num_steps = 3001
+    fit_frep = 100
 
     with tf.Session(graph=graph) as session:
         tf.initialize_all_variables().run()
@@ -115,6 +121,23 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
                 print('Minibatch accuracy: %.1f%%' % accuracy(predictions, batch_labels))
                 print('Validation accuracy: %.1f%%' % accuracy(
                     valid_prediction.eval(), valid_labels))
+            if step == fit_frep:
+                res = fit_loss([batch_size, depth, num_hidden], loss_collect)
+                ret = res['ret']
+                if ret == 1:
+                    break
+
+            elif step % fit_frep == 0 and step != 0:
+                for i in range(fit_frep):
+                    res = fit_loss(
+                        [batch_size, depth, num_hidden],
+                        loss_collect[i + step - fit_frep * 2 + 1: i + step - fit_frep + 2])
+                    ret = res['ret']
+                    if i == 0:
+                        print(res)
+                    if ret == 1:
+                        break
+
 
         print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
     for loss in loss_collect:
