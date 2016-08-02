@@ -138,7 +138,6 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
                     if ret == 1:
                         break
 
-
         print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
     for loss in loss_collect:
         print(loss)
