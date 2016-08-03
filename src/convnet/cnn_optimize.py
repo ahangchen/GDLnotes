@@ -1,10 +1,11 @@
 from __future__ import print_function
 
-import tensorflow as tf
 
 from convnet.conv_mnist import maxpool2d, load_reformat_not_mnist
 from neural.full_connect import accuracy
 from util.request import fit_loss, better_hyper
+
+import tensorflow as tf
 
 
 def up_div(y, x):
@@ -49,7 +50,7 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
 
         mid_layer_cnt = layer_cnt - 1
         layer_weights = [tf.Variable(tf.truncated_normal(
-            [patch_size, patch_size, depth, depth], stddev=0.1)) for _ in range(mid_layer_cnt)]
+            [patch_size / (i + 1), patch_size / (i + 1), depth, depth], stddev=0.1)) for i in range(mid_layer_cnt)]
         layer_biases = [tf.Variable(tf.constant(1.0, shape=[depth])) for _ in range(mid_layer_cnt)]
 
         output_size = size_by_conv(stride_ps, [batch_size, image_size, image_size, num_channels], layer_cnt)
@@ -67,7 +68,7 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
             if drop:
                 hidden = tf.nn.dropout(hidden, 0.5)
             for i in range(mid_layer_cnt):
-                print(i)
+                print(hidden)
                 conv = tf.nn.conv2d(hidden, layer_weights[i], stride_ps[i + 1], use_cudnn_on_gpu=True, padding='SAME')
                 conv = maxpool2d(conv)
                 hidden = tf.nn.relu(conv + layer_biases[i])
@@ -101,6 +102,7 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
         test_prediction = tf.nn.softmax(model(tf_test_dataset))
     num_steps = 3001
     fit_frep = 100
+    init_loss = []
 
     with tf.Session(graph=graph) as session:
         tf.initialize_all_variables().run()
@@ -123,7 +125,7 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
                 print('Validation accuracy: %.1f%%' % accuracy(
                     valid_prediction.eval(), valid_labels))
             if step == fit_frep:
-                res = fit_loss([batch_size, depth, num_hidden], loss_collect)
+                res = fit_loss([batch_size, depth, num_hidden, layer_sum, patch_size], loss_collect)
                 ret = res['ret']
                 if ret == 1:
                     print('ret is end train when step is {step}'.format(step=step))
@@ -131,17 +133,19 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
             elif step % fit_frep == 0 and step != 0:
                 for i in range(fit_frep):
                     res = fit_loss(
-                        [batch_size, depth, num_hidden],
+                        [batch_size, depth, num_hidden, layer_sum, patch_size],
                         loss_collect[i + step - fit_frep * 2 + 1: i + step - fit_frep + 2])
                     ret = res['ret']
                     if i == 0:
                         print(res)
                     if ret == 1:
                         print('ret is end train when step is {step}'.format(step=step))
+                        init_loss.append(loss_collect[i + step - fit_frep * 2 + 1: i + step - fit_frep + 2])
                         end_train = True
                         break
         print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
-
+        if end_train:
+            better_hyper([batch_size, depth, num_hidden, layer_sum, patch_size], init_loss[0])
     for loss in loss_collect:
         print(loss)
 
@@ -152,22 +156,17 @@ if __name__ == '__main__':
     train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels = \
         load_reformat_not_mnist(image_size, num_labels, 1)
     pick_size = 2048
-    # piece of valid dataset to avoid OOM
     valid_dataset = valid_dataset[0: pick_size, :, :, :]
     valid_labels = valid_labels[0: pick_size, :]
-    # piece of test dataset to avoid OOM
     test_dataset = test_dataset[0: pick_size, :, :, :]
     test_labels = test_labels[0: pick_size, :]
-    # conv_max_pool_train()
-    # conv_train()
     basic_hypers = {
-        'batch_size': 16,
+        'batch_size': 10,
         'patch_size': 5,
-        'depth': 16,
-        'num_hidden': 64,
+        'depth': 10,
+        'num_hidden': 16,
         'num_channels': 1,
     }
     layer_sum = 3
-    stride_params = [[1, 1, 1, 1] for _ in range(layer_sum - 1)]
-    stride_params.append([1, 2, 2, 1])
+    stride_params = [[1, 1, 1, 1] for _ in range(layer_sum)]
     conv_train(basic_hypers, stride_params, layer_cnt=layer_sum, lrd=True)

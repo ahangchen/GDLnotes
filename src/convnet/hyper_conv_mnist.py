@@ -47,7 +47,7 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
 
         mid_layer_cnt = layer_cnt - 1
         layer_weights = [tf.Variable(tf.truncated_normal(
-            [patch_size, patch_size, depth, depth], stddev=0.1)) for _ in range(mid_layer_cnt)]
+            [patch_size / (i + 1), patch_size / (i + 1), depth, depth], stddev=0.1)) for i in range(mid_layer_cnt)]
         layer_biases = [tf.Variable(tf.constant(1.0, shape=[depth])) for _ in range(mid_layer_cnt)]
 
         output_size = size_by_conv(stride_ps, [batch_size, image_size, image_size, num_channels], layer_cnt)
@@ -97,7 +97,7 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
         train_prediction = tf.nn.softmax(logits)
         valid_prediction = tf.nn.softmax(model(tf_valid_dataset))
         test_prediction = tf.nn.softmax(model(tf_test_dataset))
-    num_steps = 3001
+    num_steps = 5001
 
     with tf.Session(graph=graph) as session:
         tf.initialize_all_variables().run()
@@ -109,8 +109,8 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
             feed_dict = {tf_train_dataset: batch_data, tf_train_labels: batch_labels}
             _, l, predictions = session.run(
                 [optimizer, loss, train_prediction], feed_dict=feed_dict)
-            loss_collect.append(l)
             if step % 50 == 0:
+                loss_collect.append(l)
                 print('Minibatch loss at step %d: %f' % (step, l))
                 print('Minibatch accuracy: %.1f%%' % accuracy(predictions, batch_labels))
                 print('Validation accuracy: %.1f%%' % accuracy(
@@ -136,13 +136,12 @@ if __name__ == '__main__':
     # conv_max_pool_train()
     # conv_train()
     basic_hypers = {
-        'batch_size': 16,
+        'batch_size': 10,
         'patch_size': 5,
-        'depth': 16,
-        'num_hidden': 64,
+        'depth': 10,
+        'num_hidden': 16,
         'num_channels': 1,
     }
     layer_sum = 3
-    stride_params = [[1, 1, 1, 1] for _ in range(layer_sum - 1)]
-    stride_params.append([1, 2, 2, 1])
+    stride_params = [[1, 1, 1, 1] for _ in range(layer_sum)]
     conv_train(basic_hypers, stride_params, layer_cnt=layer_sum, lrd=True)
