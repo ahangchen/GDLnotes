@@ -28,6 +28,10 @@ def load_reformat_not_mnist(image_size, num_labels, num_channels):
     train_dataset, train_labels = reformat(train_dataset, train_labels, image_size, num_labels, num_channels)
     valid_dataset, valid_labels = reformat(valid_dataset, valid_labels, image_size, num_labels, num_channels)
     test_dataset, test_labels = reformat(test_dataset, test_labels, image_size, num_labels, num_channels)
+    valid_dataset = valid_dataset[: 1000]
+    valid_labels = valid_labels[: 1000]
+    test_dataset = test_dataset[: 1000]
+    test_labels = test_labels[: 1000]
     print('Training set', train_dataset.shape, train_labels.shape)
     print('Validation set', valid_dataset.shape, valid_labels.shape)
     print('Test set', test_dataset.shape, test_labels.shape)
@@ -274,8 +278,7 @@ def better_conv_train(drop=False, lrd=False):
                 print('Minibatch accuracy: %.1f%%' % accuracy(predictions, batch_labels))
                 print('Validation accuracy: %.1f%%' % accuracy(
                     valid_prediction.eval(), valid_labels))
-        # print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
-        # TODO: prepare losses and hyper parameters, request fit cnn loss url, if fit ok, reconstruct network
+        print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
         print(losses)
         # for i_l in losses:
         #     print(i_l)
