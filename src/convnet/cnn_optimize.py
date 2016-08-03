@@ -1,13 +1,10 @@
 from __future__ import print_function
 
-import json
+import tensorflow as tf
 
 from convnet.conv_mnist import maxpool2d, load_reformat_not_mnist
 from neural.full_connect import accuracy
-
-import tensorflow as tf
-
-from util.request import fit_loss
+from util.request import fit_loss, better_hyper
 
 
 def up_div(y, x):
@@ -108,7 +105,11 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
     with tf.Session(graph=graph) as session:
         tf.initialize_all_variables().run()
         print('Initialized')
+        end_train = False
+
         for step in range(num_steps):
+            if end_train:
+                break
             offset = (step * batch_size) % (train_labels.shape[0] - batch_size)
             batch_data = train_dataset[offset:(offset + batch_size), :, :, :]
             batch_labels = train_labels[offset:(offset + batch_size), :]
@@ -125,7 +126,7 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
                 res = fit_loss([batch_size, depth, num_hidden], loss_collect)
                 ret = res['ret']
                 if ret == 1:
-                    break
+                    print('ret is end train when step is {step}'.format(step=step))
 
             elif step % fit_frep == 0 and step != 0:
                 for i in range(fit_frep):
@@ -136,9 +137,11 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
                     if i == 0:
                         print(res)
                     if ret == 1:
+                        print('ret is end train when step is {step}'.format(step=step))
+                        end_train = True
                         break
-
         print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
+
     for loss in loss_collect:
         print(loss)
 
