@@ -136,9 +136,9 @@ if __name__ == '__main__':
     # conv_max_pool_train()
     # conv_train()
     basic_hypers = {
-        'batch_size': 10,
+        'batch_size': 16,
         'patch_size': 5,
-        'depth': 10,
+        'depth': 16,
         'num_hidden': 16,
         'num_channels': 1,
     }

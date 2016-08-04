@@ -125,7 +125,9 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
                 print('Validation accuracy: %.1f%%' % accuracy(
                     valid_prediction.eval(), valid_labels))
             if step == fit_frep:
-                res = fit_loss([batch_size, depth, num_hidden, layer_sum, patch_size], loss_collect)
+                res = fit_loss(
+                    [batch_size / 100.0, depth / 100.0, num_hidden / 100.0, layer_sum / 100.0, patch_size / 100.0],
+                    loss_collect)
                 ret = res['ret']
                 if ret == 1:
                     print('ret is end train when step is {step}'.format(step=step))
@@ -133,7 +135,7 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
             elif step % fit_frep == 0 and step != 0:
                 for i in range(fit_frep):
                     res = fit_loss(
-                        [batch_size, depth, num_hidden, layer_sum, patch_size],
+                        [batch_size / 100.0, depth / 100.0, num_hidden / 100.0, layer_sum / 100.0, patch_size / 100.0],
                         loss_collect[i + step - fit_frep * 2 + 1: i + step - fit_frep + 2])
                     ret = res['ret']
                     if i == 0:
@@ -145,7 +147,8 @@ def conv_train(basic_hps, stride_ps, layer_cnt=3, drop=False, lrd=False):
                         break
         print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
         if end_train:
-            better_hyper([batch_size, depth, num_hidden, layer_sum, patch_size], init_loss[0])
+            better_hyper(
+                [batch_size / 100.0, depth / 100.0, num_hidden / 100.0, layer_sum / 100.0, patch_size / 100.0], init_loss[0])
     for loss in loss_collect:
         print(loss)
 
@@ -161,10 +164,10 @@ if __name__ == '__main__':
     test_dataset = test_dataset[0: pick_size, :, :, :]
     test_labels = test_labels[0: pick_size, :]
     basic_hypers = {
-        'batch_size': 10,
+        'batch_size': 16,
         'patch_size': 5,
-        'depth': 10,
-        'num_hidden': 16,
+        'depth': 16,
+        'num_hidden': 64,
         'num_channels': 1,
     }
     layer_sum = 3
