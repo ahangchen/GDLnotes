@@ -21,5 +21,6 @@ def better_hyper(hypers, loss):
     req = urllib2.Request(better_hp_url, data)
     response = urllib2.urlopen(req)
     res = json.loads(response.read())
-    print(res)
-    return res
+    better_hypers = res['msg']
+    # print(res)
+    return better_hypers
