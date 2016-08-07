@@ -157,11 +157,10 @@ def conv_train(basic_hps, stride_ps, drop=False, lrd=False):
                         init_loss.append(loss_collect)
                         end_train = True
 
-                        # if step % 50 == 0:
-                        #     print('Minibatch loss at step %d: %f' % (step, l))
-                        #     print('Minibatch accuracy: %.1f%%' % accuracy(predictions, batch_labels))
-                        #     print('Validation accuracy: %.1f%%' % accuracy(
-                        #         valid_prediction.eval(), valid_labels))
+                        if step % 50 == 0:
+                            print('Minibatch loss at step %d: %f' % (step, l))
+                            print('Validation accuracy: %.1f%%' % accuracy(
+                                valid_prediction.eval(), valid_labels))
 
         print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
         if end_train:
@@ -176,8 +175,6 @@ def conv_train(basic_hps, stride_ps, drop=False, lrd=False):
                     hypers[i] = int(hypers[i])
         else:
             hypers = [batch_size, depth, num_hidden, layer_cnt, patch_size]
-    # for loss in loss_collect:
-    #     print(loss)
     return end_train, hypers
 
 
