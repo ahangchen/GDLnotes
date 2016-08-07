@@ -58,7 +58,7 @@ def conv_train(basic_hps, stride_ps, drop=False, lrd=False):
                 if not weight_set_done:
                     # avoid filter shape larger than input shape
                     hid_shape = hidden.get_shape()
-                    print(hid_shape)
+                    # print(hid_shape)
                     filter_w = patch_size / (i + 1)
                     filter_h = patch_size / (i + 1)
                     # print(filter_w)
@@ -121,7 +121,7 @@ def conv_train(basic_hps, stride_ps, drop=False, lrd=False):
 
     with tf.Session(graph=graph) as session:
         tf.initialize_all_variables().run()
-        print('Initialized')
+        # print('Initialized')
         end_train = False
         mean_loss = 0
         for step in range(num_steps):
@@ -140,9 +140,16 @@ def conv_train(basic_hps, stride_ps, drop=False, lrd=False):
                 mean_loss = 0
                 if step >= start_fit:
                     # print(loss_collect)
-                    res = fit_loss(
-                        [batch_size / 100.0, depth / 100.0, num_hidden / 100.0, layer_cnt / 100.0, patch_size / 100.0],
-                        loss_collect)
+                    if step == start_fit:
+                        res = fit_loss(1,
+                                       [batch_size / 100.0, depth / 100.0, num_hidden / 100.0, layer_cnt / 100.0,
+                                        patch_size / 100.0],
+                                       loss_collect)
+                    else:
+                        res = fit_loss(0,
+                                       [batch_size / 100.0, depth / 100.0, num_hidden / 100.0, layer_cnt / 100.0,
+                                        patch_size / 100.0],
+                                       loss_collect)
                     loss_collect.remove(loss_collect[0])
                     ret = res['ret']
                     if ret == 1:
