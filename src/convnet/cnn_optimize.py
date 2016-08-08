@@ -202,12 +202,12 @@ if __name__ == '__main__':
     test_dataset = test_dataset[0: pick_size, :, :, :]
     test_labels = test_labels[0: pick_size, :]
     basic_hypers = {
-        'batch_size': 32,
-        'patch_size': 5,
-        'depth': 16,
+        'batch_size': 64,
+        'patch_size': 16,
+        'depth': 32,
         'num_hidden': 128,
         'num_channels': 1,
-        'layer_sum': 6
+        'layer_sum': 16
     }
     stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
     ret, better_hps = conv_train(basic_hypers, stride_params, lrd=True)
