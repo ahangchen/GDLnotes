@@ -64,11 +64,11 @@ def conv_train(basic_hps, stride_ps, drop=False, lrd=False):
                     # print(filter_w)
                     # print(filter_h)
                     if filter_w > hid_shape[1]:
-                        filter_w = hid_shape[1]
+                        filter_w = int(hid_shape[1])
                     if filter_h > hid_shape[2]:
-                        filter_h = hid_shape[2]
-                    layer_weight = tf.Variable(tf.truncated_normal(
-                        [filter_w, filter_h, depth, depth], stddev=0.1))
+                        filter_h = int(hid_shape[2])
+                    layer_weight = tf.Variable(tf.truncated_normal(shape=[filter_w, filter_h, depth, depth],
+                                                                   stddev=0.1))
                     layer_weights.append(layer_weight)
                 if not large_data_size(hidden) or not large_data_size(layer_weights[i]):
                     # print("is not large data")
@@ -202,12 +202,12 @@ if __name__ == '__main__':
     test_dataset = test_dataset[0: pick_size, :, :, :]
     test_labels = test_labels[0: pick_size, :]
     basic_hypers = {
-        'batch_size': 64,
+        'batch_size': 32,
         'patch_size': 16,
-        'depth': 32,
-        'num_hidden': 128,
+        'depth': 16,
+        'num_hidden': 64,
         'num_channels': 1,
-        'layer_sum': 16
+        'layer_sum': 8
     }
     stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
     ret, better_hps = conv_train(basic_hypers, stride_params, lrd=True)
@@ -220,8 +220,10 @@ if __name__ == '__main__':
             'num_channels': 1,
             'layer_sum': better_hps[3]
         }
-        print(basic_hypers)
+        if basic_hypers['batch_size'] < 10:
+            basic_hypers['batch_size'] = 10
         print('=' * 80)
+        print(basic_hypers)
         ret, better_hps = conv_train(basic_hypers, stride_params, lrd=True)
     else:
         print('can not find better hypers')
