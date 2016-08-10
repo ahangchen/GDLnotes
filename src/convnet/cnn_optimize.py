@@ -11,8 +11,13 @@ def large_data_size(data):
     return data.get_shape()[1] > 1 and data.get_shape()[2] > 1
 
 
+def norm(params):
+    norm_list = [(param / 10 + 1) * 10.0 for param in params]
+    return norm_list
+
+
 def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels, image_size,
-               num_labels, basic_hps, stride_ps, drop=False, lrd=False, get_grad=False):
+               num_labels, basic_hps, stride_ps, drop=False, lrd=False, get_grad=False, norm_list=None):
     batch_size = basic_hps['batch_size']
     patch_size = basic_hps['patch_size']
     depth = basic_hps['depth']
@@ -75,6 +80,8 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                     # print("is not large data")
                     stride_ps[i + 1] = [1, 1, 1, 1]
                 # print(stride_ps[i + 1])
+                # print(len(stride_ps))
+                # print(i + 1)
                 conv = tf.nn.conv2d(hidden, layer_weights[i], stride_ps[i + 1], use_cudnn_on_gpu=True, padding='SAME')
                 if not large_data_size(conv):
                     conv = maxpool2d(conv, 1, 1)
@@ -122,7 +129,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
 
     with tf.Session(graph=graph) as session:
         tf.initialize_all_variables().run()
-        # print('Initialized')
+        print('Initialized')
         end_train = False
         mean_loss = 0
         for step in range(num_steps):
@@ -139,21 +146,23 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                 mean_loss /= 5.0
                 loss_collect.append(mean_loss)
                 mean_loss = 0
+                if norm_list is None:
+                    return [1 for _ in range(len(basic_hps))]
                 if step >= start_fit:
                     # print(loss_collect)
                     if step == start_fit:
                         res = fit_loss(1,
-                                       [batch_size / 100.0, depth / 100.0, num_hidden / 100.0, layer_cnt / 100.0,
-                                        patch_size / 100.0],
+                                       [batch_size / norm_list[0], depth / norm_list[1], num_hidden / norm_list[2],
+                                        layer_cnt / norm_list[3], patch_size / norm_list[4]],
                                        loss_collect)
                     else:
                         res = fit_loss(0,
-                                       [batch_size / 100.0, depth / 100.0, num_hidden / 100.0, layer_cnt / 100.0,
-                                        patch_size / 100.0],
+                                       [batch_size / norm_list[0], depth / norm_list[1], num_hidden / norm_list[2],
+                                        layer_cnt / norm_list[3], patch_size / norm_list[4]],
                                        loss_collect)
                     if get_grad:
-                        better_hyper([batch_size / 100.0, depth / 100.0, num_hidden / 100.0, layer_cnt / 100.0,
-                                      patch_size / 100.0],
+                        better_hyper([batch_size / norm_list[0], depth / norm_list[1], num_hidden / norm_list[2],
+                                      layer_cnt / norm_list[3], patch_size / norm_list[4]],
                                      loss_collect)
                     loss_collect.remove(loss_collect[0])
                     ret = res['ret']
@@ -170,10 +179,14 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
         if end_train:
             hypers = better_hyper(
-                [batch_size / 100.0, depth / 100.0, num_hidden / 100.0, layer_cnt / 100.0, patch_size / 100.0],
+                [batch_size / norm_list[0], depth / norm_list[1], num_hidden / norm_list[2],
+                 layer_cnt / norm_list[3], patch_size / norm_list[4]],
                 init_loss[0])
+            print(hypers)
+            hypers = [hyper * norm_list[i] for i, hyper in enumerate(hypers)]
+            print(norm_list)
+            print(hypers)
             for i in range(len(hypers)):
-                hypers[i] *= 100.0
                 if hypers[i] <= 1.0:
                     hypers[i] = 1
                 else:
@@ -208,14 +221,20 @@ def fit_better():
     test_labels = test_labels[0: pick_size, :]
     basic_hypers = {
         'batch_size': 8,
-        'patch_size': 1,
-        'depth': 1,
-        'num_hidden': 38,
-        'layer_sum': 1
+        'patch_size': 8,
+        'depth': 8,
+        'num_hidden': 32,
+        'layer_sum': 3
     }
     stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
+    norm_list = norm(
+        [basic_hypers['batch_size'],
+         basic_hypers['depth'],
+         basic_hypers['num_hidden'],
+         basic_hypers['layer_sum'],
+         basic_hypers['patch_size']])
     ret, better_hps = conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels,
-                                 image_size, num_labels, basic_hypers, stride_params, lrd=True)
+                                 image_size, num_labels, basic_hypers, stride_params, lrd=True, norm_list=norm_list)
     while ret and valid_hp(better_hps):
         basic_hypers = {
             'batch_size': better_hps[0],
@@ -228,9 +247,10 @@ def fit_better():
         #     basic_hypers['batch_size'] = 10
         print('=' * 80)
         print(basic_hypers)
+        stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
         ret, better_hps = conv_train(
             train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels,
-            image_size, num_labels, basic_hypers, stride_params, lrd=True)
+            image_size, num_labels, basic_hypers, stride_params, lrd=True, norm_list=norm_list)
     else:
         print('can not find better hypers')
 
@@ -260,4 +280,4 @@ def one_fit_show_grad():
 
 
 if __name__ == '__main__':
-    one_fit_show_grad()
+    fit_better()
