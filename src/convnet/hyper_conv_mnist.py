@@ -5,13 +5,6 @@ from neural.full_connect import accuracy
 import tensorflow as tf
 
 
-def up_div(y, x):
-    if y % x > 0:
-        return y / x + 1
-    else:
-        return y / x
-
-
 def large_data_size(data):
     return data.get_shape()[1] > 1 and data.get_shape()[2] > 1
 
