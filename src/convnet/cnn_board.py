@@ -28,22 +28,25 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
     graph = tf.Graph()
     with graph.as_default():
         # Input data.
-        tf_train_dataset = tf.placeholder(
-            tf.float32, shape=(batch_size, image_size, image_size, num_channels))
-        tf_train_labels = tf.placeholder(tf.float32, shape=(batch_size, num_labels))
-        tf_valid_dataset = tf.constant(valid_dataset)
-        tf_test_dataset = tf.constant(test_dataset)
+        with tf.name_scope('input'):
+            with tf.name_scope('data'):
+                tf_train_dataset = tf.placeholder(
+                    tf.float32, shape=(batch_size, image_size, image_size, num_channels))
+                variable_summaries(tf_train_dataset, 'input/data')
+            with tf.name_scope('label'):
+                tf_train_labels = tf.placeholder(tf.float32, shape=(batch_size, num_labels))
+                variable_summaries(tf_train_labels, 'input/label')
 
         # Variables.
         # the third parameter must be same as the last layer depth
         with tf.name_scope('input_cnn_filter'):
-            with tf.name_scope('weights'):
+            with tf.name_scope('input_weight'):
                 input_weights = tf.Variable(tf.truncated_normal(
-                    [patch_size, patch_size, num_channels, depth], stddev=0.1))
-                variable_summaries(input_weights, 'input_cnn_filter/weights')
-            with tf.name_scope('biases'):
-                input_biases = tf.Variable(tf.zeros([depth]))
-                variable_summaries(input_weights, 'input_cnn_filter/biases')
+                    [patch_size, patch_size, num_channels, depth], stddev=0.1), name='input_weight')
+                variable_summaries(input_weights, 'input_cnn_filter/input_weight')
+            with tf.name_scope('input_biases'):
+                input_biases = tf.Variable(tf.zeros([depth]), name='input_biases')
+                variable_summaries(input_weights, 'input_cnn_filter/input_biases')
 
         mid_layer_cnt = layer_cnt - 1
         layer_weights = list()
@@ -76,13 +79,15 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             with tf.name_scope('first_cnn'):
                 conv = tf.nn.conv2d(data, input_weights, stride_ps[0], use_cudnn_on_gpu=True, padding='SAME')
                 if init:
+                    print('init')
                     variable_summaries(conv, 'first_cnn')
             with tf.name_scope('first_max_pool'):
                 conv = maxpool2d(conv)
                 if init:
                     variable_summaries(conv, 'first_max_pool')
             hidden = tf.nn.relu6(conv + input_biases)
-            tf.histogram_summary('first_act', hidden)
+            if init:
+                tf.histogram_summary('first_act', hidden)
             if drop and init:
                 with tf.name_scope('first_drop'):
                     hidden = tf.nn.dropout(hidden, 0.8, name='drop1')
@@ -185,15 +190,14 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         # Predictions for the training, validation, and test data.
         with tf.name_scope('train_predict'):
             train_prediction = tf.nn.softmax(logits)
-            variable_summaries(train_prediction, 'train')
-        with tf.name_scope('valid_predict'):
-            valid_prediction = tf.nn.softmax(model(tf_valid_dataset, init=False))
-            variable_summaries(valid_prediction, 'valid_predict')
-        with tf.name_scope('test_predict'):
-            test_prediction = tf.nn.softmax(model(tf_test_dataset, init=False))
-            variable_summaries(test_prediction, 'test_predict')
+            variable_summaries(train_prediction, 'train_predict')
+        # with tf.name_scope('valid_predict'):
+        #     valid_prediction = tf.nn.softmax(model(tf_valid_dataset, init=False))
+        #     variable_summaries(valid_prediction, 'valid_predict')
+        # with tf.name_scope('test_predict'):
+        #     test_prediction = tf.nn.softmax(model(tf_test_dataset, init=False))
+        #     variable_summaries(test_prediction, 'test_predict')
         merged = tf.merge_all_summaries()
-        saver = tf.train.Saver()
     summary_flag = True
     summary_dir = 'summary'
     save_path = 'conv_mnist'
@@ -202,17 +206,13 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         tf.gfile.DeleteRecursively(summary_dir)
     tf.gfile.MakeDirs(summary_dir)
 
-    num_steps = 501
+    num_steps = 201
     with tf.Session(graph=graph) as session:
         train_writer = tf.train.SummaryWriter(summary_dir + '/train',
                                               session.graph)
         valid_writer = tf.train.SummaryWriter(summary_dir + '/valid')
-        if os.path.exists(save_path) and save_flag:
-            # Restore variables from disk.
-            saver.restore(session, save_path)
-        else:
-            tf.initialize_all_variables().run()
-            print('Initialized')
+        tf.initialize_all_variables().run()
+        print('Initialized')
         mean_loss = 0
         for step in range(num_steps):
             run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
@@ -234,8 +234,8 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                 mean_loss = 0
                 if step % 50 == 0:
                     print('Minibatch loss at step %d: %f' % (step, l))
-                    print('Validation accuracy: %.1f%%' % accuracy(
-                        valid_prediction.eval(), valid_labels))
+                    # print('Validation accuracy: %.1f%%' % accuracy(
+                    #     valid_prediction.eval(), valid_labels))
                     if step % 100 == 0 and summary_flag:
                         train_writer.add_run_metadata(run_metadata, 'step%03d' % step)
                         train_writer.add_summary(summary, step)
@@ -244,11 +244,9 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                     valid_writer.add_summary(summary, step)
             if summary_flag:
                 train_writer.add_summary(summary, step)
-        if save_flag:
-            saver.save(session, save_path)
         train_writer.close()
         valid_writer.close()
-        print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
+        # print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
 
 
 def hp_train():
