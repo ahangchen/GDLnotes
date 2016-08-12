@@ -50,10 +50,9 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             [second_hidden_num, num_labels], stddev=0.1))
         first_nn_biases = tf.Variable(tf.constant(1.0, shape=[second_hidden_num]))
         second_nn_biases = tf.Variable(tf.constant(1.0, shape=[num_labels]))
-        weight_set_done = False
 
         # Model.
-        def model(data, model_drop=True):
+        def model(data, model_drop=True, init=True):
             if not large_data_size(data) or not large_data_size(input_weights):
                 stride_ps[0] = [1, 1, 1, 1]
             conv = tf.nn.conv2d(data, input_weights, stride_ps[0], use_cudnn_on_gpu=True, padding='SAME')
@@ -63,7 +62,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                 hidden = tf.nn.dropout(hidden, 0.8)
             for i in range(mid_layer_cnt):
                 print(hidden)
-                if not weight_set_done:
+                if init:
                     # avoid filter shape larger than input shape
                     hid_shape = hidden.get_shape()
                     # print(hid_shape)
@@ -97,7 +96,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             for s in shapes[1:]:
                 shape_mul *= s
 
-            if not weight_set_done:
+            if init:
                 output_size = shape_mul
                 output_weights.append(tf.Variable(tf.truncated_normal([output_size, first_hidden_num], stddev=0.1)))
             reshape = tf.reshape(hidden, [shapes[0], shape_mul])
@@ -126,14 +125,15 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
 
         # Predictions for the training, validation, and test data.
         train_prediction = tf.nn.softmax(logits)
-        valid_prediction = tf.nn.softmax(model(tf_valid_dataset, model_drop=False))
-        test_prediction = tf.nn.softmax(model(tf_test_dataset, model_drop=False))
+        valid_prediction = tf.nn.softmax(model(tf_valid_dataset, model_drop=False, init=False))
+        test_prediction = tf.nn.softmax(model(tf_test_dataset, model_drop=False, init=False))
         saver = tf.train.Saver()
     num_steps = 5001
 
     save_path = 'conv_mnist'
+    save_flag = False
     with tf.Session(graph=graph) as session:
-        if os.path.exists(save_path):
+        if os.path.exists(save_path) and save_flag:
             # Restore variables from disk.
             saver.restore(session, save_path)
         else:
@@ -159,7 +159,8 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                     print('Minibatch loss at step %d: %f' % (step, l))
                     print('Validation accuracy: %.1f%%' % accuracy(
                         valid_prediction.eval(), valid_labels))
-        saver.save(session, save_path)
+        if save_flag:
+            saver.save(session, save_path)
         print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
 
 
