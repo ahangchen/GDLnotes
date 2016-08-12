@@ -1,10 +1,12 @@
 from __future__ import print_function
-from convnet.conv_mnist import maxpool2d, load_reformat_not_mnist
-from neural.full_connect import accuracy
+
+import os
 
 import tensorflow as tf
 
-from not_mnist.mnist import format_mnist
+from convnet.conv_mnist import maxpool2d
+from neural.full_connect import accuracy
+from util.mnist import format_mnist
 
 
 def large_data_size(data):
@@ -126,11 +128,17 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         train_prediction = tf.nn.softmax(logits)
         valid_prediction = tf.nn.softmax(model(tf_valid_dataset, model_drop=False))
         test_prediction = tf.nn.softmax(model(tf_test_dataset, model_drop=False))
-    num_steps = 10001
+        saver = tf.train.Saver()
+    num_steps = 5001
 
+    save_path = 'conv_mnist'
     with tf.Session(graph=graph) as session:
-        tf.initialize_all_variables().run()
-        print('Initialized')
+        if os.path.exists(save_path):
+            # Restore variables from disk.
+            saver.restore(session, save_path)
+        else:
+            tf.initialize_all_variables().run()
+            print('Initialized')
         end_train = False
         mean_loss = 0
         for step in range(num_steps):
@@ -151,7 +159,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                     print('Minibatch loss at step %d: %f' % (step, l))
                     print('Validation accuracy: %.1f%%' % accuracy(
                         valid_prediction.eval(), valid_labels))
-
+        saver.save(session, save_path)
         print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
 
 
