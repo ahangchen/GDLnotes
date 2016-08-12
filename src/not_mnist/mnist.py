@@ -10,15 +10,15 @@ mnist_path = 'mnist'
 def img_reshape(data, length):
     img_size = 28
     depth = 1
-    print(len(data))
-    print(length)
+    # print(len(data))
+    # print(length)
     return np.array(data).reshape(length, img_size, img_size, depth)
 
 
 def label_reshape(data, length):
     label_size = 10
-    print(len(data))
-    print(length)
+    # print(len(data))
+    # print(length)
     return np.array(data).reshape(length, label_size)
 
 
