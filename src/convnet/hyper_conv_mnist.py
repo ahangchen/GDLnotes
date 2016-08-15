@@ -14,12 +14,12 @@ def large_data_size(data):
 
 
 def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels, image_size,
-               num_labels, basic_hps, stride_ps, drop=False, lrd=False, get_grad=False, norm_list=None):
+               num_labels, basic_hps, stride_ps, drop=False, lrd=False):
     batch_size = basic_hps['batch_size']
     patch_size = basic_hps['patch_size']
     depth = basic_hps['depth']
-    first_hidden_num = 192
-    second_hidden_num = basic_hps['num_hidden']
+    first_hidden_num = basic_hps['num_hidden']
+    second_hidden_num = first_hidden_num / 2 + 1
     num_channels = 1
     layer_cnt = basic_hps['layer_sum']
     loss_collect = list()
@@ -131,7 +131,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
     num_steps = 5001
 
     save_path = 'conv_mnist'
-    save_flag = False
+    save_flag = True
     with tf.Session(graph=graph) as session:
         if os.path.exists(save_path) and save_flag:
             # Restore variables from disk.
