@@ -135,5 +135,8 @@ python安装路径/python TensorFlow安装路径/tensorflow/tensorboard/tensorbo
 - 不是所有的tensor都有必要记录，但是Variable和placeholder最好都用summary记录一下，也是为了好看
 - 由于有了gradient的计算，所以与gradient计算相关的都会被拎出来，下次试一下用其他optimizer
 
+我的CNN TensorBoard代码：[cnn_board.py](../../src/convnet/cnn_board.py)
+
+
 ## 参考资料
 - [mnist_with_summaries.p](https://github.com/tensorflow/tensorflow/blob/r0.10/tensorflow/examples/tutorials/mnist/mnist_with_summaries.py)
