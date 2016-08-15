@@ -28,6 +28,7 @@ with tf.name_scope('output_act'):
 
 其中，
 - histogram_summary用于生成分布图，也可以用scalar_summary记录存数值
+- 使用scalar_summary的时候，tag和tensor的shape要一致
 - name_scope可以不写，但是当你需要在Graph中体现tensor之间的包含关系时，就要写了，像下面这样：
 
 ```python
@@ -42,6 +43,7 @@ with tf.name_scope('input_cnn_filter'):
 ```
 
 - 在Graph中会体现为一个input_cnn_filter，可以点开，里面有weight和biases
+- 用summary系列函数记录后，Tensorboard会根据graph中的依赖关系在Graph标签中展示对应的图结构
 - 官网封装了一个函数，可以调用来记录很多跟某个Tensor相关的数据：
 
 ```python
@@ -105,11 +107,33 @@ train_writer.add_run_metadata(run_metadata, 'step%03d' % step)
 - 启动TensorBoard服务器：
 
 ```
-python TensorFlow安装路径/tensorflow/tensorboard/tensorboard.py --logdir=path/to/log-directory
+python安装路径/python TensorFlow安装路径/tensorflow/tensorboard/tensorboard.py --logdir=path/to/log-directory
 ```
 注意这个python必须是安装了TensorFlow的python，tensorboard.py必须制定路径才能被python找到，logdir必须是前面创建两个writer时使用的路径
 
+比如我的是：
+```
+/home/cwh/anaconda2/envs/tensorflow/bin/python /home/cwh/anaconda2/envs/tensorflow/lib/python2.7/site-packages/tensorflow/tensorboard/tensorboard.py --logdir=~/coding/python/GDLnotes/src/convnet/summary
+```
+
+使用python
 - 然后在浏览器输入 http://127.0.0.1:6006 就可以访问到tensorboard的结果
+
+## 强迫症踩坑后记
+- 之前我的cnn代码里有valid_prediction，所以画出来的graph有两条分支，不太清晰，所以只留了train一个分支
+
+修改前：
+
+![](../../res/tensorboard_2branch.png)
+
+修改后：
+
+![](../../res/tb_1branch.png)
+
+
+- 多用with，进行包裹，这样才好看，正如官网说的，你的summary代码决定了你的图结构
+- 不是所有的tensor都有必要记录，但是Variable和placeholder最好都用summary记录一下，也是为了好看
+- 由于有了gradient的计算，所以与gradient计算相关的都会被拎出来，下次试一下用其他optimizer
 
 ## 参考资料
 - [mnist_with_summaries.p](https://github.com/tensorflow/tensorflow/blob/r0.10/tensorflow/examples/tutorials/mnist/mnist_with_summaries.py)
