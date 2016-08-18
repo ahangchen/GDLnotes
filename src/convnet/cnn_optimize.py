@@ -4,6 +4,7 @@ import random
 
 from convnet.conv_mnist import maxpool2d, load_reformat_not_mnist
 from neural.full_connect import accuracy
+from util.mnist import format_mnist
 from util.request import fit_loss, better_hyper
 
 import tensorflow as tf
@@ -201,18 +202,18 @@ def fit_better():
     image_size = 28
     num_labels = 10
     train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels = \
-        load_reformat_not_mnist(image_size, num_labels, 1)
+        format_mnist()
     pick_size = 2048
     valid_dataset = valid_dataset[0: pick_size, :, :, :]
     valid_labels = valid_labels[0: pick_size, :]
     test_dataset = test_dataset[0: pick_size, :, :, :]
     test_labels = test_labels[0: pick_size, :]
     basic_hypers = {
-        'batch_size': 20,
-        'patch_size': 10,
-        'depth': 10,
-        'num_hidden': 30,
-        'layer_sum': 3
+        'batch_size': 51,
+        'patch_size': 26,
+        'depth': 57,
+        'num_hidden': 74,
+        'layer_sum': 4
     }
     if basic_hypers['patch_size'] > 28:
         basic_hypers['patch_size'] = 28
