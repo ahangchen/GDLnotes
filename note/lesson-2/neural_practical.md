@@ -18,6 +18,12 @@ def reformat(dataset, labels):
   - 用tf.constant将dataset和label转为tensorflow可用的训练格式（训练中不可修改）
   - 用tf.truncated_normal生成正太分布的数据，作为W的初始值，初始化b为可变的0矩阵
   - 用tf.variable将上面的矩阵转为tensorflow可用的训练格式（训练中可以修改）
+  - TensorFlow的Tutorial里有这样一句话：
+  
+  > it is also good practice to initialize them with a slightly positive initial bias to avoid "dead neurons."
+   
+  所以init时value设置为0.1会比较好（恩，这也是黑魔法）
+  
   - 用tf.matmul实现矩阵相乘，计算WX+b，这里实际上logit只是一个变量，而非结果
   - 用tf.nn.softmax_cross_entropy_with_logits计算WX+b的结果相较于原来的label的train_loss，并求均值
   - 使用梯度找到最小train_loss
