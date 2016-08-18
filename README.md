@@ -14,9 +14,10 @@
     
 
 框架： TensorFlow （[安装教程](https://github.com/ahangchen/GDLnotes/tree/master/note/tensorflow/install.md)）
-> 谷歌出品的基于Python的深度学习工具集
 
-工具：Ipython, Pycharm
+> 谷歌家的深度学习框架，有Python,C++的API
+
+工具：Pycharm
 
 笔记列表
 - Lesson 1 [Machine Learning to Deep Learning](note/lesson-1/README.md)
