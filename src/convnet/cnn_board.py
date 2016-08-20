@@ -179,13 +179,15 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                 tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
             tf.histogram_summary('loss', loss)
         # Optimizer.
-        if lrd:
-            cur_step = tf.Variable(0)  # count the number of steps taken.
-            starter_learning_rate = 0.06
-            learning_rate = tf.train.exponential_decay(starter_learning_rate, cur_step, 600, 0.1, staircase=True)
-            optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss, global_step=cur_step)
-        else:
-            optimizer = tf.train.AdagradOptimizer(0.1).minimize(loss)
+
+        with tf.name_scope('train'):
+            if lrd:
+                cur_step = tf.Variable(0)  # count the number of steps taken.
+                starter_learning_rate = 0.06
+                learning_rate = tf.train.exponential_decay(starter_learning_rate, cur_step, 600, 0.1, staircase=True)
+                optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss, global_step=cur_step)
+            else:
+                optimizer = tf.train.AdagradOptimizer(0.1).minimize(loss)
 
         # Predictions for the training, validation, and test data.
         with tf.name_scope('train_predict'):
@@ -200,13 +202,11 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         merged = tf.merge_all_summaries()
     summary_flag = True
     summary_dir = 'summary'
-    save_path = 'conv_mnist'
-    save_flag = False
     if tf.gfile.Exists(summary_dir):
         tf.gfile.DeleteRecursively(summary_dir)
     tf.gfile.MakeDirs(summary_dir)
 
-    num_steps = 201
+    num_steps = 5001
     with tf.Session(graph=graph) as session:
         train_writer = tf.train.SummaryWriter(summary_dir + '/train',
                                               session.graph)
