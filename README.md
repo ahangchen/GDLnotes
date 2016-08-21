@@ -21,43 +21,28 @@
 
 笔记列表
 - Lesson 1 [Machine Learning to Deep Learning](note/lesson-1/README.md)
-
-    > train your first simple model entirely end to end
     
     - [Logistic Classification](note/lesson-1/logistic_classify.md)
     - [Logistic Classification实践](note/lesson-1/practical.md)
     - [Stochastic Optimization](note/lesson-1/Stochastic_Optimization.md)
-    
-    > general data practices to train models
+
     
 - Lesson 2 [Deep Neural Network](note/lesson-2/README.md)
     - [Limit of Linear Model](note/lesson-2/limit_linear.md)
     - [Neural network](note/lesson-2/neural_network.md)
-      - [神经网络实践](note/lesson-2/neural_practical.md)
+    - [神经网络实践](note/lesson-2/neural_practical.md)
     - 优化神经网络：[Deep Network](note/lesson-2/deep_network.md)
-      - 防止深度神经网络过拟合
-        - Regularization
-        - Dropout
     - [深度神经网络实践](note/lesson-2/deep_network_practice.md)
     
-    > train your first deep network; Train even bigger models; 
-    
 - Lesson 3 [Convolutional Networks](note/lesson-3/README.md)
-
-    > deep dive into images and convolutional models
-    
-    - [卷积神经网络实践](note/lesson-3/practice.md)
+ - [卷积神经网络实践](note/lesson-3/practice.md)
     
 - Lessson 4 [Deep Models for Text and Sequence](note/lesson-4/README.md)
-  
-> Deep Models for Text and Sequence
-  
-  - Challenge
-  - Model
-  - Sequence
-  - [循环神经网络实践](note/lesson-4/rnn_practice.md)
+ - Challenge
+ - Model
+ - Sequence
+ - [循环神经网络实践](note/lesson-4/rnn_practice.md)
     
-
 - [More about TensorFlow](note/other.md)
 
 附录：
