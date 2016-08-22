@@ -4,8 +4,9 @@ import random
 
 from convnet.conv_mnist import maxpool2d, load_reformat_not_mnist
 from neural.full_connect import accuracy
+from util import file_helper
 from util.mnist import format_mnist
-from util.request import fit_loss, better_hyper
+from util.request import fit_loss, better_hyper, predict_future, fit_more
 
 import tensorflow as tf
 
@@ -15,7 +16,7 @@ def large_data_size(data):
 
 
 def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels, image_size,
-               num_labels, basic_hps, stride_ps, lrd=False, get_grad=False):
+               num_labels, basic_hps, stride_ps, lrd=False):
     batch_size = basic_hps['batch_size']
     patch_size = basic_hps['patch_size']
     depth = basic_hps['depth']
@@ -154,35 +155,37 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                 if step >= start_fit:
                     # print(loss_collect)
                     if step == start_fit:
-                        res = fit_loss(1, [batch_size, depth, num_hidden, layer_cnt, patch_size], loss_collect)
+                        res = fit_more(1, [batch_size, depth, num_hidden, layer_cnt, patch_size], loss_collect)
                     else:
-                        res = fit_loss(0, [batch_size, depth, num_hidden, layer_cnt, patch_size], loss_collect)
-                    if get_grad:
-                        better_hyper([batch_size, depth, num_hidden, layer_cnt, patch_size], loss_collect)
+                        res = fit_more(0, [batch_size, depth, num_hidden, layer_cnt, patch_size], loss_collect)
                     loss_collect.remove(loss_collect[0])
                     ret = res['ret']
-                    if ret == 1 and not get_grad:
+                    if ret == 1:
                         print('ret is end train when step is {step}'.format(step=step))
                         init_loss.append(loss_collect)
+                        more_index = predict_future([batch_size, depth, num_hidden, layer_cnt, patch_size], init_loss[0])
+                        print('more index: %d' % more_index)
+                        for i in range(more_index):
+                            offset = ((step + i + 1) * batch_size) % (train_labels.shape[0] - batch_size)
+                            batch_data = train_dataset[offset:(offset + batch_size), :, :, :]
+                            batch_labels = train_labels[offset:(offset + batch_size), :]
+                            feed_dict = {tf_train_dataset: batch_data, tf_train_labels: batch_labels}
+                            _, l, predictions = session.run(
+                                [optimizer, loss, train_prediction], feed_dict=feed_dict)
+                            loss_collect.append(l)
+                            file_helper.write('/home/cwh/coding/python/NN/line.txt', str(loss_collect[0]))
+                            loss_collect.remove(loss_collect[0])
+                        for loss in loss_collect[1:]:
+                            file_helper.write('/home/cwh/coding/python/NN/line.txt', str(loss))
                         end_train = True
 
-                        if step % 50 == 0:
-                            print('Minibatch loss at step %d: %f' % (step, l))
-                            print('Validation accuracy: %.1f%%' % accuracy(
-                                valid_prediction.eval(), valid_labels))
+                        file_helper.write('/home/cwh/coding/python/NN/line.txt', '===')
+                    if step % 50 == 0:
+                        print('Minibatch loss at step %d: %f' % (step, l))
+                        print('Validation accuracy: %.1f%%' % accuracy(
+                            valid_prediction.eval(), valid_labels))
 
         print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
-        if end_train:
-            hypers = better_hyper([batch_size, depth, num_hidden, layer_cnt, patch_size], init_loss[0])
-            print(hypers)
-            for i in range(len(hypers)):
-                if hypers[i] <= 1.0:
-                    hypers[i] = 1
-                else:
-                    hypers[i] = int(hypers[i])
-        else:
-            hypers = [batch_size, depth, num_hidden, layer_cnt, patch_size]
-    return end_train, hypers
 
 
 def valid_hp(hps):
@@ -198,7 +201,7 @@ def valid_hp(hps):
     return True
 
 
-def fit_better():
+def fit_predict():
     image_size = 28
     num_labels = 10
     train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels = \
@@ -209,11 +212,11 @@ def fit_better():
     test_dataset = test_dataset[0: pick_size, :, :, :]
     test_labels = test_labels[0: pick_size, :]
     basic_hypers = {
-        'batch_size': 51,
-        'patch_size': 26,
-        'depth': 57,
-        'num_hidden': 74,
-        'layer_sum': 4
+        'batch_size': 10,
+        'patch_size': 10,
+        'depth': 10,
+        'num_hidden': 10,
+        'layer_sum': 3
     }
     if basic_hypers['patch_size'] > 28:
         basic_hypers['patch_size'] = 28
@@ -222,53 +225,8 @@ def fit_better():
     print(basic_hypers)
 
     stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
-    ret, better_hps = conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels,
+    conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels,
                                  image_size, num_labels, basic_hypers, stride_params, lrd=True)
-    while ret and valid_hp(better_hps):
-        basic_hypers = {
-            'batch_size': better_hps[0],
-            'patch_size': better_hps[4],
-            'depth': better_hps[1],
-            'num_hidden': better_hps[2],
-            'layer_sum': better_hps[3]
-        }
-        # if basic_hypers['batch_size'] < 10:
-        #     basic_hypers['batch_size'] = 10
-        if basic_hypers['patch_size'] > 28:
-            basic_hypers['patch_size'] = 28
-        print('=' * 80)
-        print(basic_hypers)
-        stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
-        ret, better_hps = conv_train(
-            train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels,
-            image_size, num_labels, basic_hypers, stride_params, lrd=True)
-    else:
-        print('can not find better hypers')
-
-
-def one_fit_show_grad():
-    image_size = 28
-    num_labels = 10
-    train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels = \
-        load_reformat_not_mnist(image_size, num_labels, 1)
-    pick_size = 2048
-    valid_dataset = valid_dataset[0: pick_size, :, :, :]
-    valid_labels = valid_labels[0: pick_size, :]
-    test_dataset = test_dataset[0: pick_size, :, :, :]
-    test_labels = test_labels[0: pick_size, :]
-    basic_hypers = {
-        'batch_size': 8,
-        'patch_size': 1,
-        'depth': 1,
-        'num_hidden': 38,
-        'layer_sum': 1
-    }
-    stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
-    ret, better_hps = conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels,
-                                 image_size, num_labels, basic_hypers, stride_params, lrd=True, get_grad=True)
-    print(ret)
-    print(better_hps)
-
 
 if __name__ == '__main__':
-    fit_better()
+    fit_predict()
