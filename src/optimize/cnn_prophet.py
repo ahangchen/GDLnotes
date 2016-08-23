@@ -173,9 +173,9 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                             _, l, predictions = session.run(
                                 [optimizer, loss, train_prediction], feed_dict=feed_dict)
                             loss_collect.append(l)
-                            file_helper.write('/home/cwh/coding/python/NN/line.txt', str(loss_collect[0]))
+                            file_helper.write('/home/cwh/coding/python/NN/line.txt', str(loss_collect[20]))
                             loss_collect.remove(loss_collect[0])
-                        for loss in loss_collect[1:]:
+                        for loss in loss_collect[21:]:
                             file_helper.write('/home/cwh/coding/python/NN/line.txt', str(loss))
                         end_train = True
 
@@ -218,15 +218,20 @@ def fit_predict():
         'num_hidden': 10,
         'layer_sum': 3
     }
-    if basic_hypers['patch_size'] > 28:
-        basic_hypers['patch_size'] = 28
+    while(True):
+        basic_hypers['batch_size'] = random.randint(basic_hypers['batch_size'] / 2, basic_hypers['batch_size'] * 2)
+        basic_hypers['patch_size'] = random.randint(basic_hypers['patch_size'] / 2, basic_hypers['patch_size'] * 2)
+        basic_hypers['depth'] = random.randint(basic_hypers['depth'] / 2, basic_hypers['depth'] * 2)
+        basic_hypers['num_hidden'] = random.randint(basic_hypers['num_hidden'] / 2, basic_hypers['num_hidden'] * 2)
+        basic_hypers['layer_sum'] = random.randint(basic_hypers['layer_sum'] / 2, basic_hypers['layer_sum'] * 2)
+        if basic_hypers['patch_size'] > 28:
+            basic_hypers['patch_size'] = 28
+        print('=' * 80)
+        print(basic_hypers)
 
-    print('=' * 80)
-    print(basic_hypers)
-
-    stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
-    conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels,
-                                 image_size, num_labels, basic_hypers, stride_params, lrd=True)
+        stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
+        conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels,
+                                     image_size, num_labels, basic_hypers, stride_params, lrd=True)
 
 if __name__ == '__main__':
     fit_predict()
