@@ -2,6 +2,7 @@
 
 - [TensorFlow安装](install.md)
 - [初识Tensorboard](tensorboard.md)
+- [SKflow](skflow.md)
 
 > 觉得我的文章对您有帮助的话，就给个[star](https://github.com/ahangchen/GDLnotes)吧～
 
