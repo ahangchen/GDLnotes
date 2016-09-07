@@ -246,29 +246,5 @@ def fit_better():
         print('can not find better hypers')
 
 
-def one_fit_show_grad():
-    image_size = 28
-    num_labels = 10
-    train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels = \
-        load_reformat_not_mnist(image_size, num_labels, 1)
-    pick_size = 2048
-    valid_dataset = valid_dataset[0: pick_size, :, :, :]
-    valid_labels = valid_labels[0: pick_size, :]
-    test_dataset = test_dataset[0: pick_size, :, :, :]
-    test_labels = test_labels[0: pick_size, :]
-    basic_hypers = {
-        'batch_size': 8,
-        'patch_size': 1,
-        'depth': 1,
-        'num_hidden': 38,
-        'layer_sum': 1
-    }
-    stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
-    ret, better_hps = conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels,
-                                 image_size, num_labels, basic_hypers, stride_params, lrd=True, get_grad=True)
-    print(ret)
-    print(better_hps)
-
-
 if __name__ == '__main__':
     fit_better()
