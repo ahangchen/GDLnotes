@@ -129,7 +129,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         test_prediction = tf.nn.softmax(model(tf_test_dataset, model_drop=False, init=False))
         saver = tf.train.Saver()
     # on step 1750, run over 55000 train images
-    num_steps = 1750
+    num_steps = 1750 * 3
 
     save_path = 'conv_mnist'
     save_flag = True
