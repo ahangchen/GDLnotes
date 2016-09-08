@@ -5,7 +5,7 @@ import random
 from convnet.conv_mnist import maxpool2d
 from neural.full_connect import accuracy
 from util.mnist import format_mnist
-from util.request import fit_loss, better_hyper
+from util.request import fit_loss, better_hyper, fit_trend, better_trend_hyper
 
 import tensorflow as tf
 
@@ -64,13 +64,9 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             for i in range(mid_layer_cnt):
                 # print(hidden)
                 if init:
-                    # avoid filter shape larger than input shape
                     hid_shape = hidden.get_shape()
-                    # print(hid_shape)
                     filter_w = patch_size / (i + 1)
                     filter_h = patch_size / (i + 1)
-                    # print(filter_w)
-                    # print(filter_h)
                     if filter_w > hid_shape[1]:
                         filter_w = int(hid_shape[1])
                     if filter_h > hid_shape[2]:
@@ -79,11 +75,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                                                                    stddev=0.1))
                     layer_weights.append(layer_weight)
                 if not large_data_size(hidden) or not large_data_size(layer_weights[i]):
-                    # print("is not large data")
                     stride_ps[i + 1] = [1, 1, 1, 1]
-                # print(stride_ps[i + 1])
-                # print(len(stride_ps))
-                # print(i + 1)
                 conv = tf.nn.conv2d(hidden, layer_weights[i], stride_ps[i + 1], use_cudnn_on_gpu=True, padding='SAME')
                 if not large_data_size(conv):
                     conv = maxpool2d(conv, 1, 1)
@@ -116,16 +108,12 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         logits = model(tf_train_dataset, init=True)
         loss = tf.reduce_mean(
             tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
-        # Optimizer.
         optimizer = tf.train.AdagradOptimizer(starter_learning_rate).minimize(loss)
 
-        # Predictions for the training, validation, and test data.
         train_prediction = tf.nn.softmax(logits)
         valid_prediction = tf.nn.softmax(model(tf_valid_dataset))
         test_prediction = tf.nn.softmax(model(tf_test_dataset))
-    num_steps = 3001
-    start_fit = 600
-    init_loss = []
+    num_steps = 1001
 
     with tf.Session(graph=graph) as session:
         tf.initialize_all_variables().run()
@@ -146,27 +134,14 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                 mean_loss /= 5.0
                 loss_collect.append(mean_loss)
                 mean_loss = 0
-                if step >= start_fit:
-                    # print(loss_collect)
-                    if step == start_fit:
-                        res = fit_loss(1, [batch_size, depth, num_hidden, layer_cnt, patch_size], loss_collect)
-                    else:
-                        res = fit_loss(0, [batch_size, depth, num_hidden, layer_cnt, patch_size], loss_collect)
-                    loss_collect.remove(loss_collect[0])
-                    ret = res['ret']
-                    if ret == 1:
-                        print('ret is end train when step is {step}'.format(step=step))
-                        init_loss.append(loss_collect)
-                        end_train = True
-
-                        if step % 50 == 0:
-                            print('Minibatch loss at step %d: %f' % (step, l))
-                            print('Validation accuracy: %.1f%%' % accuracy(
-                                valid_prediction.eval(), valid_labels))
-
+                if step % 50 == 0:
+                    print('Minibatch loss at step %d: %f' % (step, l))
+                    print('Validation accuracy: %.1f%%' % accuracy(
+                        valid_prediction.eval(), valid_labels))
+        end_train = fit_trend([batch_size, depth, num_hidden, layer_cnt, patch_size, starter_learning_rate], loss_collect)
         print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
         if end_train:
-            hypers = better_hyper([batch_size, depth, num_hidden, layer_cnt, patch_size], init_loss[0])
+            hypers = better_trend_hyper([batch_size, depth, num_hidden, layer_cnt, patch_size], loss_collect)
             print(hypers)
             for i in range(len(hypers)):
                 if hypers[i] <= 1.0:
