@@ -33,17 +33,17 @@
 修改的[MNIST](http://yann.lecun.com/exdb/mnist/)，不够干净，更接近真实数据，比MNIST任务更困难。
 
 ## Todo
-我将官方教程的一个文件拆成了多个（以文件持久化为边界），然后在[schedule.py](../../src/assign_1/schedule.py)里统一调用，在各个文件里可以执行各个部分的功能测试。
+我将官方教程的一个文件拆成了多个（以文件持久化为边界），然后在[schedule.py](../../src/not_mnist/schedule.py)里统一调用，在各个文件里可以执行各个部分的功能测试。
 
 - 下载
   - 使用urlretrieve来获取数据集notMNIST_large.tar.gz和notMNIST_small.tar.gz
 
-  > 代码示例：[load_data.py](../../src/assign_1/load_data.py)
+  > 代码示例：[load_data.py](../../src/not_mnist/load_data.py)
 
 - 解压
   - 使用tarfile模块来解压刚刚下载的压缩包
 
-  > 代码示例：[extract.py](../../src/assign_1/extract.py)
+  > 代码示例：[extract.py](../../src/not_mnist/extract.py)
 
 - 读图 - 展示 - 序列化
   - 用ndimage读取一部分图片，用pickle将读取到的对象（ndarray对象的list）序列化存储到磁盘
@@ -51,7 +51,7 @@
   - 这里展示的是二值化图片，可以设置显示为灰度图
   - 将每个class对应的图像数据集序列化到磁盘
 
-  > 代码示例：[img_pickle.py](../../src/assign_1/img_pickle.py)
+  > 代码示例：[img_pickle.py](../../src/not_mnist/img_pickle.py)
 
 - 整理数据集
   - 用pickle读取pickle文件，
@@ -62,19 +62,19 @@
   - 其中对每个class读取到的数据，用random.shuffle将数据乱序化
   - 将各个class及其对应的label序列化到磁盘，作为测试集
 
-  > 代码示例[merge_prune.py](../../src/assign_1/merge_prune.py)
+  > 代码示例[merge_prune.py](../../src/not_mnist/merge_prune.py)
 
 - 去除重复数据 
     - load_pickle，加载dataset
     - 先将valid_dataset中与test_dataset重复部分剔除，再将train_dataset中与valid_dataset重复部分剔除
     - 每个dataset都是一个二维浮点数组的list，也可以理解为三维浮点数组，
     - 比较list中的每个图，也就是将list1中每个二维浮点数组与list2中每个二维浮点数组比较
-    - 示例代码即为[clean_overlap.py](../../src/assign_1/clean_overlap.py)中的imgs_idx_except
+    - 示例代码即为[clean_overlap.py](../../src/not_mnist/clean_overlap.py)中的imgs_idx_except
     
     - 我们在拿list1中的一个元素跟list2中的一个元素比较时，总共需要比较len(list1) * len(list2) * image_size * image_size次，速度极慢
     - 实际上这是有重复的计算的，就在于，list2中的每个元素，都被遍历了len(list1)次
     - 因此有这样的一个优化，我们遍历每个图，用图中的灰度值，仿照BKDRHash，得到每个图都不同的hash值，比较hash值来比较图像
-    - 示例代码即为[clean_overlap.py](../../src/assign_1/clean_overlap.py)中的imgs_idx_hash_except
+    - 示例代码即为[clean_overlap.py](../../src/not_mnist/clean_overlap.py)中的imgs_idx_hash_except
     
     - 这样每个图都只需要访问一次，计算hash的时间变为(len(list1) + len(list2)) * image_size * image_size
     - 比较的次数是len(list1) * len(list2)
@@ -83,13 +83,13 @@
     
     - 然后再将清理后的数据序列化到磁盘即可
 
-  > 代码示例： [clean_overlap.py](../../src/assign_1/clean_overlap.py)
+  > 代码示例： [clean_overlap.py](../../src/not_mnist/clean_overlap.py)
 
 - 训练一个logistics 模型
   - 将train_dataset作为输入，用valid_dataset进行验证（预测成功率81.9%）
   - 为了重复利用训练后的分类器，将其序列化到磁盘
   
-  > 代码示例： [logistic_train.py](../../src/assign_1/logistic_train.py)
+  > 代码示例： [logistic_train.py](../../src/not_mnist/logistic_train.py)
  
 - Measure Performance
   - 分类器会尝试去记住训练集
