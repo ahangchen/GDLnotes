@@ -6,7 +6,6 @@ from convnet.conv_mnist import maxpool2d
 from neural.full_connect import accuracy
 from util import file_helper
 from util.mnist import format_mnist
-from util.request import fit_loss, better_hyper, fit_trend, better_trend_hyper
 
 import tensorflow as tf
 
@@ -114,7 +113,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         train_prediction = tf.nn.softmax(logits)
         valid_prediction = tf.nn.softmax(model(tf_valid_dataset))
         test_prediction = tf.nn.softmax(model(tf_test_dataset))
-    num_steps = 1001
+    num_steps = 2001
 
     with tf.Session(graph=graph) as session:
         tf.initialize_all_variables().run()
