@@ -22,7 +22,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
     num_hidden = basic_hps['num_hidden']
     num_channels = 1
     layer_cnt = basic_hps['layer_sum']
-    starter_learning_rate = basic_hps['start_learning_rate']
+    starter_learning_rate = basic_hps['starter_learning_rate']
     loss_collect = list()
     first_hidden_num = basic_hps['num_hidden']
     second_hidden_num = first_hidden_num / 2 + 1
@@ -143,6 +143,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                 hypers[i] = 1
             else:
                 hypers[i] = int(hypers[i])
+        hypers.append(starter_learning_rate)
     return hypers
 
 

@@ -7,6 +7,7 @@ import urllib2
 fit_url = 'http://127.0.0.1:8000/fit/'
 fit_trend_url = 'http://127.0.0.1:8000/fit/trend/'
 better_hp_trend_url = 'http://127.0.0.1:8000/fit/trend/'
+hp2trend_url = 'http://127.0.0.1:8000/hp2trend/'
 fit2_url = 'http://127.0.0.1:8000/fit2/'
 better_hp_url = 'http://127.0.0.1:8000/hyper/'
 predict_loss_url = 'http://127.0.0.1:8000/predict/'
@@ -62,7 +63,7 @@ def fit_trend(hypers, loss_es):
 
 def better_trend_hyper(hypers, loss):
     data = urllib.urlencode({'hyper': hypers, 'loss': loss})
-    req = urllib2.Request(better_hp_trend_url, data)
+    req = urllib2.Request(hp2trend_url, data)
     response = urllib2.urlopen(req)
     res = json.loads(response.read())
     better_hypers = res['msg']
