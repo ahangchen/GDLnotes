@@ -57,7 +57,9 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             if not large_data_size(data) or not large_data_size(input_weights):
                 stride_ps[0] = [1, 1, 1, 1]
             conv = tf.nn.conv2d(data, input_weights, stride_ps[0], use_cudnn_on_gpu=True, padding='SAME')
+            print(conv)
             conv = maxpool2d(conv)
+            print(conv)
             hidden = tf.nn.relu(conv + input_biases)
             if init:
                 hidden = tf.nn.dropout(hidden, 0.8)
@@ -77,10 +79,12 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                 if not large_data_size(hidden) or not large_data_size(layer_weights[i]):
                     stride_ps[i + 1] = [1, 1, 1, 1]
                 conv = tf.nn.conv2d(hidden, layer_weights[i], stride_ps[i + 1], use_cudnn_on_gpu=True, padding='SAME')
+                print(conv)
                 if not large_data_size(conv):
                     conv = maxpool2d(conv, 1, 1)
                 else:
                     conv = maxpool2d(conv)
+                print(conv)
                 hidden = tf.nn.relu(conv + layer_biases[i])
                 if init:
                     hidden = tf.nn.dropout(hidden, 0.8)
@@ -171,11 +175,11 @@ def fit_better():
     test_dataset = test_dataset[0: pick_size, :, :, :]
     test_labels = test_labels[0: pick_size, :]
     basic_hypers = {
-        'batch_size': 10,
-        'patch_size': 10,
-        'depth': 10,
-        'num_hidden': 10,
-        'layer_sum': 3,
+        'batch_size': 32,
+        'patch_size': 5,
+        'depth': 16,
+        'num_hidden': 64,
+        'layer_sum': 2,
         'starter_learning_rate': 0.1
     }
     if basic_hypers['patch_size'] > 28:
