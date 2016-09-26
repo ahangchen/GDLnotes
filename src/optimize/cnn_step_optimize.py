@@ -19,6 +19,8 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
     batch_size = basic_hps['batch_size']
     patch_size = basic_hps['patch_size']
     depth = basic_hps['depth']
+    if depth < 2:
+        depth = 2
     num_hidden = basic_hps['num_hidden']
     num_channels = 1
     layer_cnt = basic_hps['layer_sum']
@@ -131,9 +133,10 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             _, l, predictions = session.run(
                 [optimizer, loss, train_prediction], feed_dict=feed_dict)
             mean_loss += l
-            if step % 5 == 0:
-                mean_loss /= 5.0
-                loss_collect.append(mean_loss)
+            if step % 10 == 0:
+                mean_loss /= 10.0
+                if step % 100 == 0:
+                    loss_collect.append(mean_loss)
                 mean_loss = 0
                 if step % 50 == 0:
                     print('Minibatch loss at step %d: %f' % (step, l))
@@ -175,11 +178,11 @@ def fit_better():
     test_dataset = test_dataset[0: pick_size, :, :, :]
     test_labels = test_labels[0: pick_size, :]
     basic_hypers = {
-        'batch_size': 32,
-        'patch_size': 5,
-        'depth': 16,
-        'num_hidden': 64,
-        'layer_sum': 2,
+        'batch_size': 6,
+        'patch_size': 10,
+        'depth': 1,
+        'num_hidden': 30,
+        'layer_sum': 3,
         'starter_learning_rate': 0.1
     }
     if basic_hypers['patch_size'] > 28:
