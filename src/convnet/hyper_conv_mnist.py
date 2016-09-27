@@ -36,7 +36,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         # Variables.
         # the third parameter must be same as the last layer depth
         input_weights = tf.Variable(tf.truncated_normal(
-            [patch_size, patch_size, num_channels, depth]))
+            [patch_size, patch_size, num_channels, depth], stddev=0.1))
         input_biases = tf.Variable(tf.zeros([depth]))
 
         mid_layer_cnt = layer_cnt - 1
@@ -45,9 +45,9 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         output_weights = list()
         output_biases = tf.Variable(tf.constant(1.0, shape=[first_hidden_num]))
         first_nn_weights = tf.Variable(tf.truncated_normal(
-            [first_hidden_num, second_hidden_num]))
+            [first_hidden_num, second_hidden_num], stddev=0.1))
         second_nn_weights = tf.Variable(tf.truncated_normal(
-            [second_hidden_num, num_labels]))
+            [second_hidden_num, num_labels], stddev=0.1))
         first_nn_biases = tf.Variable(tf.constant(1.0, shape=[second_hidden_num]))
         second_nn_biases = tf.Variable(tf.constant(1.0, shape=[num_labels]))
 
@@ -75,7 +75,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                     if filter_h > hid_shape[2]:
                         filter_h = int(hid_shape[2])
                     layer_weight = tf.Variable(tf.truncated_normal(
-                        shape=[filter_w, filter_h, depth * (i + 1), depth * (i + 2)]))
+                        shape=[filter_w, filter_h, depth * (i + 1), depth * (i + 2)], stddev=0.1))
                     layer_weights.append(layer_weight)
                 if not large_data_size(hidden) or not large_data_size(layer_weights[i]):
                     # print("is not large data")
@@ -176,10 +176,10 @@ def hp_train():
     test_dataset = test_dataset[0: pick_size, :, :, :]
     test_labels = test_labels[0: pick_size, :]
     basic_hypers = {
-        'batch_size': 32,
-        'patch_size': 5,
-        'depth': 16,
-        'num_hidden': 64,
+        'batch_size': 21,
+        'patch_size': 4,
+        'depth': 71,
+        'num_hidden': 78,
         'layer_sum': 2
     }
     stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
