@@ -22,11 +22,13 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
     if depth < 2:
         depth = 2
     num_hidden = basic_hps['num_hidden']
+    if num_hidden < 4:
+        num_hidden = 4
     num_channels = 1
     layer_cnt = basic_hps['layer_sum']
     starter_learning_rate = basic_hps['starter_learning_rate']
     loss_collect = list()
-    first_hidden_num = basic_hps['num_hidden']
+    first_hidden_num = num_hidden
     second_hidden_num = first_hidden_num / 2 + 1
 
     graph = tf.Graph()
@@ -39,7 +41,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         tf_test_dataset = tf.constant(test_dataset)
 
         input_weights = tf.Variable(tf.truncated_normal(
-            [patch_size, patch_size, num_channels, depth], stddev=0.1))
+            [patch_size, patch_size, num_channels, depth], mean=-0.1, stddev=0.1))
         input_biases = tf.Variable(tf.zeros([depth]))
         mid_layer_cnt = layer_cnt - 1
         layer_weights = list()
@@ -47,9 +49,9 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         output_weights = list()
         output_biases = tf.Variable(tf.constant(1.0, shape=[num_hidden]))
         first_nn_weights = tf.Variable(tf.truncated_normal(
-            [first_hidden_num, second_hidden_num], stddev=0.1))
+            [first_hidden_num, second_hidden_num], mean=-0.1,stddev=0.1))
         second_nn_weights = tf.Variable(tf.truncated_normal(
-            [second_hidden_num, num_labels], stddev=0.1))
+            [second_hidden_num, num_labels], mean=-0.1,stddev=0.1))
         first_nn_biases = tf.Variable(tf.constant(1.0, shape=[second_hidden_num]))
         second_nn_biases = tf.Variable(tf.constant(1.0, shape=[num_labels]))
 
@@ -76,7 +78,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                     if filter_h > hid_shape[2]:
                         filter_h = int(hid_shape[2])
                     layer_weight = tf.Variable(tf.truncated_normal(shape=[filter_w, filter_h, depth / (i + 1), depth / (i + 2)],
-                                                                   stddev=0.1))
+                                                                   mean=-0.1, stddev=0.1))
                     layer_weights.append(layer_weight)
                 if not large_data_size(hidden) or not large_data_size(layer_weights[i]):
                     stride_ps[i + 1] = [1, 1, 1, 1]
@@ -98,7 +100,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
 
             if init:
                 output_size = shape_mul
-                output_weights.append(tf.Variable(tf.truncated_normal([output_size, num_hidden], stddev=0.1)))
+                output_weights.append(tf.Variable(tf.truncated_normal([output_size, num_hidden], mean=-0.1, stddev=0.1)))
             reshape = tf.reshape(hidden, [shapes[0], shape_mul])
 
             hidden = tf.nn.relu6(tf.matmul(reshape, output_weights[0]) + output_biases)
@@ -135,7 +137,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             mean_loss += l
             if step % 10 == 0:
                 mean_loss /= 10.0
-                if step % 100 == 0:
+                if step % 50 == 0:
                     loss_collect.append(mean_loss)
                 mean_loss = 0
                 if step % 50 == 0:
@@ -178,10 +180,10 @@ def fit_better():
     test_dataset = test_dataset[0: pick_size, :, :, :]
     test_labels = test_labels[0: pick_size, :]
     basic_hypers = {
-        'batch_size': 6,
+        'batch_size': 10,
         'patch_size': 10,
-        'depth': 1,
-        'num_hidden': 30,
+        'depth': 10,
+        'num_hidden': 10,
         'layer_sum': 3,
         'starter_learning_rate': 0.1
     }
