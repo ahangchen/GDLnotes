@@ -36,7 +36,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         # Variables.
         # the third parameter must be same as the last layer depth
         input_weights = tf.Variable(tf.truncated_normal(
-            [patch_size, patch_size, num_channels, depth], mean=-0.1, stddev=0.1))
+            [patch_size, patch_size, num_channels, depth]))
         input_biases = tf.Variable(tf.zeros([depth]))
 
         mid_layer_cnt = layer_cnt - 1
@@ -45,9 +45,9 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         output_weights = list()
         output_biases = tf.Variable(tf.constant(1.0, shape=[first_hidden_num]))
         first_nn_weights = tf.Variable(tf.truncated_normal(
-            [first_hidden_num, second_hidden_num], mean=-0.1, stddev=0.1))
+            [first_hidden_num, second_hidden_num]))
         second_nn_weights = tf.Variable(tf.truncated_normal(
-            [second_hidden_num, num_labels], mean=-0.1, stddev=0.1))
+            [second_hidden_num, num_labels]))
         first_nn_biases = tf.Variable(tf.constant(1.0, shape=[second_hidden_num]))
         second_nn_biases = tf.Variable(tf.constant(1.0, shape=[num_labels]))
 
@@ -75,7 +75,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                     if filter_h > hid_shape[2]:
                         filter_h = int(hid_shape[2])
                     layer_weight = tf.Variable(tf.truncated_normal(
-                        shape=[filter_w, filter_h, depth * (i + 1), depth * (i + 2)], mean=-0.1, stddev=0.1))
+                        shape=[filter_w, filter_h, depth * (i + 1), depth * (i + 2)]))
                     layer_weights.append(layer_weight)
                 if not large_data_size(hidden) or not large_data_size(layer_weights[i]):
                     # print("is not large data")
@@ -98,7 +98,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
 
             if init:
                 output_size = shape_mul
-                output_weights.append(tf.Variable(tf.truncated_normal([output_size, first_hidden_num], mean=-0.1, stddev=0.1)))
+                output_weights.append(tf.Variable(tf.truncated_normal([output_size, first_hidden_num])))
             reshape = tf.reshape(hidden, [shapes[0], shape_mul])
 
             hidden = tf.nn.relu6(tf.matmul(reshape, output_weights[0]) + output_biases)
@@ -117,7 +117,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         # Optimizer.
         if lrd:
             cur_step = tf.Variable(0)  # count the number of steps taken.
-            starter_learning_rate = 0.06
+            starter_learning_rate = 0.1
             learning_rate = tf.train.exponential_decay(starter_learning_rate, cur_step, 600, 0.1, staircase=True)
             optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss, global_step=cur_step)
         else:
@@ -189,5 +189,4 @@ def hp_train():
 
 
 if __name__ == '__main__':
-    for _ in range(2):
-        hp_train()
+    hp_train()
