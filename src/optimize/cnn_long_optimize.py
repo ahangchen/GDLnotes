@@ -4,8 +4,8 @@ import random
 
 from convnet.conv_mnist import maxpool2d
 from neural.full_connect import accuracy
+from util.file_helper import read2mem
 from util.mnist import format_mnist
-from util.request import fit_loss, better_hyper, fit_trend, better_trend_hyper
 
 import tensorflow as tf
 
@@ -22,7 +22,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
     num_hidden = basic_hps['num_hidden']
     num_channels = 1
     layer_cnt = basic_hps['layer_sum']
-    starter_learning_rate = basic_hps['start_learning_rate']
+    starter_learning_rate = basic_hps['starter_learning_rate']
     loss_collect = list()
     first_hidden_num = basic_hps['num_hidden']
     second_hidden_num = first_hidden_num / 2 + 1
@@ -34,7 +34,6 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             tf.float32, shape=(batch_size, image_size, image_size, num_channels))
         tf_train_labels = tf.placeholder(tf.float32, shape=(batch_size, num_labels))
         tf_valid_dataset = tf.constant(valid_dataset)
-        tf_test_dataset = tf.constant(test_dataset)
 
         input_weights = tf.Variable(tf.truncated_normal(
             [patch_size, patch_size, num_channels, depth], stddev=0.1))
@@ -112,7 +111,6 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
 
         train_prediction = tf.nn.softmax(logits)
         valid_prediction = tf.nn.softmax(model(tf_valid_dataset))
-        test_prediction = tf.nn.softmax(model(tf_test_dataset))
     num_steps = 1001
 
     with tf.Session(graph=graph) as session:
@@ -130,27 +128,14 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             _, l, predictions = session.run(
                 [optimizer, loss, train_prediction], feed_dict=feed_dict)
             mean_loss += l
-            if step % 5 == 0:
+            if step % 10 == 0:
                 mean_loss /= 5.0
-                loss_collect.append(mean_loss)
                 mean_loss = 0
-                if step % 50 == 0:
+                if step % 100 == 0:
+                    loss_collect.append(mean_loss)
                     print('Minibatch loss at step %d: %f' % (step, l))
                     print('Validation accuracy: %.1f%%' % accuracy(
                         valid_prediction.eval(), valid_labels))
-        end_train = fit_trend([batch_size, depth, num_hidden, layer_cnt, patch_size, starter_learning_rate], loss_collect)
-        print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
-        if end_train:
-            hypers = better_trend_hyper([batch_size, depth, num_hidden, layer_cnt, patch_size], loss_collect)
-            print(hypers)
-            for i in range(len(hypers)):
-                if hypers[i] <= 1.0:
-                    hypers[i] = 1
-                else:
-                    hypers[i] = int(hypers[i])
-        else:
-            hypers = [batch_size, depth, num_hidden, layer_cnt, patch_size]
-    return end_train, hypers
 
 
 def valid_hp(hps):
@@ -166,6 +151,17 @@ def valid_hp(hps):
     return True
 
 
+def etc_hp():
+    hps = [list() for _ in range(5)]
+    hps[0] = read2mem('/home/cwh/Mission/coding/slides/hp2trend/hp2trend_hps0.txt').split()
+    hps[1] = read2mem('/home/cwh/Mission/coding/slides/hp2trend/hp2trend_hps1.txt').split()
+    hps[2] = read2mem('/home/cwh/Mission/coding/slides/hp2trend/hp2trend_hps2.txt').split()
+    hps[3] = read2mem('/home/cwh/Mission/coding/slides/hp2trend/hp2trend_hps3.txt').split()
+    hps[4] = read2mem('/home/cwh/Mission/coding/slides/hp2trend/hp2trend_hps4.txt').split()
+    format_hps = [[hps[0][i], hps[1][i], hps[2][i], hps[3][i], hps[4][i]] for i in range(len(hps[0]))]
+    return format_hps
+
+
 def fit_better():
     image_size = 28
     num_labels = 10
@@ -176,31 +172,15 @@ def fit_better():
     valid_labels = valid_labels[0: pick_size, :]
     test_dataset = test_dataset[0: pick_size, :, :, :]
     test_labels = test_labels[0: pick_size, :]
-    basic_hypers = {
-        'batch_size': 10,
-        'patch_size': 10,
-        'depth': 10,
-        'num_hidden': 10,
-        'layer_sum': 3,
-        'starter_learning_rate': 0.1
-    }
-    if basic_hypers['patch_size'] > 28:
-        basic_hypers['patch_size'] = 28
-
-    print('=' * 80)
-    print(basic_hypers)
-
-    stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
-    ret, better_hps = conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels,
-                                 image_size, num_labels, basic_hypers, stride_params)
-    while ret and valid_hp(better_hps):
+    better_hps_list = etc_hp()
+    for better_hps in better_hps_list:
         basic_hypers = {
-            'batch_size': better_hps[0],
-            'patch_size': better_hps[4],
-            'depth': better_hps[1],
-            'num_hidden': better_hps[2],
-            'layer_sum': better_hps[3],
-            'starter_learning_rate': better_hps[5]
+            'batch_size': int(float(better_hps[0])),
+            'patch_size': int(float(better_hps[4])),
+            'depth': int(float(better_hps[1])),
+            'num_hidden': int(float(better_hps[2])),
+            'layer_sum': int(float(better_hps[3])),
+            'starter_learning_rate': 0.1
         }
         # if basic_hypers['batch_size'] < 10:
         #     basic_hypers['batch_size'] = 10
@@ -209,7 +189,7 @@ def fit_better():
         print('=' * 80)
         print(basic_hypers)
         stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
-        ret, better_hps = conv_train(
+        conv_train(
             train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels,
             image_size, num_labels, basic_hypers, stride_params)
     else:
