@@ -22,7 +22,6 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
     second_hidden_num = first_hidden_num / 2 + 1
     num_channels = 1
     layer_cnt = basic_hps['layer_sum']
-    loss_collect = list()
 
     graph = tf.Graph()
     with graph.as_default():
@@ -98,7 +97,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
 
             if init:
                 output_size = shape_mul
-                output_weights.append(tf.Variable(tf.truncated_normal([output_size, first_hidden_num])))
+                output_weights.append(tf.Variable(tf.truncated_normal([output_size, first_hidden_num], stddev=0.1)))
             reshape = tf.reshape(hidden, [shapes[0], shape_mul])
 
             hidden = tf.nn.relu6(tf.matmul(reshape, output_weights[0]) + output_biases)
@@ -152,14 +151,13 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             _, l, predictions = session.run(
                 [optimizer, loss, train_prediction], feed_dict=feed_dict)
             mean_loss += l
-            if step % 5 == 0:
-                mean_loss /= 5.0
-                loss_collect.append(mean_loss)
-                mean_loss = 0
-                if step % 50 == 0:
-                    print('Minibatch loss at step %d: %f' % (step, l))
+            if step % 10 == 0:
+                mean_loss /= 10.0
+                if step % 200 == 0:
+                    print('Minibatch loss at step %d: %f' % (step, mean_loss))
                     print('Validation accuracy: %.1f%%' % accuracy(
                         valid_prediction.eval(), valid_labels))
+                mean_loss = 0
         if save_flag:
             saver.save(session, save_path)
         print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
@@ -176,10 +174,10 @@ def hp_train():
     test_dataset = test_dataset[0: pick_size, :, :, :]
     test_labels = test_labels[0: pick_size, :]
     basic_hypers = {
-        'batch_size': 21,
-        'patch_size': 4,
-        'depth': 71,
-        'num_hidden': 78,
+        'batch_size': 32,
+        'patch_size': 5,
+        'depth': 16,
+        'num_hidden': 64,
         'layer_sum': 2
     }
     stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]

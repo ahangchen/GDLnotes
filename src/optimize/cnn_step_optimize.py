@@ -22,8 +22,9 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
     if depth < 2:
         depth = 2
     num_hidden = basic_hps['num_hidden']
-    if num_hidden < 4:
-        num_hidden = 4
+    if num_hidden < 8:
+        num_hidden = 8
+
     num_channels = 1
     layer_cnt = basic_hps['layer_sum']
     starter_learning_rate = basic_hps['starter_learning_rate']
@@ -164,7 +165,10 @@ def valid_hp(hps):
     if one_hp_cnt == len(hps):
         print('all hp is one, change:')
         for i in range(len(hps)):
-            hps[i] *= random.randint(0, 10)
+            hps[i] *= random.randint(3, 10)
+        hps[5] = 0.1
+        hps[3] = 2
+        hps[2] *= 10
         print(hps)
     return True
 
@@ -189,7 +193,8 @@ def fit_better():
     }
     if basic_hypers['patch_size'] > 28:
         basic_hypers['patch_size'] = 28
-
+    if basic_hypers['layer_sum'] > 3:
+        basic_hypers['layer_sum'] = 3
     print('=' * 80)
     print(basic_hypers)
 
@@ -209,6 +214,8 @@ def fit_better():
         #     basic_hypers['batch_size'] = 10
         if basic_hypers['patch_size'] > 28:
             basic_hypers['patch_size'] = 28
+        if basic_hypers['layer_sum'] > 3:
+            basic_hypers['layer_sum'] = 3
         print('=' * 80)
         print(basic_hypers)
         stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
