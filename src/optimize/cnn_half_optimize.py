@@ -136,12 +136,12 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             _, l, predictions = session.run(
                 [optimizer, loss, train_prediction], feed_dict=feed_dict)
             mean_loss += l
-            if step % 10 == 0:
+            if step % 10 == 0 and step != 0:
                 mean_loss /= 10.0
                 if step % 50 == 0:
                     loss_collect.append(mean_loss)
                 mean_loss = 0
-                if step % 200 == 0:
+                if step % 500 == 0:
                     print('Minibatch loss at step %d: %f' % (step, l))
                     print('Validation accuracy: %.1f%%' % accuracy(
                         valid_prediction.eval(), valid_labels))
