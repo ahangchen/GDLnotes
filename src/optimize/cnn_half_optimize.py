@@ -7,7 +7,7 @@ import tensorflow as tf
 from convnet.conv_mnist import maxpool2d
 from neural.full_connect import accuracy
 from util.mnist import format_mnist
-from util.request import better_trend_hyper, half_trend_hyper
+from util.request import half_trend_hyper
 
 
 def large_data_size(data):
@@ -216,6 +216,8 @@ def fit_better():
             basic_hypers['patch_size'] = 28
         if basic_hypers['layer_sum'] > 3:
             basic_hypers['layer_sum'] = 3
+        if basic_hypers['patch_size'] <= basic_hypers['layer_sum']:
+            basic_hypers['patch_size'] = basic_hypers['layer_sum']
         print('=' * 80)
         print(basic_hypers)
         stride_params = [[1, 2, 2, 1] for _ in range(basic_hypers['layer_sum'])]
