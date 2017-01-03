@@ -1,5 +1,7 @@
 # Google Deep Learning Notes
 
+`前排提醒：工具归工具，研究归研究，AI的研究唯有多看论文，多做实验，才能掌握其精髓`
+
 > Google 深度学习笔记
 
 > Github工程地址：https://github.com/ahangchen/GDLnotes
