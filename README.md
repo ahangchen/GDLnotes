@@ -1,6 +1,6 @@
 # Google Deep Learning Notes
 
-`前排提醒：工具归工具，研究归研究，AI的研究唯有多看论文，多做实验，才能掌握其精髓`
+前排提醒：工具归工具，研究归研究，AI的研究唯有打好基础，多看论文，多做实验，方能有所增益。
 
 > Google 深度学习笔记
 
@@ -51,6 +51,8 @@
 - [matplotlib笔记](note/matplotlib/README.md)（待完善）
 - [sklearn笔记](note/sklearn/README.md)（待完善）
 - [TensorFlow笔记](note/tensorflow/README.md)
+
+最近在整理西瓜书中的[一些概念](https://github.com/ahangchen/windy-afternoon/blob/master/ml/melon_concepts.md)，有兴趣的同学可以参与
 
 > 觉得我的文章对您有帮助的话，就给个[star](https://github.com/ahangchen/GDLnotes)吧～
 
