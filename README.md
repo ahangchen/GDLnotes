@@ -37,13 +37,13 @@
     - [深度神经网络实践](note/lesson-2/deep_network_practice.md)
     
 - Lesson 3 [Convolutional Networks](note/lesson-3/README.md)
- - [卷积神经网络实践](note/lesson-3/practice.md)
+  - [卷积神经网络实践](note/lesson-3/practice.md)
     
 - Lessson 4 [Deep Models for Text and Sequence](note/lesson-4/README.md)
- - Challenge
- - Model
- - Sequence
- - [循环神经网络实践](note/lesson-4/rnn_practice.md)
+  - Challenge
+  - Model
+  - Sequence
+  - [循环神经网络实践](note/lesson-4/rnn_practice.md)
     
 
 附录：
