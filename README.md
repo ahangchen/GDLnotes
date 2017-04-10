@@ -1,6 +1,6 @@
 # Google Deep Learning Notes
 
-前排提醒：工具归工具，研究归研究，AI的研究唯有打好基础，多看论文，多做实验，方能有所增益。
+前排提醒：工具归工具，研究归研究，AI的研究唯有打好[基础](https://github.com/ahangchen/windy-afternoon/tree/master/ml/melon)，多看论文，多做实验，方能有所增益。
 
 > Google 深度学习笔记
 
