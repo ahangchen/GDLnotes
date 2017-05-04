@@ -17,7 +17,7 @@ def tf_deep_nn(regular=False, drop_out=False, lrd=False, layer_cnt=2):
         tf_valid_dataset = tf.constant(valid_dataset)
         tf_test_dataset = tf.constant(test_dataset)
 
-        hidden_node_count = 64
+        hidden_node_count = 32
         # start weight
         hidden_stddev = np.sqrt(2.0 / 100)
         weights1 = tf.Variable(tf.truncated_normal([feature_dim, hidden_node_count], stddev=hidden_stddev))
@@ -101,17 +101,17 @@ def tf_deep_nn(regular=False, drop_out=False, lrd=False, layer_cnt=2):
         if lrd:
             cur_step = tf.Variable(0, trainable=False)  # count the number of steps taken.
             starter_learning_rate = 0.4
-            learning_rate = tf.train.exponential_decay(starter_learning_rate, cur_step, 500, 0.5, staircase=True)
+            learning_rate = tf.train.exponential_decay(starter_learning_rate, cur_step, 500, 0.75, staircase=True)
             optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss, global_step=cur_step)
         else:
-            optimizer = tf.train.GradientDescentOptimizer(0.5).minimize(loss)
+            optimizer = tf.train.AdamOptimizer(0.5).minimize(loss)
 
         # Predictions for the training, validation, and test data.
         train_prediction = tf.nn.softmax(logits_predict)
         valid_prediction = tf.nn.softmax(valid_predict)
         test_prediction = tf.nn.softmax(test_predict)
 
-    num_steps = 10001
+    num_steps = 8001
 
     with tf.Session(graph=graph) as session:
         tf.initialize_all_variables().run()
