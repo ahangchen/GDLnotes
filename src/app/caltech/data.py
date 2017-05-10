@@ -30,9 +30,11 @@ def read_caltech():
         train_features.append(features)
         train_features.append(features)
         train_features.append(features)
-        train_labels.append([1,0])
-        train_labels.append([1,0])
-        train_labels.append([1,0])
+        train_labels.append([1, 0])
+        train_labels.append([1, 0])
+        train_labels.append([1, 0])
+    pos_train_cnt = len(train_labels) / 3
+    print(pos_train_cnt)
     i = 0
     for files in os.listdir(caltech_train_neg_path):
         if i > max_read:
@@ -42,7 +44,8 @@ def read_caltech():
         # print(path)
         features = read_lines(path)
         train_features.append(features)
-        train_labels.append([0,1])
+        train_labels.append([0, 1])
+    print(len(train_labels) - pos_train_cnt * 3)
     i = 0
     for files in os.listdir(caltech_test_pos_path):
         if i > max_read:
@@ -52,7 +55,9 @@ def read_caltech():
         # print(path)
         features = read_lines(path)
         test_features.append(features)
-        test_labels.append([1,0])
+        test_labels.append([1, 0])
+    pos_test_cnt = len(test_labels) / 3
+    print(pos_test_cnt)
     i = 0
     for files in os.listdir(caltech_test_neg_path):
         if i > max_read:
@@ -62,7 +67,8 @@ def read_caltech():
         # print(path)
         features = read_lines(path)
         test_features.append(features)
-        test_labels.append([0,1])
+        test_labels.append([0, 1])
+    print(len(test_labels) - pos_test_cnt)
     train_tuples = zip(train_features, train_labels)
     random.shuffle(train_tuples)
     train_features = [train_tuple[0] for train_tuple in train_tuples]
