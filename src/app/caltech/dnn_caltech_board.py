@@ -1,14 +1,46 @@
 from __future__ import print_function
 
+import os
+
 import numpy as np
 import tensorflow as tf
 
 from app.caltech.data import read_caltech
-from neural.full_connect import accuracy
 from util.board import variable_summary
 
 
-def tf_deep_nn(regular=False):
+def recall_rate(predictions, labels, is_test=False):
+    threshold = 0.0
+    i_predictions = np.subtract(predictions, np.asarray([[threshold, 0] for _ in range(len(labels))]))
+    predict_succ = np.argmax(i_predictions, 1) == np.argmax(labels, 1)
+    pos_samples = np.argmax(labels, 1) == 0
+    res = 100.0 * np.sum(np.logical_and(predict_succ, pos_samples)) / np.sum(pos_samples)
+    if is_test:
+        for i in range(20):
+            threshold = -1.0 + i * 0.1
+            i_predictions = np.subtract(predictions, np.asarray([[threshold, 0] for _ in range(len(labels))]))
+            predict_succ = np.argmax(i_predictions, 1) == np.argmax(labels, 1)
+            pos_samples = np.argmax(labels, 1) == 0
+            res = 100.0 * np.sum(np.logical_and(predict_succ, pos_samples)) / np.sum(pos_samples)
+            print('recall: %f%%' % res)
+    return res
+
+
+def accuracy(predictions, labels, is_test=False):
+    if is_test:
+        for i in range(20):
+            threshold = -1.0 + i * 0.1
+            i_predictions = np.subtract(predictions, np.asarray([[threshold, 0] for _ in range(len(labels))]))
+            res = 100.0 * np.sum(np.argmax(i_predictions, 1) == np.argmax(labels, 1)) / predictions.shape[0]
+            print('precision: %f%%' % res)
+    else:
+        threshold = 0.0
+        i_predictions = np.subtract(predictions, np.asarray([[threshold, 0] for _ in range(len(labels))]))
+        res = 100.0 * np.sum(np.argmax(i_predictions, 1) == np.argmax(labels, 1)) / predictions.shape[0]
+    return res
+
+
+def tf_deep_nn(regular=False, test=False):
     batch_size = 128
 
     graph = tf.Graph()
@@ -99,6 +131,8 @@ def tf_deep_nn(regular=False):
         # Predictions for the training, validation, and test data.
         train_prediction = tf.nn.softmax(logits_predict)
 
+        saver = tf.train.Saver()
+
         merged = tf.summary.merge_all()
     summary_flag = True
     summary_dir = 'summary'
@@ -107,41 +141,61 @@ def tf_deep_nn(regular=False):
     tf.gfile.MakeDirs(summary_dir)
     num_steps = 5001
 
+    save_path = 'ct_save.ckpt'
+    save_flag = True
+
     with tf.Session(graph=graph) as session:
         train_writer = tf.summary.FileWriter(summary_dir + '/train',
                                              session.graph)
         test_writer = tf.summary.FileWriter(summary_dir + '/test')
-        tf.global_variables_initializer().run()
-        print("Initialized")
-        for step in range(num_steps):
-            offset_range = train_labels.shape[0] - batch_size
-            offset = (step * batch_size) % offset_range
-            batch_data = train_dataset[offset:(offset + batch_size), :]
-            batch_labels = train_labels[offset:(offset + batch_size), :]
-            feed_dict = {tf_train_dataset: batch_data, tf_train_labels: batch_labels}
-            if summary_flag:
-                summary, _, l, predictions = session.run(
-                    [merged, optimizer, loss, train_prediction], feed_dict=feed_dict)
-            else:
-                _, l, predictions = session.run(
-                    [optimizer, loss, train_prediction], feed_dict=feed_dict)
-            if step % 50 == 0:
-                print("Minibatch loss at step %d: %f" % (step, l))
-                print("Minibatch accuracy: %.1f%%" % accuracy(predictions, batch_labels))
-                print("Validation accuracy: %.1f%%" % accuracy(
-                    train_prediction.eval(feed_dict={
-                        tf_train_dataset: valid_dataset,
-                        tf_train_labels: valid_labels
-                    }),
-                    valid_labels))
+        if os.path.exists(save_path + '.index') and save_flag:
+            # Restore variables from disk.
+            saver.restore(session, './' + save_path)
+            print('restore')
+        else:
+            tf.global_variables_initializer().run()
+            print("Initialized")
+        if not test:
+            for step in range(num_steps):
+                offset_range = train_labels.shape[0] - batch_size
+                offset = (step * batch_size) % offset_range
+                batch_data = train_dataset[offset:(offset + batch_size), :]
+                batch_labels = train_labels[offset:(offset + batch_size), :]
+                feed_dict = {tf_train_dataset: batch_data, tf_train_labels: batch_labels}
                 if summary_flag:
-                    test_writer.add_summary(summary, step)
-            if summary_flag:
-                train_writer.add_summary(summary, step)
-            if step == num_steps - 1:
-                print("Test accuracy: %.1f%%" % accuracy(
-                    train_prediction.eval(feed_dict={tf_train_dataset: test_dataset, tf_train_labels: test_labels}),
-                    test_labels))
+                    summary, _, l, predictions = session.run(
+                        [merged, optimizer, loss, train_prediction], feed_dict=feed_dict)
+                else:
+                    _, l, predictions = session.run(
+                        [optimizer, loss, train_prediction], feed_dict=feed_dict)
+                if step % 50 == 0:
+                    print("Minibatch loss at step %d: %f" % (step, l))
+                    print("Minibatch accuracy: %.1f%%, recall: %.1f%%" % (
+                        accuracy(predictions, batch_labels), recall_rate(predictions, batch_labels))
+                          )
+                    print("Validate accuracy: %.1f%%, recall: %.1f%%" % (accuracy(
+                        train_prediction.eval(
+                            feed_dict={tf_train_dataset: valid_dataset, tf_train_labels: valid_labels}),
+                        valid_labels), recall_rate(
+                        train_prediction.eval(
+                            feed_dict={tf_train_dataset: valid_dataset,
+                                       tf_train_labels: valid_labels}),
+                        valid_labels)))
+                    if summary_flag:
+                        test_writer.add_summary(summary, step)
+                if summary_flag:
+                    train_writer.add_summary(summary, step)
+        print("Test accuracy: %.1f%%, recall: %.1f%%" % (accuracy(
+            train_prediction.eval(
+                feed_dict={tf_train_dataset: test_dataset, tf_train_labels: test_labels}),
+            test_labels, is_test=True), recall_rate(
+            train_prediction.eval(
+                feed_dict={tf_train_dataset: test_dataset,
+                           tf_train_labels: test_labels}),
+            test_labels, is_test=True)))
+
+        if save_flag and not test:
+            saver.save(session, save_path)
 
 
 if __name__ == '__main__':
@@ -161,6 +215,6 @@ if __name__ == '__main__':
     valid_labels = np.asarray(valid_labels, dtype=np.int32)
     test_dataset = np.asarray(test_dataset, dtype=np.float32)
     test_labels = np.asarray(test_labels, dtype=np.int32)
-    #tf_deep_nn(regular=True)
+    tf_deep_nn(regular=True, test=True)
 
 # tensorboard --logdir=src/app/caltech/summary
