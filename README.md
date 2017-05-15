@@ -12,8 +12,7 @@
 
 > [视频](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Videos.zip)/[字幕](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Subtitles.zip)下载
 
-> 最近tensorflow团队出了一个[model项目](https://github.com/tensorflow/models)，和这个课程无关，但是可以参考
-    
+> 由于这个教程基于TensorFlow0.8，许多API已经过时，将于5月20日起进行重构已兼容最新的stable版本API
 
 框架： TensorFlow （[安装教程](https://github.com/ahangchen/GDLnotes/tree/master/note/tensorflow/install.md)）
 
