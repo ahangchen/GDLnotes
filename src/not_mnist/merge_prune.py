@@ -63,7 +63,7 @@ def randomize(dataset, labels):
     return shuffled_dataset, shuffled_labels
 
 
-def merge_prune(train_floders, test_folders):
+def merge_prune(train_folders, test_folders):
     train_datasets = maybe_pickle(train_folders, 45000)
     test_datasets = maybe_pickle(test_folders, 1800)
 
