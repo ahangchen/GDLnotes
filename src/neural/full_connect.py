@@ -47,7 +47,7 @@ def tf_logist():
         # cross-entropy across all training example: that's our loss.
         logits = tf.matmul(tf_train_dataset, weights) + biases
         loss = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
+            tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels))
 
         # Optimizer.
         # We are going to find the minimum of this loss using gradient descent.
@@ -67,7 +67,7 @@ def tf_logist():
         # This is a one-time operation which ensures the parameters get initialized as
         # we described in the graph: random weights for the matrix, zeros for the
         # biases.
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
         print('Initialized')
         for step in range(num_steps):
             # Run the computations. We tell .run() that we want to run the optimizer,
@@ -107,7 +107,7 @@ def tf_sgd():
         # Training computation.
         logits = tf.matmul(tf_train_dataset, weights) + biases
         loss = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
+            tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels))
 
         # Optimizer.
         optimizer = tf.train.GradientDescentOptimizer(0.5).minimize(loss)
@@ -121,7 +121,7 @@ def tf_sgd():
     num_steps = 3001
 
     with tf.Session(graph=graph) as session:
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
         print("Initialized")
         for step in range(num_steps):
             # Pick an offset within the training data, which has been randomized.
@@ -172,7 +172,7 @@ def tf_sgd_relu_nn():
         hidden = tf.nn.relu(ys)
         logits = tf.matmul(hidden, weights2) + biases2
         loss = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
+            tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels))
 
         # Optimizer.
         optimizer = tf.train.GradientDescentOptimizer(0.5).minimize(loss)
@@ -187,7 +187,7 @@ def tf_sgd_relu_nn():
     num_steps = 3001
 
     with tf.Session(graph=graph) as session:
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
         print("Initialized")
         for step in range(num_steps):
             # Pick an offset within the training data, which has been randomized.

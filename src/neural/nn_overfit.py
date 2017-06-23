@@ -59,7 +59,7 @@ def tf_better_nn(offset_range=-1, regular=False, drop_out=False, lrd=False):
             l2_loss = 0
         beta = 0.002
         loss = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels)) + beta * l2_loss
+            tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels)) + beta * l2_loss
 
         # Optimizer.
         optimizer = tf.train.GradientDescentOptimizer(0.5).minimize(loss)
@@ -77,7 +77,7 @@ def tf_better_nn(offset_range=-1, regular=False, drop_out=False, lrd=False):
     num_steps = 30001
 
     with tf.Session(graph=graph) as session:
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
         print("Initialized")
         for step in range(num_steps):
             # Pick an offset within the training data, which has been randomized.
@@ -185,7 +185,7 @@ def tf_deep_nn(regular=False, drop_out=False, lrd=False, layer_cnt=2):
             beta = 0.25 / batch_size
             beta = 1e-5
             l2_loss *= beta
-        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels)) + l2_loss
+        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels)) + l2_loss
 
         # Optimizer.
         if lrd:
@@ -204,7 +204,7 @@ def tf_deep_nn(regular=False, drop_out=False, lrd=False, layer_cnt=2):
     num_steps = 20001
 
     with tf.Session(graph=graph) as session:
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
         print("Initialized")
         for step in range(num_steps):
             offset_range = train_labels.shape[0] - batch_size

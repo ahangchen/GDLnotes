@@ -48,13 +48,13 @@ def dig_nn(dataset, train_labels, batch_size, data_count, label_count):
 
         logits = tf.matmul(h2, wo) + bo
         train_prediction = tf.nn.softmax(logits)
-        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
+        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels))
         optimizer = tf.train.GradientDescentOptimizer(0.5).minimize(loss)
 
     num_steps = 1000
 
     with tf.Session(graph=graph) as session:
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
         print("Initialized")
         for step in range(num_steps):
             batch_data = dataset[step * batch_size: (step + 1) * batch_size]
