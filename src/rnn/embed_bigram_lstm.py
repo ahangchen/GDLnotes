@@ -284,7 +284,7 @@ def bitrain(g, num_steps, summary_frequency, num_unrollings, batch_size):
     embeddings = g.get_tensor_by_name('embeddings:0')
     keep_prob = g.get_tensor_by_name('tf_keep_prob:0')
     with tf.Session(graph=g) as session:
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
         print('Initialized')
         mean_loss = 0
         for step in range(num_steps):

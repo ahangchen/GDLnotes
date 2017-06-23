@@ -254,7 +254,7 @@ num_steps = 7001
 summary_frequency = 100
 
 with tf.Session(graph=graph) as session:
-    tf.initialize_all_variables().run()
+    tf.global_variables_initializer().run()
     print('Initialized')
     mean_loss = 0
     for step in range(num_steps):

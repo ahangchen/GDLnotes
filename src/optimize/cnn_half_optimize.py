@@ -116,7 +116,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         # Training computation.
         logits = model(tf_train_dataset, init=True)
         loss = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
+            tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels))
         optimizer = tf.train.AdagradOptimizer(starter_learning_rate).minimize(loss)
 
         train_prediction = tf.nn.softmax(logits)
@@ -125,7 +125,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
     num_steps = 1001
 
     with tf.Session(graph=graph) as session:
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
         print('Initialized')
         mean_loss = 0
         for step in range(num_steps):

@@ -143,7 +143,7 @@ with graph.as_default(), tf.device('/gpu:0'):
 num_steps = 100001
 
 with tf.Session(graph=graph) as session:
-    tf.initialize_all_variables().run()
+    tf.global_variables_initializer().run()
     print('Initialized')
     average_loss = 0
     for step in range(num_steps):

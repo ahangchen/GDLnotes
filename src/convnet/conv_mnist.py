@@ -89,7 +89,7 @@ def conv_train():
         # Training computation.
         logits = model(tf_train_dataset)
         loss = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
+            tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels))
 
         # Optimizer.
         optimizer = tf.train.GradientDescentOptimizer(0.05).minimize(loss)
@@ -101,7 +101,7 @@ def conv_train():
     num_steps = 1001
 
     with tf.Session(graph=graph) as session:
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
         print('Initialized')
         for step in range(num_steps):
             offset = (step * batch_size) % (train_labels.shape[0] - batch_size)
@@ -164,7 +164,7 @@ def conv_max_pool_train():
         # Training computation.
         logits = model(tf_train_dataset)
         loss = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
+            tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels))
 
         # Optimizer.
         optimizer = tf.train.GradientDescentOptimizer(0.05).minimize(loss)
@@ -176,7 +176,7 @@ def conv_max_pool_train():
     num_steps = 1001
 
     with tf.Session(graph=graph) as session:
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
         print('Initialized')
         for step in range(num_steps):
             offset = (step * batch_size) % (train_labels.shape[0] - batch_size)
@@ -245,7 +245,7 @@ def better_conv_train(drop=False, lrd=False):
         # Training computation.
         logits = model(tf_train_dataset)
         loss = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
+            tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels))
 
         # Optimizer.
         if lrd:
@@ -263,7 +263,7 @@ def better_conv_train(drop=False, lrd=False):
     num_steps = 5001
     losses = []
     with tf.Session(graph=graph) as session:
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
         print('Initialized')
         for step in range(num_steps):
             offset = (step * batch_size) % (train_labels.shape[0] - batch_size)

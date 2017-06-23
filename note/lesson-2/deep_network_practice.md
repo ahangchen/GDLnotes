@@ -21,7 +21,7 @@ l2_loss = tf.nn.l2_loss(weights1) + tf.nn.l2_loss(weights2)
   - 加l2_loss后， step 0 时，train_loss在300000左右
   - 因此给l2_loss乘0.0001使之降到同一个量级
   ```python
-  loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels)) + 0.001 * l2_loss
+  loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels)) + 0.001 * l2_loss
   ```
   - 所有其他参数不变，训练3000次，准确率提高到92.7%
   - 黑魔法之所以为黑魔法就在于，这个参数可以很容易地影响准确率，如果β = 0.002，准确率提高到93.5%

@@ -117,7 +117,7 @@ def tf_deep_nn(regular=False, test=False):
                     beta = 1e-2
                     l2_loss *= beta
 
-            loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
+            loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels))
             loss += l2_loss
             with tf.name_scope('summaries'):
                 tf.summary.histogram('histogram', loss)

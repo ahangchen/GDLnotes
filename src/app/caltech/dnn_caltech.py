@@ -95,7 +95,7 @@ def tf_deep_nn(regular=False, drop_out=False, lrd=False, layer_cnt=2):
 
             beta = 1e-2
             l2_loss *= beta
-        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels)) + l2_loss
+        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels)) + l2_loss
 
         # Optimizer.
         if lrd:
@@ -114,7 +114,7 @@ def tf_deep_nn(regular=False, drop_out=False, lrd=False, layer_cnt=2):
     num_steps = 8001
 
     with tf.Session(graph=graph) as session:
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
         print("Initialized")
         for step in range(num_steps):
             offset_range = train_labels.shape[0] - batch_size

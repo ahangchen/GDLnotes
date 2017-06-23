@@ -176,7 +176,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             tf.histogram_summary('logits', logits)
         with tf.name_scope('loss'):
             loss = tf.reduce_mean(
-                tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
+                tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels))
             tf.histogram_summary('loss', loss)
         # Optimizer.
 
@@ -211,7 +211,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         train_writer = tf.train.SummaryWriter(summary_dir + '/train',
                                               session.graph)
         valid_writer = tf.train.SummaryWriter(summary_dir + '/valid')
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
         print('Initialized')
         mean_loss = 0
         for step in range(num_steps):

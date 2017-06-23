@@ -43,7 +43,7 @@ Session用来执行Graph里规定的计算，就好像给一个个门电路通�
   - 传给session优化器 - train_loss的梯度optimizer，训练损失 - train_loss，每次的预测结果，循环执行训练
   ```python
   with tf.Session(graph=graph) as session:
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run()
         for step in range(num_steps):
             _, l, predictions = session.run([optimizer, loss, train_prediction])
   ```

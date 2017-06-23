@@ -112,7 +112,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         # Training computation.
         logits = model(tf_train_dataset)
         loss = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))
+            tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels))
         # Optimizer.
         if lrd:
             cur_step = tf.Variable(0)  # count the number of steps taken.
@@ -137,7 +137,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             # Restore variables from disk.
             saver.restore(session, save_path)
         else:
-            tf.initialize_all_variables().run()
+            tf.global_variables_initializer().run()
             print('Initialized')
         end_train = False
         mean_loss = 0
