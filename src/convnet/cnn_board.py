@@ -1,12 +1,10 @@
 from __future__ import print_function
 
-import os
 
 import tensorflow as tf
 
 from convnet.conv_mnist import maxpool2d
-from neural.full_connect import accuracy
-from util.board import variable_summaries
+from util.board import variable_summary
 from util.mnist import format_mnist
 
 
@@ -32,10 +30,10 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             with tf.name_scope('data'):
                 tf_train_dataset = tf.placeholder(
                     tf.float32, shape=(batch_size, image_size, image_size, num_channels))
-                variable_summaries(tf_train_dataset, 'input/data')
+                variable_summary(tf_train_dataset)
             with tf.name_scope('label'):
                 tf_train_labels = tf.placeholder(tf.float32, shape=(batch_size, num_labels))
-                variable_summaries(tf_train_labels, 'input/label')
+                variable_summary(tf_train_labels)
 
         # Variables.
         # the third parameter must be same as the last layer depth
@@ -43,34 +41,34 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
             with tf.name_scope('input_weight'):
                 input_weights = tf.Variable(tf.truncated_normal(
                     [patch_size, patch_size, num_channels, depth], stddev=0.1), name='input_weight')
-                variable_summaries(input_weights, 'input_cnn_filter/input_weight')
+                variable_summary(input_weights)
             with tf.name_scope('input_biases'):
                 input_biases = tf.Variable(tf.zeros([depth]), name='input_biases')
-                variable_summaries(input_weights, 'input_cnn_filter/input_biases')
+                variable_summary(input_weights)
 
         mid_layer_cnt = layer_cnt - 1
         layer_weights = list()
         layer_biases = [tf.Variable(tf.constant(1.0, shape=[depth * (i + 2)])) for i in range(mid_layer_cnt)]
         for i in range(mid_layer_cnt):
-            variable_summaries(layer_biases, 'cnn{i}/biases'.format(i=i))
+            variable_summary(layer_biases)
         output_weights = list()
         output_biases = tf.Variable(tf.constant(1.0, shape=[first_hidden_num]))
         with tf.name_scope('first_nn'):
             with tf.name_scope('weights'):
                 first_nn_weights = tf.Variable(tf.truncated_normal(
                     [first_hidden_num, second_hidden_num], stddev=0.1))
-                variable_summaries(first_nn_weights, 'first_nn/weights')
+                variable_summary(first_nn_weights)
             with tf.name_scope('biases'):
                 first_nn_biases = tf.Variable(tf.constant(1.0, shape=[second_hidden_num]))
-                variable_summaries(first_nn_weights, 'first_nn/biases')
+                variable_summary(first_nn_weights)
         with tf.name_scope('second_nn'):
             with tf.name_scope('weights'):
                 second_nn_weights = tf.Variable(tf.truncated_normal(
                     [second_hidden_num, num_labels], stddev=0.1))
-                variable_summaries(second_nn_weights, 'second_nn/weights')
+                variable_summary(second_nn_weights)
             with tf.name_scope('biases'):
                 second_nn_biases = tf.Variable(tf.constant(1.0, shape=[num_labels]))
-                variable_summaries(second_nn_biases, 'second_nn/biases')
+                variable_summary(second_nn_biases)
 
         # Model.
         def model(data, init=True):
@@ -80,18 +78,18 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                 conv = tf.nn.conv2d(data, input_weights, stride_ps[0], use_cudnn_on_gpu=True, padding='SAME')
                 if init:
                     print('init')
-                    variable_summaries(conv, 'first_cnn')
+                    variable_summary(conv)
             with tf.name_scope('first_max_pool'):
                 conv = maxpool2d(conv)
                 if init:
-                    variable_summaries(conv, 'first_max_pool')
+                    variable_summary(conv)
             hidden = tf.nn.relu6(conv + input_biases)
             if init:
-                tf.histogram_summary('first_act', hidden)
+                tf.summary.histogram('first_act', hidden)
             if drop and init:
                 with tf.name_scope('first_drop'):
                     hidden = tf.nn.dropout(hidden, 0.8, name='drop1')
-                    tf.histogram_summary('first_drop', hidden)
+                    tf.summary.histogram('first_drop', hidden)
             for i in range(mid_layer_cnt):
                 with tf.name_scope('cnn{i}'.format(i=i)):
                     if init:
@@ -109,7 +107,7 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                         with tf.name_scope('weight'.format(i=i)):
                             layer_weight = tf.Variable(tf.truncated_normal(
                                 shape=[filter_w, filter_h, depth * (i + 1), depth * (i + 2)], stddev=0.1))
-                            variable_summaries(layer_weight, 'cnn{i}/weight'.format(i=i))
+                            variable_summary(layer_weight)
                         layer_weights.append(layer_weight)
                     if not large_data_size(hidden) or not large_data_size(layer_weights[i]):
                         # print("is not large data")
@@ -120,21 +118,21 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                     with tf.name_scope('conv2d'):
                         conv = tf.nn.conv2d(hidden, layer_weights[i], stride_ps[i + 1], use_cudnn_on_gpu=True, padding='SAME')
                         if init:
-                            variable_summaries(conv, 'cnn{i}/conv2d'.format(i=i))
+                            variable_summary(conv)
                     with tf.name_scope('maxpool2d'):
                         if not large_data_size(conv):
                             print('not large')
                             conv = maxpool2d(conv, 1, 1)
                             if init:
-                                variable_summaries(conv, 'cnn{i}/maxpool2d'.format(i=i))
+                                variable_summary(conv)
                         else:
                             conv = maxpool2d(conv)
                             if init:
-                                variable_summaries(conv, 'cnn{i}/maxpool2d'.format(i=i))
+                                variable_summary(conv)
                     with tf.name_scope('act'):
                         hidden = tf.nn.relu6(conv + layer_biases[i])
                         if init:
-                            variable_summaries(conv, 'cnn{i}/act'.format(i=i))
+                            variable_summary(conv)
 
             shapes = hidden.get_shape().as_list()
             shape_mul = 1
@@ -146,38 +144,38 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
                     output_size = shape_mul
                     with tf.name_scope('weights'):
                         output_weights.append(tf.Variable(tf.truncated_normal([output_size, first_hidden_num], stddev=0.1)))
-                        variable_summaries(output_weights, 'output/weights')
+                        variable_summary(output_weights)
             reshape = tf.reshape(hidden, [shapes[0], shape_mul])
             with tf.name_scope('output_act'):
                 hidden = tf.nn.relu6(tf.matmul(reshape, output_weights[0]) + output_biases)
                 if init:
-                    tf.histogram_summary('output_act', hidden)
+                    tf.summary.histogram('output_act', hidden)
             if drop and init:
                 with tf.name_scope('output_drop'):
                     hidden = tf.nn.dropout(hidden, 0.5)
-                    tf.histogram_summary('output_drop', hidden)
+                    tf.summary.histogram('output_drop', hidden)
             with tf.name_scope('output_wx_b'):
                 hidden = tf.matmul(hidden, first_nn_weights) + first_nn_biases
                 if init:
-                    tf.histogram_summary('output_wx_b', hidden)
+                    tf.summary.histogram('output_wx_b', hidden)
             if drop and init:
                 with tf.name_scope('final_drop'):
                     hidden = tf.nn.dropout(hidden, 0.5)
-                    tf.histogram_summary('final_drop', hidden)
+                    tf.summary.histogram('final_drop', hidden)
             with tf.name_scope('final_wx_b'):
                 hidden = tf.matmul(hidden, second_nn_weights) + second_nn_biases
                 if init:
-                    tf.histogram_summary('final_wx_b', hidden)
+                    tf.summary.histogram('final_wx_b', hidden)
             return hidden
 
         # Training computation.
         with tf.name_scope('logits'):
             logits = model(tf_train_dataset)
-            tf.histogram_summary('logits', logits)
+            tf.summary.histogram('logits', logits)
         with tf.name_scope('loss'):
             loss = tf.reduce_mean(
                 tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf_train_labels))
-            tf.histogram_summary('loss', loss)
+            tf.summary.histogram('loss', loss)
         # Optimizer.
 
         with tf.name_scope('train'):
@@ -192,14 +190,14 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
         # Predictions for the training, validation, and test data.
         with tf.name_scope('train_predict'):
             train_prediction = tf.nn.softmax(logits)
-            variable_summaries(train_prediction, 'train_predict')
+            variable_summary(train_prediction)
         # with tf.name_scope('valid_predict'):
         #     valid_prediction = tf.nn.softmax(model(tf_valid_dataset, init=False))
-        #     variable_summaries(valid_prediction, 'valid_predict')
+        #     variable_summary(valid_prediction, 'valid_predict')
         # with tf.name_scope('test_predict'):
         #     test_prediction = tf.nn.softmax(model(tf_test_dataset, init=False))
-        #     variable_summaries(test_prediction, 'test_predict')
-        merged = tf.merge_all_summaries()
+        #     variable_summary(test_prediction, 'test_predict')
+        merged = tf.summary.merge_all()
     summary_flag = True
     summary_dir = 'summary'
     if tf.gfile.Exists(summary_dir):
@@ -208,9 +206,9 @@ def conv_train(train_dataset, train_labels, valid_dataset, valid_labels, test_da
 
     num_steps = 5001
     with tf.Session(graph=graph) as session:
-        train_writer = tf.train.SummaryWriter(summary_dir + '/train',
-                                              session.graph)
-        valid_writer = tf.train.SummaryWriter(summary_dir + '/valid')
+        train_writer = tf.summary.FileWriter(summary_dir + '/train',
+                                             session.graph)
+        valid_writer = tf.summary.FileWriter(summary_dir + '/valid')
         tf.global_variables_initializer().run()
         print('Initialized')
         mean_loss = 0

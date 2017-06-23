@@ -194,9 +194,9 @@ def conv_max_pool_train():
 
 
 def better_conv_train(drop=False, lrd=False):
-    batch_size = 12
-    patch_size = 2
-    depth = 12
+    batch_size = 16
+    patch_size = 5
+    depth = 16
     num_hidden = 64
     num_channels = 1
 
@@ -218,7 +218,7 @@ def better_conv_train(drop=False, lrd=False):
             [patch_size, patch_size, depth, depth], stddev=0.1))
         layer2_biases = tf.Variable(tf.constant(1.0, shape=[depth]))
         layer3_weights = tf.Variable(tf.truncated_normal(
-            [48, num_hidden], stddev=0.1))
+            [64, num_hidden], stddev=0.1))
         layer3_biases = tf.Variable(tf.constant(1.0, shape=[num_hidden]))
         layer4_weights = tf.Variable(tf.truncated_normal(
             [num_hidden, num_labels], stddev=0.1))
