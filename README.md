@@ -1,5 +1,7 @@
 # Google Deep Learning Notes
 
+前排提醒：工具归工具，研究归研究，AI的研究唯有打好[基础](https://github.com/ahangchen/windy-afternoon/tree/master/ml/melon)，多看论文，多做实验，方能有所增益。
+
 > Google 深度学习笔记
 
 > Github工程地址：https://github.com/ahangchen/GDLnotes
@@ -10,8 +12,7 @@
 
 > [视频](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Videos.zip)/[字幕](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Subtitles.zip)下载
 
-> 最近tensorflow团队出了一个[model项目](https://github.com/tensorflow/models)，和这个课程无关，但是可以参考
-    
+> 由于这个教程基于TensorFlow0.8，许多API已经过时，将于5月20日起进行重构已兼容最新的stable版本API
 
 框架： TensorFlow （[安装教程](https://github.com/ahangchen/GDLnotes/tree/master/note/tensorflow/install.md)）
 
@@ -35,13 +36,13 @@
     - [深度神经网络实践](note/lesson-2/deep_network_practice.md)
     
 - Lesson 3 [Convolutional Networks](note/lesson-3/README.md)
- - [卷积神经网络实践](note/lesson-3/practice.md)
+  - [卷积神经网络实践](note/lesson-3/practice.md)
     
 - Lessson 4 [Deep Models for Text and Sequence](note/lesson-4/README.md)
- - Challenge
- - Model
- - Sequence
- - [循环神经网络实践](note/lesson-4/rnn_practice.md)
+  - Challenge
+  - Model
+  - Sequence
+  - [循环神经网络实践](note/lesson-4/rnn_practice.md)
     
 
 附录：
@@ -49,6 +50,8 @@
 - [matplotlib笔记](note/matplotlib/README.md)（待完善）
 - [sklearn笔记](note/sklearn/README.md)（待完善）
 - [TensorFlow笔记](note/tensorflow/README.md)
+
+最近在整理西瓜书中的[一些概念](https://github.com/ahangchen/windy-afternoon/blob/master/ml/melon_concepts.md)，有兴趣的同学可以参与
 
 > 觉得我的文章对您有帮助的话，就给个[star](https://github.com/ahangchen/GDLnotes)吧～
 

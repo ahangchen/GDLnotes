@@ -30,13 +30,13 @@ images or output sizes, you might need some hyperparameter tuning (especially
 The following example was run for 1000 iterations to produce the result (with
 default parameters):
 
-![output](examples/1-output.jpg)
+![output](example/1-output.jpg)
 
 These were the input images used (me sleeping at a hackathon and Starry Night):
 
-![input-content](examples/1-content.jpg)
+![input-content](example/1-content.jpg)
 
-![input-style](examples/1-style.jpg)
+![input-style](example/1-style.jpg)
 
 ## Example 2
 
@@ -44,18 +44,18 @@ The following example demonstrates style blending, and was run for 1000
 iterations to produce the result (with style blend weight parameters 0.8 and
 0.2):
 
-![output](examples/2-output.jpg)
+![output](example/2-output.jpg)
 
 The content input image was a picture of the Stata Center at MIT:
 
-![input-content](examples/2-content.jpg)
+![input-content](example/2-content.jpg)
 
 The style input images were Picasso's "Dora Maar" and Starry Night, with the
 Picasso image having a style blend weight of 0.8 and Starry Night having a
 style blend weight of 0.2:
 
-![input-style](examples/2-style1.jpg)
-![input-style](examples/2-style2.jpg)
+![input-style](example/2-style1.jpg)
+![input-style](example/2-style2.jpg)
 
 ## Requirements
 

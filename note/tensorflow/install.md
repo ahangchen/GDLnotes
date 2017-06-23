@@ -1,7 +1,7 @@
 # TensorFlow 安装教程
 ## Install TensorFlow
 
-安装教程就在TensorFlow的github页上>>>[点击查看](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/g3doc/get_started/os_setup.md)
+安装教程就在TensorFlow的官网上>>>[点击查看](https://www.tensorflow.org/install/)
 
 按照官方的流程装就好了，这里讲一下几种方式的特点：
 
