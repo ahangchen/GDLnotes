@@ -39,7 +39,7 @@ def download_progress_hook(count, blockSize, totalSize):
         last_percent_reported = percent
 
 
-def maybe_download(filename, expected_bytes, url='http://yaroslavvb.com/upload/notMNIST/', force=False, ):
+def maybe_download(filename, expected_bytes, url='https://commondatastorage.googleapis.com/books1000/', force=False, ):
     """Download a file if not present, and make sure it's the right size."""
     if force or not os.path.exists(filename):
         print('Attempting to download:', filename)
