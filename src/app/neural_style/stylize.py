@@ -57,7 +57,8 @@ def stylize(network, initial, content, styles, iterations,
                 style_features[i][layer] = gram
 
     # make stylized image using backpropogation
-    with tf.Graph().as_default():
+    g = tf.Graph()
+    with g.as_default(), g.device('/gpu:0'):
         if initial is None:
             noise = np.random.normal(size=shape, scale=np.std(content) * 0.1)
             initial = tf.random_normal(shape) * 0.256
