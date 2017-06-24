@@ -23,11 +23,11 @@
 ```python
 with tf.name_scope('output_act'):
     hidden = tf.nn.relu6(tf.matmul(reshape, output_weights[0]) + output_biases)
-    tf.histogram_summary('output_act', hidden)
+    tf.summary.histogram('output_act', hidden)
 ```
 
 其中，
-- histogram_summary用于生成分布图，也可以用scalar_summary记录存数值
+- summary.histogram用于生成分布图，也可以用scalar_summary记录存数值
 - 使用scalar_summary的时候，tag和tensor的shape要一致
 - name_scope可以不写，但是当你需要在Graph中体现tensor之间的包含关系时，就要写了，像下面这样：
 
@@ -36,10 +36,10 @@ with tf.name_scope('input_cnn_filter'):
     with tf.name_scope('input_weight'):
         input_weights = tf.Variable(tf.truncated_normal(
             [patch_size, patch_size, num_channels, depth], stddev=0.1), name='input_weight')
-        variable_summaries(input_weights, 'input_cnn_filter/input_weight')
+        variable_summary(input_weights)
     with tf.name_scope('input_biases'):
         input_biases = tf.Variable(tf.zeros([depth]), name='input_biases')
-        variable_summaries(input_weights, 'input_cnn_filter/input_biases')
+        variable_summary(input_weights)
 ```
 
 - 在Graph中会体现为一个input_cnn_filter，可以点开，里面有weight和biases
@@ -47,33 +47,33 @@ with tf.name_scope('input_cnn_filter'):
 - 官网封装了一个函数，可以调用来记录很多跟某个Tensor相关的数据：
 
 ```python
-def variable_summaries(var, name):
-    """Attach a lot of summaries to a Tensor."""
+def variable_summary(var):
+    """Attach a lot of summaries to a Tensor (for TensorBoard visualization)."""
     with tf.name_scope('summaries'):
         mean = tf.reduce_mean(var)
-        tf.scalar_summary('mean/' + name, mean)
+        tf.summary.scalar('mean', mean)
         with tf.name_scope('stddev'):
-            stddev = tf.sqrt(tf.reduce_sum(tf.square(var - mean)))
-        tf.scalar_summary('sttdev/' + name, stddev)
-        tf.scalar_summary('max/' + name, tf.reduce_max(var))
-        tf.scalar_summary('min/' + name, tf.reduce_min(var))
-        tf.histogram_summary(name, var)
+            stddev = tf.sqrt(tf.reduce_mean(tf.square(var - mean)))
+        tf.summary.scalar('stddev', stddev)
+        tf.summary.scalar('max', tf.reduce_max(var))
+        tf.summary.scalar('min', tf.reduce_min(var))
+        tf.summary.histogram('histogram', var)
 ```
 
 - 只有这样记录国max和min的Tensor才会出现在Event里面
 - Graph的最后要写一句这个，给session回调
 
 ```python
-merged = tf.merge_all_summaries()
+merged = tf.summary.merge_all()
 ```
 
 ### Session 中调用
 - 构造两个writer，分别在train和valid的时候写数据：
 
 ```python
-train_writer = tf.train.SummaryWriter(summary_dir + '/train',
-                                              session.graph)
-valid_writer = tf.train.SummaryWriter(summary_dir + '/valid')
+train_writer = tf.summary.FileWriter(summary_dir + '/train',
+                                             session.graph)
+valid_writer = tf.summary.FileWriter(summary_dir + '/valid')
 ```
 
 - 这里的summary_dir存放了运行过程中记录的数据，等下启动服务器要用到
@@ -114,6 +114,11 @@ python安装路径/python TensorFlow安装路径/tensorflow/tensorboard/tensorbo
 比如我的是：
 ```
 /home/cwh/anaconda2/envs/tensorflow/bin/python /home/cwh/anaconda2/envs/tensorflow/lib/python2.7/site-packages/tensorflow/tensorboard/tensorboard.py --logdir=~/coding/python/GDLnotes/src/convnet/summary
+```
+
+如果默认python解释器就是包含tensorflow的python解释器，可以直接输入
+```
+tensorboard --logdir=path/to/log/dir
 ```
 
 使用python
