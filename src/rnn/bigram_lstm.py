@@ -219,10 +219,10 @@ with graph.as_default():
     with tf.control_dependencies([saved_output.assign(output),
                                   saved_state.assign(state)]):
         # Classifier.
-        logits = tf.nn.xw_plus_b(tf.concat(0, outputs), w, b)
+        logits = tf.nn.xw_plus_b(tf.concat(outputs, 0), w, b)
         loss = tf.reduce_mean(
             tf.nn.softmax_cross_entropy_with_logits(
-                logits, tf.concat(0, train_labels)))
+                logits=logits, labels=tf.concat(train_labels, 0)))
 
     # Optimizer.
     global_step = tf.Variable(0)

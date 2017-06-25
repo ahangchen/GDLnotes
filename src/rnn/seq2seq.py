@@ -5,7 +5,7 @@ import zipfile
 
 import numpy as np
 import tensorflow as tf
-from tensorflow.models.rnn.translate import seq2seq_model
+import seq2seq_model
 
 from not_mnist.img_pickle import save_obj, load_pickle
 from not_mnist.load_data import maybe_download

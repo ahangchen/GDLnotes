@@ -65,6 +65,13 @@ data_index = (data_index + 1) % len(data)
 
 代码见：[word2vec.py](../../src/rnn/word2vec.py)
 
+这里我们指定了gpu作为运算设备，会出现这个[issue](https://github.com/tensorflow/tensorflow/issues/2285)说明的bug，需要进行如下配置解决：
+
+```python
+config = tf.ConfigProto(allow_soft_placement=True)
+session = tf.Session(graph=graph, config=config)
+```
+
 ## CBOW
 上面训练的是Skip-gram模型，是根据目标词汇预测上下文，而word2vec还有一种方式，CBOW，根据上下文预测目标词汇。
 
@@ -160,7 +167,7 @@ embed_sum = tf.reduce_sum(embed, 0)
 可以把四组参数分别合并，一次计算，再分别取出：
 
 ```python
-values = tf.split(1, gate_count, tf.matmul(i, input_weights) + tf.matmul(o, output_weights) + bias)
+values = tf.split(tf.matmul(i, input_weights) + tf.matmul(o, output_weights) + bias, gate_count, 1)
 input_gate = tf.sigmoid(values[0])
 forget_gate = tf.sigmoid(values[1])
 update = values[2]

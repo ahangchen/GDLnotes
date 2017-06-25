@@ -44,7 +44,7 @@ def generate_batch(batch_size, num_skips, skip_window):
     assert batch_size % num_skips == 0
     assert num_skips <= 2 * skip_window
     batch = np.ndarray(shape=(batch_size), dtype=np.int32)
-    labels = np.ndarray(shape=(batch_size, 1), dtype=np.int32)
+    labels = np.ndarray(shape=(batch_size, 1), dtype=np.float32)
     span = 2 * skip_window + 1  # [ skip_window target skip_window ]
     buffer = collections.deque(maxlen=span)
     for _ in range(span):
@@ -109,7 +109,7 @@ graph = tf.Graph()
 with graph.as_default(), tf.device('/gpu:0'):
     # Input data.
     train_dataset = tf.placeholder(tf.int32, shape=[batch_size])
-    train_labels = tf.placeholder(tf.int32, shape=[batch_size, 1])
+    train_labels = tf.placeholder(tf.float32, shape=[batch_size, 1])
     valid_dataset = tf.constant(valid_examples, dtype=tf.int32)
 
     # Variables.
@@ -125,8 +125,8 @@ with graph.as_default(), tf.device('/gpu:0'):
     embed = tf.nn.embedding_lookup(embeddings, train_dataset)
     # Compute the softmax loss, using a sample of the negative labels each time.
     loss = tf.reduce_mean(
-        tf.nn.sampled_softmax_loss(softmax_weights, softmax_biases, embed,
-                                   train_labels, num_sampled, vocabulary_size))
+        tf.nn.sampled_softmax_loss(softmax_weights, softmax_biases, train_labels, embed,
+                                   num_sampled, vocabulary_size))
 
     # Optimizer.
     optimizer = tf.train.AdagradOptimizer(1.0).minimize(loss)
@@ -141,8 +141,8 @@ with graph.as_default(), tf.device('/gpu:0'):
 
 # flow
 num_steps = 100001
-
-with tf.Session(graph=graph) as session:
+config = tf.ConfigProto(allow_soft_placement=True)
+with tf.Session(graph=graph, config=config) as session:
     tf.global_variables_initializer().run()
     print('Initialized')
     average_loss = 0

@@ -1,7 +1,8 @@
 ## skflow
-sklearn风格的api，用tensorflow来处理训练sklearn的数据集
+sklearn风格的api，用tensorflow来处理训练sklearn的数据集，现在已经合并到tf.contrib里。
 
 ```python
+# tensorflow 0.8
 import skflow
 from sklearn import datasets, metrics
 

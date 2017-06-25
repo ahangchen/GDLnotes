@@ -212,7 +212,7 @@ def create_lstm_graph_bi(num_nodes, num_unrollings, batch_size, embedding_size=b
         # Input data. [num_unrollings, batch_size] -> one hot encoding removed, we send just bigram ids
         tf_train_data = tf.placeholder(tf.int32, shape=[num_unrollings + 1, batch_size], name='tf_train_data')
         train_data = list()
-        for i in tf.split(0, num_unrollings + 1, tf_train_data):
+        for i in tf.split(tf_train_data, num_unrollings + 1, 0):
             train_data.append(tf.squeeze(i))
         train_inputs = train_data[:num_unrollings]
         train_labels = list()
@@ -233,9 +233,9 @@ def create_lstm_graph_bi(num_nodes, num_unrollings, batch_size, embedding_size=b
 
         # State saving across unrollings, control_dependencies makes sure that output and state are computed
         with tf.control_dependencies([saved_output.assign(output), saved_state.assign(state)]):
-            logits = tf.nn.xw_plus_b(tf.concat(0, outputs), w, b)
-            loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits,
-                                                                          tf.concat(0, train_labels)
+            logits = tf.nn.xw_plus_b(tf.concat(outputs, 0), w, b)
+            loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits,
+                                                                          labels=tf.concat(train_labels, 0)
                                                                           ), name='loss')
         # Optimizer.
         global_step = tf.Variable(0, name='global_step')

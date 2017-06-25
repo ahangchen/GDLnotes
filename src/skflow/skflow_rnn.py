@@ -5,6 +5,7 @@ from __future__ import print_function
 from sklearn import metrics, preprocessing
 
 import tensorflow as tf
+# tensorflow 0.8
 from tensorflow.contrib import learn
 
 # Parameters

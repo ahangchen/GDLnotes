@@ -185,7 +185,7 @@ with graph.as_default():
         Note that in this formulation, we omit the various connections between the
         previous state and the gates."""
         # large weight, 1/4 parameters for each gate, matrix multiply once, take 1/4 output results as a gate
-        values = tf.split(1, gate_count, tf.matmul(i, input_weights) + tf.matmul(o, output_weights) + bias)
+        values = tf.split(tf.matmul(i, input_weights) + tf.matmul(o, output_weights) + bias, gate_count, 1)
         input_gate = tf.sigmoid(values[0])
         forget_gate = tf.sigmoid(values[1])
         update = values[2]
@@ -213,10 +213,9 @@ with graph.as_default():
     with tf.control_dependencies([saved_output.assign(output),
                                   saved_state.assign(state)]):
         # Classifier.
-        logits = tf.nn.xw_plus_b(tf.concat(0, outputs), w, b)
+        logits = tf.nn.xw_plus_b(tf.concat(outputs, 0), w, b)
         loss = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits(
-                logits, tf.concat(0, train_labels)))
+            tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=tf.concat(train_labels, 0)))
 
     # Optimizer.
     global_step = tf.Variable(0)

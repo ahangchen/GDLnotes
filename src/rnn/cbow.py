@@ -19,7 +19,7 @@ def read_data(filename):
     return data
 
 
-def build_dataset(words):
+def build_dataset(words, vocabulary_size):
     count = [['UNK', -1]]
     count.extend(collections.Counter(words).most_common(vocabulary_size - 1))
     dictionary = dict()
@@ -44,7 +44,7 @@ def generate_batch(batch_size, num_skips, skip_window):
     assert batch_size % num_skips == 0
     assert num_skips <= 2 * skip_window
     context_size = 2 * skip_window
-    labels = np.ndarray(shape=(batch_size, 1), dtype=np.int32)
+    labels = np.ndarray(shape=(batch_size, 1), dtype=np.float32)
     batchs = np.ndarray(shape=(context_size, batch_size), dtype=np.int32)
     span = 2 * skip_window + 1  # [ skip_window target skip_window ]
     buffer = collections.deque(maxlen=span)
@@ -72,7 +72,7 @@ def generate_batch(batch_size, num_skips, skip_window):
     # print(batchs)
     return batchs, labels
 
-
+vocabulary_size = 50000
 data_set = load_pickle('text8_data.pickle')
 if data_set is None:
     # load data
@@ -82,7 +82,7 @@ if data_set is None:
     # read data
     words = read_data(filename)
     print('Data size %d' % len(words))
-    data, count, dictionary, reverse_dictionary = build_dataset(words)
+    data, count, dictionary, reverse_dictionary = build_dataset(words, vocabulary_size)
     print('Most common words (+UNK)', count[:5])
     print('Sample data', data[:10])
     del words  # Hint to reduce memory.
@@ -96,7 +96,6 @@ else:
     dictionary = data_set['dictionary']
     reverse_dictionary = data_set['reverse_dictionary']
 
-vocabulary_size = 50000
 # split data
 data_index = 0
 
@@ -124,10 +123,10 @@ num_sampled = 64  # Number of negative examples to sample.
 # tensor: Train a skip-gram model, word2vec
 graph = tf.Graph()
 
-with graph.as_default(), tf.device('/gpu:0'):
+with graph.as_default():
     # Input data.
     train_dataset = tf.placeholder(tf.int32, shape=[2 * skip_window, batch_size])
-    train_labels = tf.placeholder(tf.int32, shape=[batch_size, 1])
+    train_labels = tf.placeholder(tf.float32, shape=[batch_size, 1])
     valid_dataset = tf.constant(valid_examples, shape=[2 * skip_window, batch_size], dtype=tf.int32)
 
     # Variables.
@@ -147,8 +146,8 @@ with graph.as_default(), tf.device('/gpu:0'):
     # Compute the softmax loss, using a sample of the negative labels each time.
     loss = tf.reduce_mean(
         tf.nn.sampled_softmax_loss(softmax_weights, softmax_biases,
-                                   embed_sum,
-                                   train_labels, num_sampled, vocabulary_size))
+                                   train_labels, embed_sum,
+                                   num_sampled, vocabulary_size))
 
     # Optimizer.
     optimizer = tf.train.AdagradOptimizer(1.0).minimize(loss)
