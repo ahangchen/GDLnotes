@@ -14,7 +14,7 @@
 
 > 教程已重构兼容TensorFlow 1.2 
 
-框架： TensorFlow （[安装教程](https://github.com/ahangchen/GDLnotes/tree/master/note/tensorflow/install.md)）
+框架： TensorFlow （[安装踩坑日志](https://github.com/ahangchen/GDLnotes/tree/master/note/tensorflow/install.md)）
 
 > 谷歌家的深度学习框架，有Python,C++的API
 
