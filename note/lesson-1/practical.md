@@ -115,4 +115,6 @@
   - 但这样需要的数据往往偏多，所以可以尝试交叉验证（cross validation），交叉验证有个缺点是速度慢
   - 验证时，使用tensor.eval(input)，相当于tf.get_default_session().run(tensor)
 
+扩展阅读：西瓜书第二章·[模型评估与选择](http://cweihang.cn/ml/melon/ch02.html)
+
 > 觉得得我的文章对您有帮助的话，就给个[star](https://github.com/ahangchen/GDLnotes)吧～
