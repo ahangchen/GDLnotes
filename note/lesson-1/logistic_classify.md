@@ -12,10 +12,10 @@
 
 > simple but important classifier
 
-- Train your first simple model entirely end to end
-- 下载、预处理一些图片以分类
-- Run an actual logistic classifier on images data
-- Connect bit of math and code
+- 训练你的第一个端到端模型
+- 下载并预处理图片
+- 在图像数据上运行Logistic classifier进行分类
+- 相关的数学背景知识和代码
 
 ## Detail
 ### Linear Classifier
@@ -24,15 +24,15 @@
 
 > 之所以这样建模，是因为线性公式是最简单的数学模型，仅此而已。
 
-- Input: X (e.g. the pixels in an image)
-- Apply a linear function to X
-  - Giant matrix multiply 
-  - Take inputs as a big vector 
-  - Multiply input vector with a matrix, W means weights
-  - b means biased term
-  - Machine learning adjust weights and bias for the best prediction
-- Output: Y, predictions for per output class
-  - Y is a vector, represents the probability of each label
+- Input: X (e.g. 图像中像素的灰度值)
+- 将一个线性函数作用在X上
+  - 大矩阵相乘 
+  - 输入一个代表图片的向量
+  - 将输入向量和一个矩阵W相乘，W表示权重
+  - b代表偏移（biased）项
+  - 机器学习便是调整权重和偏移值以达到最好的预测效果
+- 输出: Y, 对输入应当属于哪个类进行预测
+  - Y是一个代表每个label可能性的向量
   - 好的预测中，正确的label的概率应当更接近1
   - 往往得到的Y一开始不是概率，而是一些具体值（scores/logits），所以需要转换，by：
   
@@ -52,7 +52,7 @@
 
 > Example: take this [test](https://classroom.udacity.com/courses/ud730/lessons/6370362152/concepts/63713510510923) 
 
-  - one hot encoding在label很多的情况下not work well，因为output vector到处都是0，很稀疏，因此效率低
+  - one hot encoding在label很多的情况下效果不好，因为output vector到处都是0，很稀疏，因此效率低
     - solved by [embeddings](../lesson-4/README.md)
   - 好处：可以measure我们与理想情况之间的距离（compare two vectors）
   
