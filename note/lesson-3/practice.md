@@ -1,4 +1,7 @@
 # 卷积神经网络实践
+
+> 本节介绍如何构造一个简单的CNN模型进行手写数字识别，但在现实场景中，往往使用imagenet预训练的深度CNN模型进行迁移学习，能极大地提升预测准确率，可参考我在百度大数据竞赛中开源的模型: [keras-dog](https://github.com/ahangchen/keras-dogs)
+
 ## 数据处理
 - dataset处理成四维的，label仍然作为one-hot encoding
 ```python
