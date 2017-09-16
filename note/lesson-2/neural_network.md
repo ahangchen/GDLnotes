@@ -8,7 +8,7 @@
 
 ![](../../res/chain_rule.png)
 
-- Lots of data reuse and easy to implement（a simple data pipeline）
+- 大量可重用的数据，易于实现（简单的数据流）
 - Back propagation
 
   ![](../../res/back_propagation.png)
@@ -17,3 +17,5 @@
   - 计算梯度需要的内存和计算时间是计算train_loss的两倍
   
 - 利用上面的知识，结合lesson1中的SGD，训练一个全连接神经网络：[神经网络实践](neural_practical.md)
+
+> 扩展阅读：[西瓜书第五章·神经网络](http://cweihang.cn/ml/melon/ch05.html)
