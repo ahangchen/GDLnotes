@@ -134,6 +134,7 @@ B = (B - 128) / 128
 ![](../../res/normal_optimize.png)
 调整W和b，使得Train loss最小
 
+扩展阅读：[西瓜书第三章·线性模型](http://cweihang.cn/ml/melon/ch03.html)
 [下一节](practical.md)实践
 
 > 觉得得我的文章对您有帮助的话，就给个[star](https://github.com/ahangchen/GDLnotes)吧～
