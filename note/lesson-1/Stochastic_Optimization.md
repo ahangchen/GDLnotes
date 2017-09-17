@@ -51,4 +51,9 @@
     - 使得SGD对参数不像原来那样敏感
     - 自动调整效果不如原来的好，但仍然是一个option
  
+ 扩展阅读：[SGD](http://cweihang.cn/ml/base/SGD.pdf)
+ 
+ 
 > 觉得得我的文章对您有帮助的话，就给个[star](https://github.com/ahangchen/GDLnotes)吧～
+  - SGD有许多参数可以调整，所以被称为黑魔法阅读
+  - SGD有许多参数可以调整，所以被称为黑魔法
