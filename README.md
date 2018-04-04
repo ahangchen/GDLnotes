@@ -2,7 +2,7 @@
 
 ![CC-BY-NC-ND](http://opentf.github.io/GuokrBadge/cc/gs/cc_byncnd.flat.guokr.32.svg)
 
-前排提醒：工具归工具，研究归研究，AI的研究唯有打好[基础](https://github.com/ahangchen/windy-afternoon/tree/master/ml/melon)，多看论文，多做实验，方能有所增益。
+前排提醒：工具归工具，研究归研究，AI的研究唯有打好[基础](https://github.com/ahangchen/windy-afternoon/tree/master/ml/melon)，多看[论文](https://github.com/ahangchen/windy-afternoon/tree/master/ml/papers)，多做[实验](https://github.com/ahangchen/keras-dogs)，才能真正掌握深度学习。
 
 > Google 深度学习笔记
 
