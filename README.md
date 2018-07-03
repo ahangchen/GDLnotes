@@ -4,13 +4,12 @@
 
 一点小建议：框架是工具，工具固然重要，要在机器学习与人工智能领域取得成就，必须打好[基础](https://github.com/ahangchen/windy-afternoon/tree/master/ml/melon)，多看[论文](https://github.com/ahangchen/windy-afternoon/tree/master/ml/papers)，多做[实验](https://github.com/ahangchen/keras-dogs)，缺一不可。
 
-```
-Google 深度学习笔记
-Github工程地址：https://github.com/ahangchen/GDLnotes
-欢迎star，有问题可以到[Issue区](https://github.com/ahangchen/GDLnotes/issues)讨论
-官方教程[地址](https://classroom.udacity.com/courses/ud730/lessons/6370362152/concepts/63798118170923)
-[视频](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Videos.zip)/[字幕](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Subtitles.zip)下载
-```
+- Google 深度学习笔记
+- Github工程地址：https://github.com/ahangchen/GDLnotes
+- 欢迎star，有问题可以到[Issue区](https://github.com/ahangchen/GDLnotes/issues)讨论
+- 官方教程[地址](https://classroom.udacity.com/courses/ud730/lessons/6370362152/concepts/63798118170923)
+- [视频](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Videos.zip)/[字幕](http://d2uz2655q5g6b2.cloudfront.net/6370362152/L1%20Machine%20Learning%20to%20Deep%20Learning%20Subtitles.zip)下载
+
 
 > 教程已重构兼容TensorFlow 1.2 
 
